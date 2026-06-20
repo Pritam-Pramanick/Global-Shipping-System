@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Work | Trans Global Logistics</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        const sessionToken = sessionStorage.getItem('secureLogix_session_token');
+        if (!sessionToken || sessionToken.split('.').length !== 3) {
+            // Comment this out if you are testing locally without a login page!
+            // window.location.replace('login.html');
+        }
+    </script>
+    <style>
+        :root {
+            --primary-blue: #0A2540;
+            --primary-blue-hover: #061a2e;
+            --action-orange: #FF6B35;
+            --action-orange-hover: #e55a2b;
+            --success-green: #38A169;
+            --bg-color: #EDF2F7;
+            --surface-color: #FFFFFF;
+            --border-color: #E2E8F0;
+            --sidebar-overlay: rgba(65, 124, 183, 0.6); 
+            --text-dark: #2D3748;
+            --text-muted: #718096;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --hover-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 300px;
+            --page-max-width: 1400px;
+            --transition-fast: 0.2s ease;
+            --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            /* Ensures anchor links don't hide behind the sticky nav */
+            scroll-padding-top: 120px; 
+        }
+
+        body {
+            background-color: var(--bg-color); color: var(--text-dark);
+            font-family: 'Inter', sans-serif; line-height: 1.6;
+            display: flex; flex-direction: column; min-height: 100vh; padding: 1.5rem;
+            overflow-x: hidden;
+        }
+
+        a, button { text-decoration: none; font-family: inherit; transition: var(--transition-fast); }
+        a:focus-visible, button:focus-visible { outline: 3px solid var(--action-orange); outline-offset: 4px; border-radius: 4px; }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+
+        .layout-card {
+            background-color: var(--surface-color); border-radius: 24px; box-shadow: var(--card-shadow);
+            max-width: var(--page-max-width); margin: 0 auto 2rem auto; width: 100%; overflow: hidden;
+        }
+
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-header h2 { font-size: clamp(2rem, 4vw, 3rem); color: var(--primary-blue); margin-bottom: 1rem; letter-spacing: -1px; font-weight: 800;}
+        .section-header p { font-size: 1.2rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; }
+
+        /* --- 🟢 SIDEBAR STYLING 🟢 --- */
+        .sidebar-overlay { position: fixed; inset: 0; background: var(--sidebar-overlay); backdrop-filter: blur(4px); z-index: 999; opacity: 0; visibility: hidden; transition: var(--transition-smooth); }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        
+        .sidebar { position: fixed; top: 0; bottom: 0; left: calc(-1 * var(--sidebar-width)); width: var(--sidebar-width); background-color: rgba(15, 59, 82, 0.736); color: var(--surface-color); z-index: 1000; display: flex; flex-direction: column; transition: left var(--transition-smooth); box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2); }
+        .sidebar.active { left: 0; }
+        
+        .sidebar-header { padding: 2rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-header h2 { font-size: 1.5rem; letter-spacing: -0.5px; color: #fff; }
+        .close-sidebar-btn { background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; transition: 0.2s;}
+        .close-sidebar-btn:hover { color: var(--action-orange); }
+        
+        .sidebar-content { flex: 1; padding: 1.5rem 0; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+        .sidebar-content::-webkit-scrollbar { display: none; }
+        
+        .sidebar-item { display: block; width: 100%; padding: 1rem 1.5rem; color: #CBD5E0; font-weight: 500; text-align: left; background: transparent; border: none; border-left: 3px solid transparent; cursor: pointer; font-family: 'Inter', sans-serif;}
+        .sidebar-item:hover, .sidebar-item.active-menu { background: rgba(255, 255, 255, 0.05); color: #fff; border-left-color: var(--action-orange); }
+
+        .sidebar-dropdown { display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-dropdown span { font-size: 0.8rem; transition: transform 0.3s ease; }
+        .sidebar-dropdown.open span { transform: rotate(180deg); }
+        .dropdown-menu { max-height: 0; overflow: hidden; background: rgba(0, 0, 0, 0.15); transition: max-height var(--transition-smooth); }
+        .dropdown-menu a { display: block; padding: 0.8rem 1.5rem 0.8rem 3rem; color: #A0AEC0; font-size: 0.95rem; }
+        .dropdown-menu a:hover { color: var(--action-orange); }
+
+        /* Sidebar Profile Widget */
+        .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); background-color: rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; }
+        .profile-widget { display: flex; align-items: center; gap: 1rem; cursor: pointer; padding: 1.5rem; transition: background 0.2s ease; border: none; background: transparent; width: 100%; text-align: left; font-family: inherit; position: relative; }
+        .profile-widget:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .profile-avatar { width: 45px; height: 45px; background-color: var(--action-orange); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; flex-shrink: 0; background-size: cover; background-position: center; }
+        .profile-details { display: flex; flex-direction: column; }
+        .profile-name { color: #fff; font-weight: 600; font-size: 0.95rem; }
+        .profile-role { color: #A0AEC0; font-size: 0.8rem; }
+        .profile-caret { margin-left: auto; color: #A0AEC0; transition: 0.3s; }
+        .profile-widget.open .profile-caret { transform: rotate(180deg); }
+        
+        .sidebar-profile-menu { max-height: 0; overflow: hidden; background-color: rgba(0, 0, 0, 0.15); transition: max-height 0.3s ease; border-radius: 8px 8px 0 0; }
+        .sidebar-profile-menu a, .sidebar-profile-menu button { display: block; width: 100%; text-align: left; padding: 1rem 1.5rem; color: #A0AEC0; font-size: 0.95rem; font-weight: 500; font-family: inherit; border: none; background: transparent; cursor: pointer; transition: color 0.2s ease; }
+        .sidebar-profile-menu a:hover, .sidebar-profile-menu button:hover { color: var(--surface-color); background-color: rgba(255, 255, 255, 0.05); }
+        .sidebar-profile-menu .sign-out { color: #fc8181; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .sidebar-profile-menu .sign-out:hover { color: #f56565; background-color: rgba(245, 101, 101, 0.1); }
+
+        /* --- 🟢 NAVIGATION HEADER 🟢 --- */
+        header.layout-card { padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; border-radius: 10px; position: sticky; top: 10px; z-index: 900;}
+        .header-left { display: flex; align-items: center; gap: 1.5rem; }
+        .menu-toggle-btn { background: none; border: none; font-size: 1.5rem; color: var(--primary-blue); cursor: pointer; transition: color 0.2s ease; display: flex; align-items: center; justify-content: center; }
+        .menu-toggle-btn:hover { color: var(--action-orange); }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-blue); letter-spacing: -0.5px; text-decoration: none; }
+        
+        nav { display: flex; gap: 2rem; align-items: center; }
+        nav a { text-decoration: none; color: var(--text-muted); font-weight: 500; transition: color 0.2s ease; position: relative; }
+        nav a:hover { color: var(--primary-blue); }
+        nav a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0%; height: 2px; background-color: var(--action-orange); transition: var(--transition-smooth); }
+        nav a:hover::after { width: 100%; }
+        
+        nav a.book-now-link { color: var(--action-orange); font-weight: 600; }
+        nav a.book-now-link::after { display: none; }
+        nav a.book-now-link:hover { color: #e55a2b; }
+
+        .header-profile-link { text-decoration: none; display: flex; align-items: center; margin-left: 0.5rem; }
+        .header-avatar { width: 42px; height: 42px; background-color: var(--action-orange); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; background-size: cover; background-position: center; transition: transform 0.2s ease, box-shadow 0.2s ease; border: 2px solid transparent; }
+        .header-avatar:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3); border-color: var(--action-orange); }
+
+        /* --- 🟢 OUR WORK HERO 🟢 --- */
+        .work-hero { 
+            padding: 10rem 2rem 8rem; text-align: center; color: var(--surface-color); 
+            background: linear-gradient(rgba(10, 37, 64, 0.85), rgba(10, 37, 64, 0.98)), url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80&w=1600') center/cover; 
+            background-attachment: fixed; position: relative;
+        }
+        .work-hero h1 { font-size: clamp(3rem, 6vw, 5rem); margin-bottom: 1.5rem; letter-spacing: -2px; font-weight: 900;}
+        .work-hero h1 span { background: linear-gradient(to right, var(--action-orange), #ffb088); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;}
+        .work-hero p { font-size: clamp(1.1rem, 2vw, 1.3rem); max-width: 800px; margin: 0 auto 3rem; opacity: 0.9; }
+        
+        .btn-play-video { background: var(--action-orange); color: white; border: none; padding: 1.2rem 3rem; border-radius: 50px; font-size: 1.1rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.8rem; transition: var(--transition-smooth); box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4); }
+        .btn-play-video:hover { transform: translateY(-3px) scale(1.02); background: var(--action-orange-hover); box-shadow: 0 15px 35px rgba(255, 107, 53, 0.6); }
+
+        .scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); animation: bounce 2s infinite; color: rgba(255,255,255,0.6); font-size: 1.5rem;}
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); } 40% { transform: translateY(-15px) translateX(-50%); } 60% { transform: translateY(-7px) translateX(-50%); } }
+
+        /* --- 🟢 INFINITE MARQUEE CLIENTS 🟢 --- */
+        .marquee-wrapper { width: 100%; max-width: var(--page-max-width); margin: 0 auto 6rem; background: var(--surface-color); padding: 3rem 0; border-radius: 24px; box-shadow: var(--card-shadow); overflow: hidden; position: relative;}
+        .marquee-wrapper::before, .marquee-wrapper::after { content: ""; position: absolute; top: 0; width: 150px; height: 100%; z-index: 2; pointer-events: none;}
+        .marquee-wrapper::before { left: 0; background: linear-gradient(to right, var(--surface-color), transparent); }
+        .marquee-wrapper::after { right: 0; background: linear-gradient(to left, var(--surface-color), transparent); }
+        
+        .marquee-title { text-align: center; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; font-weight: 700; margin-bottom: 2rem; width: 100%; display: block;}
+        .marquee-container { display: flex; width: 200%; animation: scroll 30s linear infinite; }
+        .marquee-content { display: flex; justify-content: space-around; width: 100%; align-items: center; }
+        .marquee-content span { font-size: 2rem; font-weight: 900; color: #CBD5E0; letter-spacing: -1px; transition: var(--transition-smooth);}
+        .marquee-content span:hover { color: var(--primary-blue); }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* --- 🟢 DEEP DIVE SHOWCASE SECTIONS 🟢 --- */
+        .showcase-container { max-width: var(--page-max-width); margin: 0 auto; display: flex; flex-direction: column; gap: 4rem; padding: 0 1rem; margin-bottom: 6rem;}
+        
+        .case-showcase { display: grid; grid-template-columns: 1fr 1fr; background: var(--surface-color); border-radius: 24px; overflow: hidden; box-shadow: var(--card-shadow); border: 1px solid var(--border-color);}
+        .case-showcase.reverse { direction: rtl; }
+        .case-showcase.reverse > * { direction: ltr; }
+        
+        .showcase-img { min-height: 450px; background-size: cover; background-position: center; position: relative; overflow: hidden;}
+        .showcase-img::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.1); transition: 0.5s ease;}
+        .case-showcase:hover .showcase-img::after { background: rgba(0,0,0,0); }
+        .showcase-img-inner { width: 100%; height: 100%; background: inherit; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);}
+        .case-showcase:hover .showcase-img-inner { transform: scale(1.05); }
+
+        .showcase-content { padding: 5rem 4rem; display: flex; flex-direction: column; justify-content: center; }
+        
+        .tag { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; width: fit-content; }
+        .tag-blue { background: rgba(10, 37, 64, 0.1); color: var(--primary-blue); }
+        .tag-orange { background: rgba(255, 107, 53, 0.1); color: var(--action-orange); }
+        .tag-green { background: rgba(56, 161, 105, 0.1); color: var(--success-green); }
+
+        .showcase-content h2 { font-size: clamp(2rem, 3vw, 2.5rem); color: var(--primary-blue); margin-bottom: 1rem; line-height: 1.2; font-weight: 800; letter-spacing: -1px;}
+        .showcase-content p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+        
+        .metrics-row { display: flex; gap: 2.5rem; margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 2rem; flex-wrap: wrap; }
+        .metric { display: flex; flex-direction: column; }
+        .metric-val { font-size: 2.5rem; font-weight: 900; color: var(--primary-blue); line-height: 1;}
+        .metric-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-top: 0.5rem; display: flex; align-items: center; gap: 6px;}
+
+        /* --- 🟢 ANIMATED STATS SECTION 🟢 --- */
+        .global-impact { background: linear-gradient(135deg, var(--primary-blue) 0%, #1a365d 100%); padding: 6rem 5%; border-radius: 24px; max-width: var(--page-max-width); margin: 0 auto 6rem; color: white; text-align: center; box-shadow: var(--hover-shadow);}
+        .impact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; margin-top: 3rem;}
+        .impact-item h3 { font-size: 4.5rem; margin-bottom: 0.5rem; font-weight: 900; line-height: 1; background: linear-gradient(to bottom, #ffffff, #a0aec0); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;}
+        .impact-item p { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--action-orange); }
+
+        /* 🟢 DYNAMIC FILTERS & GRID 🟢 */
+        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 3rem; padding: 0 2rem; }
+        .filter-btn { background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-muted); padding: 0.6rem 1.5rem; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .filter-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+        .filter-btn.active { background: var(--primary-blue); color: white; border-color: var(--primary-blue); box-shadow: 0 4px 10px rgba(10, 37, 64, 0.2); }
+
+        .case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2.5rem; padding: 0 5% 6rem; max-width: var(--page-max-width); margin: 0 auto;}
+        .case-card { background: var(--surface-color); border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); transition: var(--transition-smooth); display: flex; flex-direction: column; }
+        .case-card:hover { transform: translateY(-10px); box-shadow: var(--hover-shadow); border-color: var(--action-orange); }
+        .case-card-img { width: 100%; height: 250px; object-fit: cover; transition: 0.5s ease;}
+        .case-card:hover .case-card-img { transform: scale(1.05); }
+        .case-card-content { padding: 2.5rem; flex: 1; display: flex; flex-direction: column; background: var(--surface-color); z-index: 2;}
+        .case-card-content h3 { font-size: 1.5rem; color: var(--primary-blue); margin-bottom: 1rem; font-weight: 700;}
+        .case-card-content p { color: var(--text-muted); margin-bottom: 1.5rem; flex: 1; }
+        .read-more { color: var(--primary-blue); font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem; margin-top: auto; }
+        .case-card:hover .read-more { color: var(--action-orange); gap: 0.8rem; }
+
+        /* 🟢 VIDEO MODAL 🟢 */
+        .video-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s ease; cursor: pointer;} 
+        .video-modal.active { opacity: 1; visibility: visible; }
+        .video-container { position: relative; width: 80%; max-width: 900px; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.9); transition: 0.3s ease; cursor: default;} 
+        .video-modal.active .video-container { transform: scale(1); }
+        .close-instruction { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.7); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; pointer-events: none;}
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        /* Testimonials & CTA */
+        .testimonials-section { padding: 6rem 5%; background: var(--surface-color); border-radius: 24px; margin: 0 auto 5rem; max-width: var(--page-max-width); box-shadow: var(--card-shadow);}
+        .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem; }
+        .testimonial-card { background: var(--bg-color); padding: 3rem; border-radius: 20px; position: relative; transition: 0.3s;}
+        .testimonial-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
+        .quote-mark { font-size: 4rem; color: var(--action-orange); position: absolute; top: 1rem; left: 2rem; opacity: 0.15; font-family: serif; }
+        .testimonial-text { font-size: 1.1rem; font-style: italic; margin-bottom: 2rem; position: relative; z-index: 2; line-height: 1.8; color: var(--text-dark);}
+        .testimonial-author { display: flex; align-items: center; gap: 1rem; }
+        .author-avatar { width: 50px; height: 50px; border-radius: 50%; background: #CBD5E0; }
+        .author-info h4 { font-size: 1.1rem; color: var(--primary-blue); }
+        .author-info p { font-size: 0.9rem; color: var(--text-muted); }
+
+        .cta-container { padding: 0 5%; margin-bottom: 5rem; }
+        .cta-box { background: var(--action-orange); color: var(--surface-color); padding: 6rem 4rem; text-align: center; border-radius: 24px; max-width: 1200px; margin: 0 auto; box-shadow: 0 20px 40px rgba(255, 107, 53, 0.2);}
+        .cta-box__title { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; letter-spacing: -0.5px; font-weight: 800;}
+        .cta-box__text { font-size: 1.2rem; margin-bottom: 2.5rem; opacity: 0.95; }
+        .btn-cta-box { background: var(--surface-color); color: var(--action-orange); padding: 1.2rem 4rem; border-radius: 50px; font-weight: 800; font-size: 1.1rem; display: inline-block; transition: var(--transition-smooth); }
+        .btn-cta-box:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); color: var(--action-orange-hover); }
+
+        .main-footer { background-color: var(--primary-blue); color: #E2E8F0; padding: 5rem 4rem 3rem; border-radius: 24px; max-width: var(--page-max-width); margin: 0 auto 2rem; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 3rem; }
+        .footer-col h4 { color: var(--surface-color); margin-bottom: 1.5rem; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.8rem; }
+        .footer-col a { color: #CBD5E0; }
+        .footer-col a:hover { color: var(--action-orange); }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; font-size: 0.9rem; opacity: 0.7; flex-wrap: wrap; gap: 1rem; }
+        .footer-bottom-links { display: flex; gap: 1.5rem; }
+        .footer-bottom-links a { color: var(--surface-color); }
+        .footer-bottom-links a:hover { color: var(--action-orange); }
+
+        @media (max-width: 1100px) { nav { display: none; } .case-showcase { grid-template-columns: 1fr; } .showcase-img { min-height: 350px; } }
+        @media (max-width: 768px) { body { padding: 1rem; } .main-header { padding: 1rem 1.5rem; } .work-hero { padding: 6rem 1.5rem; } .showcase-content { padding: 3rem 2rem; } .footer-grid { grid-template-columns: 1fr; gap: 2rem; } .main-footer{ border-radius: 0; margin: 0 -1rem -1rem;} }
+  
+    </style>
+
+</head>
+
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-sidebar-btn" id="closeSidebar">&times;</button>
+        </div>
+
+        <div class="sidebar-content">
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1rem;">Main</div>
+            
+            <a href="../index.html" class="sidebar-item">
+                <i class="fa-solid fa-house" style="width: 25px;"></i> Dashboard
+            </a>
+            <a href="about.html" class="sidebar-item">
+                <i class="fa-solid fa-building" style="width: 25px;"></i> About Us
+            </a>
+            <a href="services.html" class="sidebar-item">
+                <i class="fa-solid fa-globe" style="width: 25px;"></i> Services
+            </a>
+            <a href="our-work.html" class="sidebar-item active-menu">
+                <i class="fa-solid fa-briefcase" style="width: 25px;"></i> Our Work
+            </a>
+            <a href="profile.html" class="sidebar-item">
+                <i class="fa-solid fa-user" style="width: 25px;"></i> My Profile
+            </a>
+
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1.5rem;">Operations</div>
+            
+            <button class="sidebar-item sidebar-dropdown" onclick="toggleDropdown('dropdown1', this)">
+                <i class="fa-solid fa-ship" style="width: 25px;"></i> Freight Services <span>▼</span>
+            </button>
+            <div class="dropdown-menu" id="dropdown1">
+                <a href="booking.html">Book New Shipment</a>
+                <a href="#">My Active Shipments</a>
+                <a href="#">Saved Quotes</a>
+            </div>
+
+            <a href="#" class="sidebar-item">
+                <i class="fa-solid fa-file-contract" style="width: 25px;"></i> Document Center
+            </a>
+
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1.5rem;">Finance & Support</div>
+            
+            <a href="wallet.html" class="sidebar-item">
+                <i class="fa-solid fa-wallet" style="width: 25px;"></i> Wallet & Billing
+            </a>
+            <a href="support.html" class="sidebar-item">
+                <i class="fa-solid fa-headset" style="width: 25px;"></i> Support Tickets
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-profile-menu" id="sidebarProfileMenu">
+                <a href="profile.html">View Profile</a>
+                <a href="wallet.html">Account Settings</a>
+                <button class="sign-out" onclick="signOut()">Sign Out</button>
+            </div>
+
+            <button class="profile-widget" onclick="toggleSidebarProfile()">
+                <div class="profile-avatar" id="userAvatar">JD</div>
+                <div class="profile-details">
+                    <span class="profile-name" id="userNameDisplay">John Doe</span>
+                    <span class="profile-role" id="userRoleDisplay">Supply Chain Mgr</span>
+                </div>
+                <i class="fa-solid fa-chevron-up profile-caret"></i>
+            </button>
+        </div>
+    </aside>
+
+    <header class="layout-card main-header">
+        <div class="header-left">
+            <button class="menu-toggle-btn" id="openSidebar"><i class="fa-solid fa-bars"></i></button>
+            <a href="../index.html" class="logo">Trans Global</a>
+        </div>
+        <nav class="main-nav">
+            <a href="../index.html">Dashboard</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="our-work.html" style="color: var(--primary-blue); font-weight: 700;">Our Work</a>
+            <a href="support.html">Support</a>
+            <a href="booking.html" class="book-now-link">Book Now</a>
+
+            <a href="profile.html" class="header-profile-link" title="My Profile">
+                <div class="header-avatar" id="headerAvatar">JD</div>
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="layout-card work-hero">
+            <h1>Proven Logistics <span>Success</span></h1>
+            <p>Explore how we have engineered scalable, cost-effective, and rapid supply chain solutions for the world's most demanding industries.</p>
+            <button class="btn-play-video" onclick="openVideoModal()">
+                <i class="fa-solid fa-play"></i> Watch Operations Showreel
+            </button>
+            <i class="fa-solid fa-chevron-down scroll-indicator"></i>
+        </section>
+
+        <div class="marquee-wrapper reveal">
+            <span class="marquee-title">Trusted by Global Enterprise Leaders</span>
+            <div class="marquee-container">
+                <div class="marquee-content">
+                    <span>TECHNOVA</span><span>VOLTEX</span><span>AERODYNE</span><span>NEXUS</span><span>MEDIPHARM</span><span>GLOBAL-X</span>
+                </div>
+                <div class="marquee-content">
+                    <span>TECHNOVA</span><span>VOLTEX</span><span>AERODYNE</span><span>NEXUS</span><span>MEDIPHARM</span><span>GLOBAL-X</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="showcase-container">
+            
+            <section class="case-showcase reveal" id="cold-chain">
+                <div class="showcase-img">
+                    <div class="showcase-img-inner" style="background-image: url('https://images.unsplash.com/photo-1587370560942-ad2a04eabb6d?auto=format&fit=crop&q=80&w=1200');"></div>
+                </div>
+                <div class="showcase-content">
+                    <span class="tag tag-green"><i class="fa-solid fa-snowflake"></i> Biotech & Food</span>
+                    <h2>Global Cold-Chain Ecosystem</h2>
+                    <p>Maintaining temperature integrity across multiple transit modes is a complex logistical challenge. We orchestrated a continuous cold-chain pipeline for perishable goods and sensitive biologicals across three continents.</p>
+                    <p>Utilizing active-cooling ULDs and real-time IoT temperature monitoring embedded within our SecureLogix dashboard, we provided the client with minute-by-minute climate transparency from origin to final destination.</p>
+                    <div class="metrics-row">
+                        <div class="metric"><span class="metric-val">-70°C</span><span class="metric-label"><i class="fa-solid fa-temperature-low"></i> Max Cooling</span></div>
+                        <div class="metric"><span class="metric-val">100%</span><span class="metric-label"><i class="fa-solid fa-check-double"></i> Compliance</span></div>
+                        <div class="metric"><span class="metric-val">24/7</span><span class="metric-label"><i class="fa-solid fa-satellite-dish"></i> IoT Monitored</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="case-showcase reverse reveal" id="jit-assembly">
+                <div class="showcase-img">
+                    <div class="showcase-img-inner" style="background-image: url('https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&q=80&w=1200');"></div>
+                </div>
+                <div class="showcase-content">
+                    <span class="tag tag-blue"><i class="fa-solid fa-car"></i> Automotive</span>
+                    <h2>Just-in-Time Assembly Routing</h2>
+                    <p>A major European automaker was facing severe assembly line halts due to supply chain fragmentation. We consolidated their inbound logistics, implementing a strict Just-In-Time (JIT) delivery model.</p>
+                    <p>By integrating our SecureLogix API directly into their factory ERP system, we provided real-time component tracking, enabling their production managers to completely eliminate warehouse bottlenecks and reduce holding costs.</p>
+                    <div class="metrics-row">
+                        <div class="metric"><span class="metric-val">-32%</span><span class="metric-label"><i class="fa-solid fa-arrow-trend-down"></i> Storage Costs</span></div>
+                        <div class="metric"><span class="metric-val">+15%</span><span class="metric-label"><i class="fa-solid fa-arrow-trend-up"></i> Efficiency</span></div>
+                        <div class="metric"><span class="metric-val">100%</span><span class="metric-label"><i class="fa-solid fa-stopwatch"></i> On-Time</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="case-showcase reveal" id="peak-scalability">
+                <div class="showcase-img">
+                    <div class="showcase-img-inner" style="background-image: url('https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&q=80&w=1200');"></div>
+                </div>
+                <div class="showcase-content">
+                    <span class="tag tag-orange"><i class="fa-solid fa-cart-shopping"></i> Retail & E-Commerce</span>
+                    <h2>Q4 Peak Scalability Operations</h2>
+                    <p>A global fast-fashion retailer needed to scale their fulfillment operations exponentially during the critical Black Friday to Christmas holiday window, when standard carriers couldn't guarantee capacity.</p>
+                    <p>We seamlessly integrated our fulfillment APIs into their storefront and activated three temporary automated fulfillment hubs. Utilizing dynamic air-charter routing, we drastically scaled their volume while maintaining premium delivery speeds.</p>
+                    <div class="metrics-row">
+                        <div class="metric"><span class="metric-val">400%</span><span class="metric-label"><i class="fa-solid fa-boxes-stacked"></i> Vol Scaled</span></div>
+                        <div class="metric"><span class="metric-val">1.2d</span><span class="metric-label"><i class="fa-solid fa-truck-fast"></i> Avg Delivery</span></div>
+                        <div class="metric"><span class="metric-val">99.9%</span><span class="metric-label"><i class="fa-solid fa-bullseye"></i> Fill Rate</span></div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <section class="global-impact reveal">
+            <h2>Global Impact by the Numbers</h2>
+            <p style="color: #CBD5E0; max-width: 600px; margin: 0 auto;">Our network handles the scale and complexity of modern global enterprise trade every single day.</p>
+            <div class="impact-grid" id="statsContainer">
+                <div class="impact-item">
+                    <h3 class="counter" data-target="150">0</h3>
+                    <p>Countries Served</p>
+                </div>
+                <div class="impact-item">
+                    <h3><span class="counter" data-target="10">0</span>M+</h3>
+                    <p>Tons Delivered</p>
+                </div>
+                <div class="impact-item">
+                    <h3>$<span class="counter" data-target="50">0</span>B</h3>
+                    <p>Cargo Insured</p>
+                </div>
+                <div class="impact-item">
+                    <h3><span class="counter" data-target="99">0</span>%</h3>
+                    <p>On-Time Rate</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-header reveal" id="case-studies-grid">
+            <h2>Industry Case Studies</h2>
+            <p>Select an industry below to see how we solve complex logistics challenges.</p>
+        </div>
+
+        <div class="filter-container reveal">
+            <button class="filter-btn active" onclick="filterCases('all', this)">All Projects</button>
+            <button class="filter-btn" onclick="filterCases('auto', this)">Automotive</button>
+            <button class="filter-btn" onclick="filterCases('retail', this)">Retail & E-Com</button>
+            <button class="filter-btn" onclick="filterCases('heavy', this)">Heavy Lift</button>
+        </div>
+
+        <section class="case-grid">
+            <article class="case-card reveal reveal-delay-1" data-category="heavy">
+                <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=600" alt="Aerospace Logistics" class="case-card-img">
+                <div class="case-card-content">
+                    <span class="tag tag-blue" style="font-size: 0.75rem;"><i class="fa-solid fa-plane"></i> Aerospace</span>
+                    <h3>Oversized Continental Transit</h3>
+                    <p>Moving multi-million dollar commercial jet engines requires extreme precision. We engineered a custom multi-modal route (Ocean to Rail to Specialized Heavy-Haul Ground) to move 12 engines safely.</p>
+                    <a href="#" class="read-more">View Details <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="case-card reveal reveal-delay-2" data-category="heavy">
+                <img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=600" alt="Wind Turbines" class="case-card-img">
+                <div class="case-card-content">
+                    <span class="tag tag-green" style="font-size: 0.75rem;"><i class="fa-solid fa-leaf"></i> Energy</span>
+                    <h3>Offshore Wind Farm Logistics</h3>
+                    <p>Coordinating the delivery of 45 massive wind turbine blades to a remote offshore installation site. Required complex port negotiations, specialized barge transport, and weather-window scheduling.</p>
+                    <a href="#" class="read-more">View Details <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="case-card reveal" data-category="auto">
+                <img src="https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&q=80&w=600" alt="Tires" class="case-card-img">
+                <div class="case-card-content">
+                    <span class="tag tag-blue" style="font-size: 0.75rem;"><i class="fa-solid fa-car"></i> Automotive</span>
+                    <h3>Aftermarket Parts Distribution</h3>
+                    <p>Re-routed a global tire manufacturer's distribution network away from congested coastal ports to inland rail hubs, cutting transit times to Midwest distributors by 14 days.</p>
+                    <a href="#" class="read-more">View Details <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </article>
+        </section>
+
+        <section class="testimonials-section reveal" id="testimonials">
+            <div class="section-header">
+                <h2>What Our Partners Say</h2>
+                <p>Don't just take our word for it. Hear from the supply chain executives who trust us with their business.</p>
+            </div>
+
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="quote-mark">"</div>
+                    <p class="testimonial-text">Trans Global completely revolutionized our inbound supply routes from Asia. Their predictive AI routing saved us over $2.4M in freight costs last year alone, and their dashboard transparency is unmatched.</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background: url('https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100') center/cover;"></div>
+                        <div class="author-info">
+                            <h4>David Chen</h4>
+                            <p>VP of Global Supply Chain, TechNova</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="quote-mark">"</div>
+                    <p class="testimonial-text">When you are dealing with life-saving pharmaceuticals, there is zero room for error. Trans Global's cold-chain infrastructure is the only network we trust for our international distribution.</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100') center/cover;"></div>
+                        <div class="author-info">
+                            <h4>Dr. Elena Rostova</h4>
+                            <p>Director of Logistics, BioHealth Inc.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="cta-container reveal">
+            <section class="cta-box">
+                <h2 class="cta-box__title">Ready to become our next success story?</h2>
+                <p class="cta-box__text">Let our logistics engineers design a custom solution for your toughest supply chain challenges.</p>
+                <a href="booking.html" class="btn-cta-box">Request a Consultation &rarr;</a>
+            </section>
+        </div>
+    </main>
+
+    <div class="video-modal" id="videoModal">
+        <div class="video-container">
+            <span class="close-instruction">Click anywhere to close</span>
+            <iframe id="showreelVideo" src="https://www.youtube.com/embed/ScMzIvxBSi4?si=hM0FzCqM71v2lX3N&rel=0" title="Trans Global Logistics Showreel" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <footer class="layout-card main-footer reveal">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h2 style="color:var(--surface-color); margin-bottom:1rem;">Trans Global</h2>
+                <p>Revolutionizing global trade through smart logistics, high-performance infrastructure, and uncompromising reliability.</p>
+            </div>
+
+            <nav class="footer-col">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">Ocean Freight</a></li>
+                    <li><a href="services.html">Air Cargo</a></li>
+                    <li><a href="services.html">Ground Transport</a></li>
+                    <li><a href="services.html">Warehousing</a></li>
+                </ul>
+            </nav>
+
+            <nav class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="support.html">Help Center</a></li>
+                    <li><a href="#">Tracking API</a></li>
+                    <li><a href="#">Customs Guide</a></li>
+                    <li><a href="#">Claims</a></li>
+                </ul>
+            </nav>
+
+            <nav class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="our-work.html">Our Work</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Trans Global Logistics. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* --- Sidebar Logic --- */
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        document.getElementById('openSidebar').addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('active'); });
+        document.getElementById('closeSidebar').addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); closeProfileMenu(); });
+        overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); closeProfileMenu(); });
+
+        function toggleDropdown(menuId, buttonElement) {
+            const menu = document.getElementById(menuId);
+            if (!menu) return;
+            buttonElement.classList.toggle('open');
+            if (menu.style.maxHeight) { menu.style.maxHeight = null; } 
+            else { menu.style.maxHeight = menu.scrollHeight + "px"; }
+        }
+
+        function toggleSidebarProfile() {
+            const menu = document.getElementById('sidebarProfileMenu');
+            const icon = document.querySelector('.profile-caret');
+            if (!menu) return;
+            if (menu.style.maxHeight) { menu.style.maxHeight = null; if (icon) icon.style.transform = "rotate(0deg)"; } 
+            else { menu.style.maxHeight = menu.scrollHeight + "px"; if (icon) icon.style.transform = "rotate(180deg)"; }
+        }
+
+        function closeProfileMenu() {
+            const menu = document.getElementById('sidebarProfileMenu');
+            const icon = document.querySelector('.profile-caret');
+            if (menu && menu.style.maxHeight) { menu.style.maxHeight = null; if (icon) icon.style.transform = "rotate(0deg)"; }
+        }
+
+        function signOut() {
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.replace('login.html');
+        }
+
+        /* --- Dynamic User Profile Loader --- */
+        function loadUserProfile() {
+            const userEmail = localStorage.getItem('secureLogix_user');
+            const userRole = localStorage.getItem('secureLogix_role');
+
+            if (userEmail) {
+                const namePart = userEmail.split('@')[0];
+                const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+                
+                const customName = localStorage.getItem('secureLogix_displayName') || formattedName;
+                const initials = customName.substring(0, 2).toUpperCase();
+                const customAvatar = localStorage.getItem('secureLogix_avatar');
+
+                const nameDisplay = document.getElementById('userNameDisplay');
+                const roleDisplay = document.getElementById('userRoleDisplay');
+                if (nameDisplay) nameDisplay.textContent = customName;
+                if (roleDisplay && userRole) roleDisplay.textContent = userRole;
+
+                const sidebarAvatar = document.getElementById('userAvatar');
+                const headerAvatar = document.getElementById('headerAvatar');
+
+                [sidebarAvatar, headerAvatar].forEach(avatar => {
+                    if (avatar) {
+                        if (customAvatar) {
+                            avatar.style.backgroundImage = `url(${customAvatar})`;
+                            avatar.textContent = ""; 
+                        } else {
+                            avatar.style.backgroundImage = "none";
+                            avatar.textContent = initials;
+                        }
+                    }
+                });
+            }
+        }
+
+        /* --- Filter Logic --- */
+        function filterCases(category, btnElement) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            const cards = document.querySelectorAll('.case-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                    card.style.animation = 'none';
+                    void card.offsetWidth; 
+                    card.style.animation = 'slideUpFade 0.6s forwards'; 
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        /* --- Video Modal Logic --- */
+        const videoModal = document.getElementById('videoModal');
+        const videoFrame = document.getElementById('showreelVideo');
+
+        function openVideoModal() { 
+            videoModal.classList.add('active'); 
+        }
+
+        function closeVideoModal() { 
+            videoModal.classList.remove('active'); 
+            if (videoFrame) {
+                let iframeSrc = videoFrame.src;
+                videoFrame.src = iframeSrc; 
+            }
+        }
+        
+        videoModal.addEventListener('click', function(e) {
+            if (e.target === videoModal) {
+                closeVideoModal();
+            }
+        });
+
+        /* --- 🟢 NEW: SCROLL REVEAL ANIMATION & COUNTERS 🟢 --- */
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger on load
+
+        // Animated Number Counters (Triggers when the stats section comes into view)
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200; 
+        let countersAnimated = false;
+
+        const animateCounters = () => {
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText;
+                const inc = target / speed;
+
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + inc);
+                    setTimeout(animateCounters, 20);
+                } else {
+                    counter.innerText = target;
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !countersAnimated) {
+                    animateCounters();
+                    countersAnimated = true; // Only animate once
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsSection = document.getElementById('statsContainer');
+        if(statsSection) observer.observe(statsSection);
+
+        // Initialize user profile
+        loadUserProfile();
+    </script>
+</body>
+</html>

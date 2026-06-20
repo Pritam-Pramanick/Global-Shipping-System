@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trans Global | Secure Wallet</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- OFFICIAL RAZORPAY PAYMENT GATEWAY SCRIPT -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <!-- 🟢 UPGRADED SECURITY CHECK 🟢 -->
+    <script>
+        const sessionToken = sessionStorage.getItem('secureLogix_session_token');
+        if (!sessionToken || sessionToken.split('.').length !== 3) {
+            // Comment this out if you are testing locally without a login page!
+            window.location.replace('login.html'); 
+        }
+    </script>
+<link rel="stylesheet" href="../css/wallet.css">
+</head>
+<body>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Trans Global</h2>
+            <button class="close-sidebar-btn" id="closeSidebar">&times;</button>
+        </div>
+        
+        <div class="sidebar-content">
+            <a href="index.html" class="sidebar-item">Dashboard</a>
+            <a href="about.html" class="sidebar-item">About Us</a>
+            <a href="services.html" class="sidebar-item">Services</a>
+            <a href="our-work.html" class="sidebar-item">Our Work</a>
+            <a href="support.html" class="sidebar-item">Support</a>
+            <a href="booking.html" class="sidebar-item">Book Now</a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-profile-menu" id="sidebarProfileMenu">
+                <a href="profile.html">View Profile</a>
+                <a href="wallet.html" style="color: white; background-color: rgba(255,255,255,0.05);">My Wallet</a>
+                <button class="sign-out" onclick="signOut()">Sign Out</button>
+            </div>
+
+            <button class="profile-widget" onclick="toggleSidebarProfile()">
+                <div class="profile-avatar" id="userAvatar">JD</div>
+                <div class="profile-details">
+                    <span class="profile-name" id="userNameDisplay">John Doe</span>
+                    <span class="profile-role" id="userRoleDisplay">Supply Chain Mgr</span>
+                </div>
+                <span class="profile-caret">▲</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Header Card -->
+    <header class="layout-card">
+        <div class="header-left">
+            <button class="menu-toggle-btn" id="openSidebar"><i class="fa-solid fa-bars"></i></button>
+            <a href="index.html" class="logo">Trans Global</a>
+        </div>
+        <nav>
+            <a href="index.html">Dashboard</a>
+            <a href="about.html">About Us</a>
+            <a href="services.html">Services</a>
+            <a href="our-work.html">Our Work</a>
+            <a href="support.html">Support</a>
+            <a href="booking.html" class="book-now-link">Book Now</a>
+            <!-- 🟢 SYNCED HEADER PROFILE ICON 🟢 -->
+            <a href="profile.html" class="header-profile-link" title="My Profile">
+                <div class="header-avatar" id="headerAvatar">JD</div>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Wallet Content -->
+    <main class="layout-card main-container">
+        
+        <div class="wallet-grid">
+            
+            <!-- Left Column: Wallet Balance & Notice Board -->
+            <div>
+                <!-- Digital Wallet Card -->
+                <div class="wallet-card-container">
+                    <div class="wallet-header">
+                        <p class="wallet-label">Available Balance</p>
+                        <select class="currency-select" id="currencySelect" onchange="changeCurrency()">
+                            <option value="INR">INR (₹)</option>
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                            <option value="GBP">GBP (£)</option>
+                        </select>
+                    </div>
+                    
+                    <h1 class="wallet-balance" id="mainWalletBalance">₹0</h1>
+                    
+                    <div class="wallet-actions">
+                        <button class="btn-wallet btn-topup" onclick="openTopUpModal()">
+                            <i class="fa-solid fa-bolt"></i> Add Funds
+                        </button>
+                        <button class="btn-wallet btn-withdraw" onclick="alert('For security, withdrawals take 2-3 business days and require bank verification. Contact support.')">
+                            <i class="fa-solid fa-building-columns"></i> Withdraw
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 🟢 DYNAMIC NOTICE BOARD 🟢 -->
+                <div class="notice-card">
+                    <div class="notice-header">
+                        <h3><span class="live-dot"></span> System Notices</h3>
+                        <span class="notice-timer" id="noticeTimerText">Updates in 60s</span>
+                    </div>
+                    
+                    <ul class="notice-list" id="noticeFeed">
+                        <!-- Notices injected by JS -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Column: Transaction History & Live News -->
+            <div>
+                <!-- Transaction History -->
+                <div class="history-card">
+                    <div class="history-header">
+                        <h3>Transaction History</h3>
+                        <span style="font-size: 0.85rem; color: var(--success-green);"><i class="fa-solid fa-shield-halved"></i> 256-bit Encrypted</span>
+                    </div>
+                    
+                    <ul class="transaction-list" id="transactionList">
+                        <!-- Transactions injected by JS -->
+                    </ul>
+                </div>
+
+                <!-- 🟢 LIVE INTERNET NEWS FEED 🟢 -->
+                <div class="news-card">
+                    <div class="news-header">
+                        <h3><span class="live-dot"></span> Live Market News</h3>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Connected to API <i class="fa-solid fa-wifi"></i></span>
+                    </div>
+                    <ul class="news-list" id="newsFeed">
+                        <li class="news-item">
+                            <h4 style="color: var(--text-muted); text-align: center;"><i class="fa-solid fa-circle-notch fa-spin"></i> Fetching live internet data...</h4>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- SECURE TOP UP MODAL -->
+    <div class="modal-overlay" id="topUpModal">
+        <div class="modal-card">
+            <h3>Secure Top-Up</h3>
+            <p id="topUpText">Enter the amount to add to your wallet.</p>
+            
+            <form id="paymentForm" onsubmit="triggerRazorpay(event)">
+                <div class="amount-input-wrapper">
+                    <span id="modalCurrencySymbol">₹</span>
+                    <input type="number" id="topUpAmount" placeholder="0" min="10" required>
+                </div>
+
+                <div class="trust-badges">
+                    <div class="trust-badge"><i class="fa-solid fa-lock"></i><span>SSL Secure</span></div>
+                    <div class="trust-badge"><i class="fa-regular fa-credit-card"></i><span>PCI-DSS</span></div>
+                    <div class="trust-badge"><i class="fa-solid fa-building-columns"></i><span>Bank Level</span></div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeTopUpModal()">Cancel</button>
+                    <button type="submit" class="btn-confirm" id="payBtn"><i class="fa-solid fa-lock"></i> Pay Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../Javascript/wallet.js">
+    
+
+    </script>
+</body>
+</html>

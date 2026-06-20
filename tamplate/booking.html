@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trans Global | Secure Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/booking.css">
+    <!-- 🟢 UPGRADED SECURITY CHECK 🟢 -->
+    <script>
+        const sessionToken = sessionStorage.getItem('secureLogix_session_token');
+        if (!sessionToken || sessionToken.split('.').length !== 3) {
+            // Comment this out if you are testing locally without a login page!
+            window.location.replace('login.html');
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Trans Global</h2>
+            <button class="close-sidebar-btn" id="closeSidebar">&times;</button>
+        </div>
+        <div class="sidebar-content">
+            <a href="index.html" class="sidebar-item">Dashboard</a>
+            <a href="about.html" class="sidebar-item">About Us</a>
+            <a href="services.html" class="sidebar-item">Services</a>
+            <a href="our-work.html" class="sidebar-item">Our Work</a>
+            <a href="support.html" class="sidebar-item">Support</a>
+            <a href="booking.html" class="sidebar-item active-menu">Book Now</a>
+        </div>
+        <div class="sidebar-footer">
+            <button class="profile-widget" onclick="window.location.href='profile.html'">
+                <div class="profile-avatar" id="userAvatar">JD</div>
+                <div class="profile-details">
+                    <span class="profile-name" id="userNameDisplay">John Doe</span>
+                    <span class="profile-role" id="userRoleDisplay">User</span>
+                </div>
+            </button>
+        </div>
+    </aside>
+
+    <header class="layout-card">
+        <div class="header-left">
+            <button class="menu-toggle-btn" id="openSidebar"><i class="fa-solid fa-bars"></i></button>
+            <a href="index.html" class="logo">Trans Global</a>
+        </div>
+        <nav>
+            <a href="index.html">Dashboard</a>
+            <a href="about.html">About Us</a>
+            <a href="services.html">Services</a>
+            <a href="support.html">Support</a>
+            <a href="booking.html" style="color: var(--action-orange); font-weight: 700;">Book Now</a>
+            <a href="profile.html" class="header-profile-link" title="My Profile">
+                <div class="header-avatar" id="headerAvatar">JD</div>
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="layout-card booking-container">
+            <div class="page-header">
+                <h1>Secure Booking</h1>
+                <p>Follow the steps below to finalize your global shipment.</p>
+            </div>
+
+            <div class="stepper">
+                <div class="step-indicator active" id="ind-step-1">
+                    <div class="step-number">1</div>
+                    <span>Details</span>
+                </div>
+                <div class="step-line" id="ind-line-1"></div>
+
+                <div class="step-indicator" id="ind-step-2">
+                    <div class="step-number">2</div>
+                    <span>Documents</span>
+                </div>
+                <div class="step-line" id="ind-line-2"></div>
+
+                <div class="step-indicator" id="ind-step-3">
+                    <div class="step-number">3</div>
+                    <span>Payment</span>
+                </div>
+            </div>
+
+            <form id="secureBookingForm" onsubmit="processBooking(event)">
+
+                <div class="step-section active" id="step-1">
+                    <h3 class="section-title">Logistics Information</h3>
+                    <div class="form-grid">
+
+                        <div class="form-group full-width">
+                            <label>Transport Mode</label>
+                            <input type="hidden" id="transportMode" value="ocean" required>
+                            <div class="transport-selector">
+                                <div class="transport-card active" data-value="ocean" onclick="selectTransport(this)">
+                                    <span class="icon"><i class="fa-solid fa-ship"></i></span>
+                                    <span class="label">Ocean</span>
+                                </div>
+                                <div class="transport-card" data-value="air" onclick="selectTransport(this)">
+                                    <span class="icon"><i class="fa-solid fa-plane-up"></i></span>
+                                    <span class="label">Air</span>
+                                </div>
+                                <div class="transport-card" data-value="ground" onclick="selectTransport(this)">
+                                    <span class="icon"><i class="fa-solid fa-truck-fast"></i></span>
+                                    <span class="label">Ground</span>
+                                </div>
+                                <div class="transport-card" data-value="rail" onclick="selectTransport(this)">
+                                    <span class="icon"><i class="fa-solid fa-train"></i></span>
+                                    <span class="label">Rail</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="origin">Origin</label>
+                            <input type="text" id="origin" placeholder="e.g., Shanghai, CN" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="destination">Destination</label>
+                            <input type="text" id="destination" placeholder="e.g., Los Angeles, CA" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Cargo Dimensions (L x W x H in cm)</label>
+                            <div class="lwh-grid">
+                                <input type="number" id="dimL" placeholder="Length" required>
+                                <input type="number" id="dimW" placeholder="Width" required>
+                                <input type="number" id="dimH" placeholder="Height" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="weight">Total Weight (kg)</label>
+                            <input type="number" id="weight" placeholder="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Ready Date</label>
+                            <input type="date" id="date" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="paymentParty">Payment Responsibility</label>
+                            <select id="paymentParty" required>
+                                <option value="" disabled selected>Select billing party...</option>
+                                <option value="sender">Sender (Prepaid)</option>
+                                <option value="receiver">Receiver (Collect)</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="cargoDesc">Cargo Description</label>
+                            <input type="text" id="cargoDesc" placeholder="e.g., Electronics components, non-hazardous"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn btn-primary" onclick="goToStep(2)">Continue to Documents <i
+                                class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="step-section" id="step-2">
+                    <h3 class="section-title">Upload Customs Documents</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 2rem;">
+                        To ensure customs compliance and avoid delays, please upload clear PDF or JPG copies of the
+                        following documents.
+                    </p>
+
+                    <div class="doc-verification-zone">
+                        <div class="upload-box" id="box-invoice">
+                            <input type="file" accept=".pdf,.jpg,.jpeg,.png"
+                                onchange="handleFileUpload(this, 'box-invoice', 'Commercial Invoice', 'fa-file-invoice-dollar')"
+                                required>
+                            <span class="upload-icon" id="icon-invoice"><i
+                                    class="fa-solid fa-file-invoice-dollar"></i></span>
+                            <div class="upload-title" id="title-invoice">Commercial Invoice</div>
+                            <div class="upload-desc" id="desc-invoice">Click or drag file to upload</div>
+                        </div>
+
+                        <div class="upload-box" id="box-packing">
+                            <input type="file" accept=".pdf,.jpg,.jpeg,.png"
+                                onchange="handleFileUpload(this, 'box-packing', 'Packing List', 'fa-clipboard-list')"
+                                required>
+                            <span class="upload-icon" id="icon-packing"><i
+                                    class="fa-solid fa-clipboard-list"></i></span>
+                            <div class="upload-title" id="title-packing">Packing List</div>
+                            <div class="upload-desc" id="desc-packing">Click or drag file to upload</div>
+                        </div>
+
+                        <div class="upload-box" id="box-id">
+                            <input type="file" accept=".pdf,.jpg,.jpeg,.png"
+                                onchange="handleFileUpload(this, 'box-id', 'Customs ID', 'fa-id-card')" required>
+                            <span class="upload-icon" id="icon-id"><i class="fa-solid fa-id-card"></i></span>
+                            <div class="upload-title" id="title-id">Sender Customs ID</div>
+                            <div class="upload-desc" id="desc-id">Click or drag file to upload</div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(1)"><i
+                                class="fa-solid fa-arrow-left"></i> Back</button>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(3)">Continue to Payment <i
+                                class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="step-section" id="step-3">
+                    <h3 class="section-title">Token Deposit & Generation</h3>
+
+                    <div class="payment-info-box">
+                        <div>
+                            <h4>Generate Shipping ID</h4>
+                            <p>A refundable token deposit is required today to secure your capacity. The remaining
+                                balance will be billed to the designated party.</p>
+                        </div>
+                        <span class="payment-amount">$50.00</span>
+                    </div>
+
+                    <h4 style="margin-bottom: 1rem; color: var(--text-dark);">Select Payment Method</h4>
+                    <div class="payment-methods">
+                        <label class="pay-method-card active" id="method-wallet" onclick="selectPayMethod('wallet')">
+                            <input type="radio" name="payMethod" value="wallet" checked>
+                            <i class="fa-solid fa-wallet fa-2x" style="color: var(--primary-blue);"></i>
+                            <div style="flex:1;">
+                                <strong style="display:block; color: var(--primary-blue);">Digital Wallet</strong>
+                                <span style="font-size:0.85rem; color: var(--text-muted);">Deduct approx ₹4,150</span>
+                            </div>
+                            <span class="wallet-balance-badge" id="displayWalletBal">₹0</span>
+                        </label>
+
+                        <label class="pay-method-card" id="method-card" onclick="selectPayMethod('card')">
+                            <input type="radio" name="payMethod" value="card">
+                            <i class="fa-regular fa-credit-card fa-2x" style="color: var(--primary-blue);"></i>
+                            <div>
+                                <strong style="display:block; color: var(--primary-blue);">Credit Card</strong>
+                                <span style="font-size:0.85rem; color: var(--text-muted);">Standard Gateway</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="form-grid" id="cardDetailsBlock"
+                        style="display: none; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                        <div class="form-group full-width">
+                            <label>Cardholder Name</label>
+                            <input type="text" id="cardName" placeholder="Name as it appears on card">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Card Number</label>
+                            <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19">
+                        </div>
+                        <div class="form-group">
+                            <label>Expiry Date</label>
+                            <input type="text" id="cardExp" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label>CVC</label>
+                            <input type="password" id="cardCvc" placeholder="123" maxlength="4">
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(2)"><i
+                                class="fa-solid fa-arrow-left"></i> Back</button>
+
+                        <div class="security-badge">
+                            <i class="fa-solid fa-shield-check"></i> 256-bit Encrypted
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="finalSubmitBtn"><i
+                                class="fa-solid fa-lock"></i> Pay $50 & Book</button>
+                    </div>
+                </div>
+
+            </form>
+        </section>
+    </main>
+
+    <footer class="layout-card">
+        &copy; 2026 Trans Global Logistics. All documents and payments are securely processed and encrypted.
+    </footer>
+
+    <script src="../Javascript/booking.js">
+
+    </script>
+</body>
+
+</html>

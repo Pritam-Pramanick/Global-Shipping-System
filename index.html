@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trans Global | Logistics Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        const sessionToken = sessionStorage.getItem('secureLogix_session_token');
+        if (!sessionToken || sessionToken.split('.').length !== 3) {
+            // window.location.replace('tamplate/login.html'); 
+        }
+    </script>
+
+    <style>
+        /* --- COLOR THEORY & VARIABLES --- */
+        :root {
+            --primary-blue: #0A2540;
+            --action-orange: #FF6B35;
+            --success-green: #38A169;
+            --warning-yellow: #D69E2E;
+            --danger-red: #E53E3E;
+            --bg-color: #EDF2F7;
+            --surface-color: #FFFFFF;
+            --text-dark: #2D3748;
+            --text-muted: #718096;
+            --border-color: #E2E8F0;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --sidebar-width: 300px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color); color: var(--text-dark);
+            font-family: 'Inter', sans-serif; line-height: 1.6;
+            display: flex; flex-direction: column; min-height: 100vh; padding: 1rem;
+        }
+
+        .system-alert-banner {
+            display: none; width: 100%; max-width: 1400px; margin: 0 auto 1rem auto; 
+            padding: 1rem 2rem; border-radius: 10px; color: white; font-weight: 600; 
+            font-size: 0.95rem; text-align: center; box-shadow: var(--card-shadow);
+            animation: slideDown 0.5s ease-out;
+        }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0;} to { transform: translateY(0); opacity: 1;} }
+
+        .layout-card {
+            background-color: var(--surface-color); border-radius: 10px;
+            box-shadow: var(--card-shadow); max-width: 1400px; margin: 0 auto 2rem auto;
+            width: 100%; overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(65, 124, 183, 0.6); backdrop-filter: blur(4px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        .sidebar { position: fixed; top: 0; left: calc(-1 * var(--sidebar-width)); width: var(--sidebar-width); height: 100vh; background-color: rgba(15, 59, 82, 0.736); color: #fff; z-index: 1000; display: flex; flex-direction: column; transition: left 0.3s ease-in-out; box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2); }
+        .sidebar.active { left: 0; }
+        .sidebar-header { padding: 2rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-header h2 { font-size: 1.5rem; letter-spacing: -0.5px; color: #fff; }
+        .close-sidebar-btn { background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; transition: color 0.2s ease; line-height: 1; }
+        .close-sidebar-btn:hover { color: var(--action-orange); }
+
+        /* --- SIDEBAR CONTENT (Hidden Scrollbar) --- */
+        .sidebar-content { 
+            flex: 1; 
+            padding: 1.5rem 0; 
+            overflow-y: auto; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+        }
+        .sidebar-content::-webkit-scrollbar { 
+            display: none; 
+        }
+        .sidebar-item { display: block; padding: 1rem 1.5rem; color: #CBD5E0; text-decoration: none; font-weight: 500; font-size: 1rem; transition: all 0.2s ease; cursor: pointer; border-left: 3px solid transparent; background: transparent; width: 100%; text-align: left; border-top: none; border-right: none; border-bottom: none; font-family: 'Inter', sans-serif; }
+        .sidebar-item:hover, .sidebar-item.active-menu { background-color: rgba(255, 255, 255, 0.05); color: #fff; border-left-color: var(--action-orange); }
+
+        .sidebar-dropdown { display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-dropdown span { font-size: 0.8rem; transition: transform 0.3s ease; }
+        .sidebar-dropdown.open span { transform: rotate(180deg); }
+        .dropdown-menu { max-height: 0; overflow: hidden; background-color: rgba(0, 0, 0, 0.15); transition: max-height 0.3s ease; }
+        .dropdown-menu a { display: block; padding: 0.8rem 1.5rem 0.8rem 3rem; color: #A0AEC0; text-decoration: none; font-size: 0.95rem; transition: color 0.2s ease; }
+        .dropdown-menu a:hover { color: var(--action-orange); }
+
+        .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); background-color: rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; }
+        .sidebar-profile-menu { max-height: 0; overflow: hidden; background-color: rgba(0, 0, 0, 0.15); transition: max-height 0.3s ease; border-radius: 8px 8px 0 0; }
+        .sidebar-profile-menu a, .sidebar-profile-menu button { display: block; width: 100%; text-align: left; padding: 1rem 1.5rem; color: #A0AEC0; text-decoration: none; font-size: 0.95rem; font-weight: 500; font-family: inherit; border: none; background: transparent; cursor: pointer; transition: color 0.2s ease, background 0.2s ease; }
+        .sidebar-profile-menu a:hover, .sidebar-profile-menu button:hover { color: var(--surface-color); background-color: rgba(255, 255, 255, 0.05); }
+        .sidebar-profile-menu .sign-out { color: #fc8181; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .sidebar-profile-menu .sign-out:hover { color: #f56565; background-color: rgba(245, 101, 101, 0.1); }
+        .profile-widget { display: flex; align-items: center; gap: 1rem; cursor: pointer; padding: 1.5rem; transition: background 0.2s ease; border: none; background: transparent; width: 100%; text-align: left; font-family: inherit; position: relative; }
+        .profile-widget:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .profile-avatar { width: 45px; height: 45px; background-color: var(--action-orange); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; flex-shrink: 0; background-size: cover; background-position: center; }
+        .profile-details { display: flex; flex-direction: column; }
+        .profile-name { color: #fff; font-weight: 600; font-size: 0.95rem; }
+        .profile-role { color: #A0AEC0; font-size: 0.8rem; }
+        .profile-caret { margin-left: auto; color: #A0AEC0; font-size: 0.8rem; transition: transform 0.3s ease; }
+        .profile-widget.open .profile-caret { transform: rotate(180deg); }
+
+        /* --- NAVIGATION HEADER --- */
+        header.layout-card { padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 1.5rem; }
+        .menu-toggle-btn { background: none; border: none; font-size: 1.5rem; color: var(--primary-blue); cursor: pointer; transition: color 0.2s ease; display: flex; align-items: center; justify-content: center; }
+        .menu-toggle-btn:hover { color: var(--action-orange); }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-blue); letter-spacing: -0.5px; text-decoration: none; }
+        
+        nav { display: flex; gap: 2rem; align-items: center; }
+        .lay { border-radius: 10px; position: sticky; top: 10px; z-index: 999; }
+        nav a { text-decoration: none; color: var(--text-muted); font-weight: 500; transition: color 0.2s ease; }
+        nav a:hover { color: var(--primary-blue); }
+        nav a.book-now-link { color: var(--action-orange); font-weight: 600; }
+        nav a.book-now-link:hover { color: #e55a2b; }
+
+        .header-profile-link { text-decoration: none; display: flex; align-items: center; margin-left: 0.5rem; }
+        .header-avatar { width: 42px; height: 42px; background-color: var(--action-orange); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; background-size: cover; background-position: center; transition: transform 0.2s ease, box-shadow 0.2s ease; border: 2px solid transparent; }
+        .header-avatar:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3); border-color: var(--action-orange); }
+
+        /* --- PULL SEQUENCE ANIMATION CARD --- */
+        .pull-sequence-section { position: relative; width: 100%; height: 600px; background-color: var(--surface-color); overflow: hidden; display: flex; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; animation-duration: 40s; animation-iteration-count: infinite; animation-timing-function: ease-in-out; background-color: var(--surface-color); }
+        .slide video { width: 100%; height: 100%; object-fit: cover; background-color: #E2E8F0; }
+        .slide-text-content { text-align: center; padding: 40px; }
+        .slide-text-content h1 { font-size: 3.5rem; color: var(--primary-blue); margin-bottom: 10px; }
+        .slide-text-content p { font-size: 1.5rem; color: var(--text-muted); }
+
+        #slide-v1 { animation-name: slide-1; } #slide-t1 { animation-name: slide-2; }
+        #slide-v2 { animation-name: slide-3; } #slide-t2 { animation-name: slide-4; }
+        #slide-v3 { animation-name: slide-5; } #slide-t3 { animation-name: slide-6; }
+        #slide-v4 { animation-name: slide-7; } #slide-t4 { animation-name: slide-8; }
+
+        @keyframes slide-1 { 0%, 10% { transform: translateX(0); opacity: 1; } 12.5%, 96% { transform: translateX(-100%); opacity: 0; } 97% { transform: translateX(100%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+        @keyframes slide-2 { 0%, 10% { transform: translateX(100%); opacity: 0; } 12.5%, 22.5% { transform: translateX(0); opacity: 1; } 25%, 100% { transform: translateX(-100%); opacity: 0; } }
+        @keyframes slide-3 { 0%, 22.5% { transform: translateX(100%); opacity: 0; } 25%, 35% { transform: translateX(0); opacity: 1; } 37.5%, 100% { transform: translateX(-100%); opacity: 0; } }
+        @keyframes slide-4 { 0%, 35% { transform: translateX(100%); opacity: 0; } 37.5%, 47.5% { transform: translateX(0); opacity: 1; } 50%, 100% { transform: translateX(-100%); opacity: 0; } }
+        @keyframes slide-5 { 0%, 47.5% { transform: translateX(100%); opacity: 0; } 50%, 60% { transform: translateX(0); opacity: 1; } 62.5%, 100% { transform: translateX(-100%); opacity: 0; } }
+        @keyframes slide-6 { 0%, 60% { transform: translateX(100%); opacity: 0; } 62.5%, 72.5% { transform: translateX(0); opacity: 1; } 75%, 100% { transform: translateX(-100%); opacity: 0; } }
+        @keyframes slide-7 { 0%, 72.5% { transform: translateX(100%); opacity: 0; } 75%, 85% { transform: translateX(0); opacity: 1; } 87.5%, 100% { transform: translateX(-100%); opacity: 0; } }
+        @keyframes slide-8 { 0%, 85% { transform: translateX(100%); opacity: 0; } 87.5%, 97.5% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(-100%); opacity: 0; } }
+
+        /* --- HERO CARD --- */
+        .hero { text-align: center; padding: 5rem 2rem; }
+        .hero h1 { font-size: 3.5rem; color: var(--primary-blue); line-height: 1.2; margin-bottom: 1rem; letter-spacing: -1px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        .tracking-box { display: flex; background: var(--bg-color); padding: 0.5rem; border-radius: 12px; max-width: 600px; margin: 0 auto; border: 1px solid var(--border-color); }
+        .tracking-box input { flex: 1; border: none; padding: 1rem 1.5rem; font-size: 1rem; font-family: inherit; outline: none; color: var(--text-dark); background: transparent; }
+        .tracking-box button { background-color: var(--action-orange); color: #ffffff; border: none; padding: 0 2rem; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: background-color 0.2s ease; }
+        .tracking-box button:hover { background-color: #e55a2b; }
+
+        /* --- STATS GRID --- */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1400px; margin: 0 auto 2rem auto; width: 100%; }
+        .stat-card { background-color: var(--surface-color); padding: 2rem; border-radius: 20px; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); transition: transform 0.2s ease; }
+        .stat-card:hover { transform: translateY(-4px); }
+        .stat-card h3 { color: var(--primary-blue); margin-bottom: 0.5rem; font-size: 1.2rem; }
+        .stat-card p { color: var(--text-muted); font-size: 0.95rem; }
+        .stat-card .highlight { display: block; margin-top: 1rem; font-size: 1.5rem; font-weight: 700; color: var(--primary-blue); }
+
+        /* 🟢 DATA DASHBOARD GRID (News & Customs) 🟢 */
+        .dashboard-data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 1400px; margin: 0 auto 2rem auto; width: 100%; }
+        @media (max-width: 1000px) { .dashboard-data-grid { grid-template-columns: 1fr; } }
+        
+        .data-card { padding: 2rem; border-radius: 20px; border: 1px solid var(--border-color); background: var(--surface-color); box-shadow: var(--card-shadow);}
+        .data-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; }
+        .data-header h3 { color: var(--primary-blue); font-size: 1.3rem; display: flex; align-items: center; gap: 0.6rem;}
+        
+        .live-dot { width: 10px; height: 10px; background-color: #E53E3E; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(229, 62, 62, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); } }
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* News Styles */
+        .data-list { list-style: none; display: flex; flex-direction: column; }
+        .data-item { padding: 1.2rem 0; border-bottom: 1px solid var(--border-color); animation: fadeInSlide 0.5s ease-out; }
+        .data-item:last-child { border-bottom: none; }
+        .news-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+        .news-tag { color: var(--primary-blue); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--bg-color); padding: 0.2rem 0.6rem; border-radius: 4px; }
+        .news-time { font-size: 0.75rem; color: var(--text-muted); font-weight: 500;}
+        .news-title { font-size: 0.95rem; font-weight: 600; color: var(--text-dark); line-height: 1.4; transition: 0.2s;}
+        .news-title a { color: inherit; text-decoration: none; }
+        .news-title a:hover { color: var(--action-orange); text-decoration: underline; }
+
+        /* 🟢 NEW: Customs Tracker Styles 🟢 */
+        .customs-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem; }
+        .port-code { font-family: monospace; font-size: 1.1rem; font-weight: 700; color: var(--primary-blue); background: var(--bg-color); padding: 0.2rem 0.5rem; border-radius: 6px; border: 1px solid var(--border-color);}
+        .shipment-ref { font-size: 0.85rem; color: var(--text-muted); font-weight: 600;}
+        
+        .progress-track { width: 100%; height: 6px; background: var(--bg-color); border-radius: 10px; overflow: hidden; margin-bottom: 0.8rem; position: relative;}
+        .progress-fill { height: 100%; background: var(--primary-blue); border-radius: 10px; transition: width 1s ease-out;}
+        .progress-fill.cleared { background: var(--success-green); }
+        .progress-fill.pending { background: var(--warning-yellow); }
+        
+        .customs-status { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 600; }
+        .status-text { color: var(--text-dark); }
+        .badge-pending { color: var(--warning-yellow); }
+        .badge-processing { color: var(--primary-blue); }
+        .badge-cleared { color: var(--success-green); }
+
+        /* --- BOOKING SECTION --- */
+        .booking-section { padding: 4rem 2rem; }
+        .section-header { text-align: center; max-width: 800px; margin: 0 auto 2rem; padding: 0 1rem; }
+        .section-header h2 { font-size: 2.2rem; color: var(--primary-blue); margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+        .section-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        .transport-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .transport-card { border: 2px solid var(--border-color); border-radius: 12px; padding: 2rem 1rem; text-align: center; cursor: pointer; transition: all 0.2s ease; background: var(--surface-color); }
+        .transport-card:hover { border-color: var(--primary-blue); transform: translateY(-3px); }
+        .transport-card.active { border-color: var(--action-orange); background-color: rgba(255, 107, 53, 0.05); }
+        .transport-card .icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+        .transport-card .label { font-weight: 700; font-size: 1.1rem; color: var(--primary-blue); }
+
+        .booking-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase; }
+        .form-group input, .form-group select { padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 1rem; color: var(--text-dark); background: var(--bg-color); outline: none; transition: border-color 0.2s ease; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary-blue); }
+        .submit-booking { grid-column: 1 / -1; background: var(--action-orange); color: white; border: none; padding: 1.2rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer; margin-top: 1rem; transition: background 0.2s ease; }
+        .submit-booking:hover { background: #e55a2b; }
+
+        /* --- EXPERIENCE BANNER CARD --- */
+        .experience-banner-card { background-color: var(--primary-blue); color: #ffffff; padding: 3rem 2rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center; }
+        .stat-item .stat-num { display: block; font-size: 3rem; font-weight: 700; color: var(--action-orange); margin-bottom: 0.5rem; line-height: 1; }
+        .stat-item .stat-label { font-size: 0.9rem; color: #CBD5E0; text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+
+        /* --- PORTFOLIO CARDS --- */
+        .case-studies { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto 2rem auto; width: 100%; }
+        .case-card { background: var(--surface-color); border-radius: 20px; box-shadow: var(--card-shadow); overflow: hidden; transition: transform 0.2s ease; }
+        .case-card:hover { transform: translateY(-5px); }
+        .case-img { width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 600; }
+        .img-1 { background: linear-gradient(135deg, #FF6B35 0%, #ff8e63 100%); }
+        .img-2 { background: linear-gradient(135deg, #0A2540 0%, #1a426b 100%); }
+        .img-3 { background: linear-gradient(135deg, #718096 0%, #a0aec0 100%); }
+        .case-content { padding: 2rem; }
+        .case-tag { display: inline-block; background-color: rgba(255, 107, 53, 0.1); color: var(--action-orange); font-size: 0.8rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 20px; text-transform: uppercase; margin-bottom: 1rem; }
+        .case-card h3 { color: var(--primary-blue); font-size: 1.3rem; margin-bottom: 0.8rem; }
+        .case-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .case-link { color: var(--primary-blue); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; transition: color 0.2s ease; }
+        .case-link:hover { color: var(--action-orange); }
+
+        /* --- TRUSTED BY CARD --- */
+        .trusted-by { padding: 2rem; text-align: center; }
+        .trusted-by p { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 1.5rem; }
+        .logo-strip { display: flex; justify-content: center; align-items: center; gap: 3rem; flex-wrap: wrap; opacity: 0.5; filter: grayscale(100%); }
+        .logo-strip span { font-size: 1.2rem; font-weight: 700; font-family: monospace; color: var(--primary-blue); }
+
+        /* --- FOOTER CARD --- */
+        footer.layout-card { background-color: var(--primary-blue); color: #E2E8F0; padding: 3rem 2rem 2rem; margin-top: auto; margin-bottom: 0; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 2rem; }
+        .footer-col h4 { color: #ffffff; font-size: 1.1rem; margin-bottom: 1.2rem; font-weight: 600; }
+        .footer-col p, .footer-col ul li a { font-size: 0.95rem; color: #CBD5E0; text-decoration: none; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.8rem; }
+        .footer-col ul li a:hover { color: var(--action-orange); }
+        .footer-bottom { padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #A0AEC0; }
+        .footer-legal a { color: #A0AEC0; text-decoration: none; margin-left: 1.5rem; }
+        .footer-legal a:hover { color: #ffffff; }
+
+        @media (max-width: 1100px) { nav { display: none; } }
+        @media (max-width: 768px) { body { padding: 1rem; } header.layout-card { padding: 1rem 1.5rem; } }
+    </style>
+</head>
+<body>
+    <!-- 🟢 ADMIN BROADCAST BANNER 🟢 -->
+    <div class="system-alert-banner" id="systemAlertBanner">
+        <i class="fa-solid fa-bullhorn" style="margin-right: 8px;"></i>
+        <span id="alertBannerText">Notice text goes here</span>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-sidebar-btn" id="closeSidebar">&times;</button>
+        </div>
+
+       <div class="sidebar-content">
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1rem;">Main</div>
+            
+            <a href="index.html" class="sidebar-item active-menu">
+                <i class="fa-solid fa-house" style="width: 25px;"></i> Dashboard
+            </a>
+            <a href="tamplate/profile.html" class="sidebar-item">
+                <i class="fa-solid fa-user" style="width: 25px;"></i> My Profile
+            </a>
+
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1.5rem;">Operations</div>
+            
+            <button class="sidebar-item sidebar-dropdown" onclick="toggleDropdown('dropdown1', this)">
+                <i class="fa-solid fa-ship" style="width: 25px;"></i> Freight Services <span>▼</span>
+            </button>
+            <div class="dropdown-menu" id="dropdown1">
+                <a href="tamplate/booking.html">Book New Shipment</a>
+                <a href="#">My Active Shipments</a>
+                <a href="#">Saved Quotes</a>
+            </div>
+
+            <a href="#" class="sidebar-item">
+                <i class="fa-solid fa-file-contract" style="width: 25px;"></i> Document Center
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fa-solid fa-address-book" style="width: 25px;"></i> Address Book
+            </a>
+
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1.5rem;">Finance & Support</div>
+            
+            <a href="tamplate/wallet.html" class="sidebar-item">
+                <i class="fa-solid fa-wallet" style="width: 25px;"></i> Wallet & Billing
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fa-solid fa-chart-line" style="width: 25px;"></i> Reports & Analytics
+            </a>
+            <a href="tamplate/support.html" class="sidebar-item">
+                <i class="fa-solid fa-headset" style="width: 25px;"></i> Support Tickets
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-profile-menu" id="sidebarProfileMenu">
+                <a href="tamplate/profile.html">View Profile</a>
+                <a href="tamplate/wallet.html">Account & Billing</a>
+                <button class="sign-out" onclick="signOut()">Sign Out</button>
+            </div>
+
+            <button class="profile-widget" onclick="toggleSidebarProfile()">
+                <div class="profile-avatar" id="userAvatar">JD</div>
+                <div class="profile-details">
+                    <span class="profile-name" id="userNameDisplay">John Doe</span>
+                    <span class="profile-role" id="userRoleDisplay">Supply Chain Mgr</span>
+                </div>
+                <span class="profile-caret">▲</span>
+            </button>
+        </div>
+    </aside>
+
+    <header class="layout-card lay">
+        <div class="header-left">
+            <button class="menu-toggle-btn" id="openSidebar" title="Open Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo">Trans Global</a>
+        </div>
+        <nav>
+            <a href="tamplate/about.html">About Us</a>
+            <a href="tamplate/services.html">Services</a>
+            <a href="tamplate/our-work.html">Our Work</a>
+            <a href="tamplate/support.html">Support</a>
+            <a href="tamplate/booking.html" class="book-now-link">Book Now</a>
+            
+            <a href="tamplate/profile.html" class="header-profile-link" title="My Profile">
+                <div class="header-avatar" id="headerAvatar">JD</div>
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="layout-card pull-sequence-section">
+            <div class="slide" id="slide-v1">
+                <video autoplay muted loop playsinline>
+                    <source src="assets/video/video1.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="slide" id="slide-t1">
+                <div class="slide-text-content">
+                    <h1>Global Shipping</h1>
+                    <p>Reliable cargo transport across the ocean.</p>
+                </div>
+            </div>
+            <div class="slide" id="slide-v2">
+                <video autoplay muted loop playsinline>
+                    <source src="assets/video/video2.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="slide" id="slide-t2">
+                <div class="slide-text-content">
+                    <h1>Secure Warehousing</h1>
+                    <p>State-of-the-art facilities for your goods.</p>
+                </div>
+            </div>
+            <div class="slide" id="slide-v3">
+                <video autoplay muted loop playsinline>
+                    <source src="assets/video/video3.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="slide" id="slide-t3">
+                <div class="slide-text-content">
+                    <h1>Live Tracking</h1>
+                    <p>Monitor your shipments in real-time 24/7.</p>
+                </div>
+            </div>
+            <div class="slide" id="slide-v4">
+                <video autoplay muted loop playsinline>
+                    <source src="assets/video/video4.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="slide" id="slide-t4">
+                <div class="slide-text-content">
+                    <h1>Last Mile Delivery</h1>
+                    <p>Delivering straight to your customer's door.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="layout-card hero">
+            <h1>Global shipping, simplified.</h1>
+            <p>Track your freight, manage your supply chain, and get real-time delivery estimates without the clutter.</p>
+
+            <div class="tracking-box">
+                <input type="text" id="trackInput" placeholder="Enter tracking number...">
+                <button onclick="trackItem()" id="trackBtn">Track</button>
+            </div>
+        </section>
+
+        <section class="grid-container">
+            <div class="stat-card">
+                <h3>Active Shipments</h3>
+                <p>Freight currently in transit across our global network.</p>
+                <span class="highlight">1,420</span>
+            </div>
+            <div class="stat-card">
+                <h3>Delivery Success</h3>
+                <p>On-time delivery rate over the last 30 days.</p>
+                <span class="highlight" style="color: #38A169;">99.2%</span>
+            </div>
+            <div class="stat-card">
+                <h3>Global Reach</h3>
+                <p>Ports and airports accessed by our network.</p>
+                <span class="highlight">850+</span>
+            </div>
+        </section>
+
+        <!-- 🟢 DATA DASHBOARD GRID 🟢 -->
+        <section class="dashboard-data-grid">
+            
+            <!-- LIVE NEWS -->
+            <div class="data-card">
+                <div class="data-header">
+                    <h3><span class="live-dot"></span> Live Supply Chain News</h3>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">JSON API <i class="fa-solid fa-wifi"></i></span>
+                </div>
+                <ul class="data-list" id="dashboardNewsFeed">
+                    <li class="data-item">
+                        <h4 style="color: var(--text-muted); text-align: center;"><i class="fa-solid fa-circle-notch fa-spin"></i> Fetching live global shipping data...</h4>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 🟢 NEW: CUSTOMS CLEARANCE TRACKER 🟢 -->
+            <div class="data-card">
+                <div class="data-header">
+                    <h3><i class="fa-solid fa-file-contract" style="color: var(--primary-blue);"></i> Active Customs Clearances</h3>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Updated Just Now</span>
+                </div>
+                
+                <ul class="data-list">
+                    <!-- Shipment 1: Pending IGST -->
+                    <li class="data-item">
+                        <div class="customs-meta">
+                            <span class="shipment-ref">TXG-847291 (Ocean)</span>
+                            <span class="port-code">INBOM</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill pending" style="width: 50%;"></div>
+                        </div>
+                        <div class="customs-status">
+                            <span class="status-text">Assessment: IGST Payment Pending</span>
+                            <span class="badge-pending"><i class="fa-solid fa-circle-exclamation"></i> Action Req</span>
+                        </div>
+                    </li>
+
+                    <!-- Shipment 2: Processing BoE -->
+                    <li class="data-item">
+                        <div class="customs-meta">
+                            <span class="shipment-ref">TXG-592100 (Air)</span>
+                            <span class="port-code">INDEL</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill processing" style="width: 25%;"></div>
+                        </div>
+                        <div class="customs-status">
+                            <span class="status-text">ICEGATE: Bill of Entry (BoE) Filed</span>
+                            <span class="badge-processing"><i class="fa-solid fa-spinner fa-spin"></i> Processing</span>
+                        </div>
+                    </li>
+
+                    <!-- Shipment 3: Cleared OOC -->
+                    <li class="data-item">
+                        <div class="customs-meta">
+                            <span class="shipment-ref">TXG-110294 (Air)</span>
+                            <span class="port-code">INBLR</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill cleared" style="width: 100%;"></div>
+                        </div>
+                        <div class="customs-status">
+                            <span class="status-text">Out of Charge (OOC) Issued</span>
+                            <span class="badge-cleared"><i class="fa-solid fa-check-circle"></i> Cleared</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </section>
+
+        <section class="layout-card booking-section">
+            <div class="section-header">
+                <h2>Book Your Next Shipment</h2>
+                <p>Select your transport mode and get instant pricing.</p>
+            </div>
+
+            <div class="transport-selector">
+                <div class="transport-card active" data-value="ocean" onclick="selectTransport(this)">
+                    <span class="icon"><i class="fa-solid fa-ship"></i></span>
+                    <span class="label">Ocean Freight</span>
+                </div>
+                <div class="transport-card" data-value="air" onclick="selectTransport(this)">
+                    <span class="icon"><i class="fa-solid fa-plane-up"></i></span>
+                    <span class="label">Air Cargo</span>
+                </div>
+                <div class="transport-card" data-value="ground" onclick="selectTransport(this)">
+                    <span class="icon"><i class="fa-solid fa-truck-fast"></i></span>
+                    <span class="label">Ground Transport</span>
+                </div>
+                <div class="transport-card" data-value="rail" onclick="selectTransport(this)">
+                    <span class="icon"><i class="fa-solid fa-train"></i> </span>
+                    <span class="label">Rail Freight</span>
+                </div>
+            </div>
+
+            <form class="booking-form" id="bookingForm" onsubmit="submitBooking(event)">
+                <div class="form-group">
+                    <label for="origin">Origin (City or Port)</label>
+                    <input type="text" id="origin" placeholder="e.g., Shanghai, CN" required>
+                </div>
+                <div class="form-group">
+                    <label for="destination">Destination (City or Port)</label>
+                    <input type="text" id="destination" placeholder="e.g., Los Angeles, CA" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Ready Date</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="weight">Total Weight (kg)</label>
+                    <input type="number" id="weight" placeholder="0" required>
+                </div>
+                <button type="submit" class="submit-booking" id="bookBtn">Get Quote & Book</button>
+            </form>
+        </section>
+
+        <section class="layout-card experience-banner-card">
+            <div class="stats-grid">
+                <div class="stat-item"><span class="stat-num">15+</span><span class="stat-label">Years Experience</span></div>
+                <div class="stat-item"><span class="stat-num">120</span><span class="stat-label">Countries Served</span></div>
+                <div class="stat-item"><span class="stat-num">500M</span><span class="stat-label">Tons Delivered</span></div>
+                <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">Expert Support</span></div>
+            </div>
+        </section>
+
+        <div class="section-header">
+            <h2>Our Work & Case Studies</h2>
+            <p>Engineering supply chain solutions that scale with your business.</p>
+        </div>
+        <section class="case-studies">
+            <div class="case-card">
+                <div class="case-img img-1">[ Automotive Image ]</div>
+                <div class="case-content">
+                    <span class="case-tag">Automotive</span>
+                    <h3>Just-in-Time Assembly</h3>
+                    <p>Re-engineered a European automaker's supply chain to reduce warehousing costs by 32% while maintaining strict JIT delivery windows.</p>
+                    <a href="tamplate/our-work.html" class="case-link">View Project &rarr;</a>
+                </div>
+            </div>
+            <div class="case-card">
+                <div class="case-img img-2">[ Cold-Chain Pharma Image ]</div>
+                <div class="case-content">
+                    <span class="case-tag">Pharmaceutical</span>
+                    <h3>Global Cold-Chain</h3>
+                    <p>Deployed IoT-enabled temperature monitoring to safely transport 2 million vaccine doses across three continents with zero spoilage.</p>
+                    <a href="tamplate/our-work.html" class="case-link">View Project &rarr;</a>
+                </div>
+            </div>
+            <div class="case-card">
+                <div class="case-img img-3">[ Retail Warehouse Image ]</div>
+                <div class="case-content">
+                    <span class="case-tag">Retail E-Commerce</span>
+                    <h3>Q4 Peak Scalability</h3>
+                    <p>Scaled last-mile logistics for a global retailer, increasing their daily delivery capacity by 400% during the peak holiday shopping month.</p>
+                    <a href="tamplate/our-work.html" class="case-link">View Project &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="layout-card trusted-by">
+            <p>Trusted by global industry leaders</p>
+            <div class="logo-strip">
+                <span>LOGO_CORP</span><span>VOLTEX</span><span>AeroDynamics</span><span>NEXUS RETAIL</span><span>MEDIPHARM</span>
+            </div>
+        </section>
+    </main>
+
+    <footer class="layout-card">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Trans Global</h4>
+                <p>Delivering clarity and speed to the global supply chain since 2011. Your freight, handled with precision.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="tamplate/services.html">Ocean Freight</a></li><li><a href="tamplate/services.html">Air Cargo</a></li>
+                    <li><a href="tamplate/services.html">Ground Transport</a></li><li><a href="tamplate/services.html">Customs Brokerage</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="tamplate/about.html">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Sustainability</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="tamplate/support.html">Help Center</a></li><li><a href="tamplate/support.html">Track Shipment</a></li><li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">&copy; 2026 Trans Global. All rights reserved.</div>
+            <div class="footer-legal">
+                <a href="#">Privacy Policy</a><a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Sidebar & Overlay Logic ---
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+
+        if (openBtn && sidebar && overlay) { openBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); sidebar.classList.add('active'); overlay.classList.add('active'); }); }
+        if (closeBtn && sidebar && overlay) { closeBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); sidebar.classList.remove('active'); overlay.classList.remove('active'); closeProfileMenu(); }); }
+        if (overlay && sidebar) { overlay.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); sidebar.classList.remove('active'); overlay.classList.remove('active'); closeProfileMenu(); }); }
+
+        function toggleDropdown(menuId, buttonElement) {
+            const menu = document.getElementById(menuId);
+            if (!menu) return;
+            buttonElement.classList.toggle('open');
+            if (menu.style.maxHeight) { menu.style.maxHeight = null; } 
+            else { menu.style.maxHeight = menu.scrollHeight + "px"; }
+        }
+
+        function toggleSidebarProfile() {
+            const menu = document.getElementById('sidebarProfileMenu');
+            const widget = document.querySelector('.profile-widget');
+            if (!menu || !widget) return;
+            widget.classList.toggle('open');
+            if (menu.style.maxHeight) { menu.style.maxHeight = null; } 
+            else { menu.style.maxHeight = menu.scrollHeight + "px"; }
+        }
+
+        function closeProfileMenu() {
+            const menu = document.getElementById('sidebarProfileMenu');
+            const widget = document.querySelector('.profile-widget');
+            if (menu && menu.style.maxHeight) { menu.style.maxHeight = null; if (widget) { widget.classList.remove('open'); } }
+        }
+
+        // --- Fake Tracking Button Logic ---
+        function trackItem() {
+            const input = document.getElementById('trackInput').value;
+            const btn = document.getElementById('trackBtn');
+            if (!btn) return;
+            if (input.trim() === "") { alert("Please enter a tracking number."); return; }
+            const originalText = btn.innerText;
+            btn.innerText = "Searching..."; btn.style.backgroundColor = "#2b6cb0";
+            setTimeout(() => {
+                alert(`Status for ${input}:\nIn Transit - Arriving in 3 days.`);
+                btn.innerText = originalText; btn.style.backgroundColor = ""; document.getElementById('trackInput').value = "";
+            }, 1000);
+        }
+
+        // --- Booking Form Logic ---
+        function selectTransport(clickedElement) {
+            const cards = document.querySelectorAll('.transport-card');
+            cards.forEach(card => card.classList.remove('active'));
+            clickedElement.classList.add('active');
+        }
+
+        function submitBooking(event) {
+            event.preventDefault();
+            const btn = document.getElementById('bookBtn');
+            if (!btn) return;
+            btn.innerText = "Redirecting to Secure Booking..."; btn.style.backgroundColor = "#2b6cb0";
+            
+            // Redirect to the actual booking page passing along the inputs
+            const mode = document.querySelector('.transport-card.active').getAttribute('data-value');
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            const date = document.getElementById('date').value;
+            const weight = document.getElementById('weight').value;
+            
+            setTimeout(() => {
+                window.location.href = `tamplate/booking.html?mode=${mode}&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&date=${encodeURIComponent(date)}&weight=${encodeURIComponent(weight)}`;
+            }, 800);
+        }
+
+        // --- 🟢 UPGRADED SECURE SIGN OUT 🟢 ---
+        function signOut() {
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.replace('tamplate/login.html');
+        }
+
+        // --- Load Dynamic User Profile ---
+        function loadUserProfile() {
+            const userEmail = localStorage.getItem('secureLogix_user');
+            const userRole = localStorage.getItem('secureLogix_role');
+
+            if (userEmail) {
+                const namePart = userEmail.split('@')[0];
+                const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+                
+                const customName = localStorage.getItem('secureLogix_displayName') || formattedName;
+                const initials = customName.substring(0, 2).toUpperCase();
+                const customAvatar = localStorage.getItem('secureLogix_avatar');
+
+                const nameDisplay = document.getElementById('userNameDisplay');
+                const roleDisplay = document.getElementById('userRoleDisplay');
+                if (nameDisplay) nameDisplay.textContent = customName;
+                if (roleDisplay && userRole) roleDisplay.textContent = userRole;
+
+                const sidebarAvatar = document.getElementById('userAvatar');
+                const headerAvatar = document.getElementById('headerAvatar');
+
+                [sidebarAvatar, headerAvatar].forEach(avatar => {
+                    if (avatar) {
+                        if (customAvatar) {
+                            avatar.style.backgroundImage = `url(${customAvatar})`;
+                            avatar.textContent = ""; 
+                        } else {
+                            avatar.style.backgroundImage = "none";
+                            avatar.textContent = initials;
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- 🟢 ADMIN BROADCAST SYSTEM NOTICES 🟢 ---
+        function loadSystemNotices() {
+            const customNotices = JSON.parse(localStorage.getItem('secureLogix_customNotices') || "[]");
+            
+            if (customNotices.length > 0) {
+                const latestNotice = customNotices[0];
+                const banner = document.getElementById('systemAlertBanner');
+                const text = document.getElementById('alertBannerText');
+                
+                banner.style.display = 'block';
+                text.textContent = `${latestNotice.title}: ${latestNotice.text}`;
+                
+                if (latestNotice.type === 'warning') {
+                    banner.style.background = 'var(--warning-yellow)';
+                    banner.style.color = 'var(--text-dark)';
+                } else if (latestNotice.type === 'success') {
+                    banner.style.background = 'var(--success-green)';
+                } else {
+                    banner.style.background = 'var(--primary-blue)';
+                }
+            }
+        }
+
+        // --- REAL LIVE LOGISTICS NEWS API ---
+        const fallbackNews = [
+            { tag: "Market", title: "Global ocean freight rates drop 12% amid stabilizing container supply chains.", url: "#" },
+            { tag: "Economy", title: "Central Bank flags potential interest rate shifts affecting trade financing.", url: "#" },
+            { tag: "Tech", title: "AI-driven route optimization tools are cutting last-mile delivery costs by 20%.", url: "#" },
+            { tag: "Finance", title: "Logistics sector sees record breaking venture capital investments in Q3.", url: "#" }
+        ];
+
+        let fetchedNewsData = [];
+        let currentNewsIndex = 0;
+        let activeNewsDisplay = [];
+
+        async function fetchLiveNewsFromInternet() {
+            try {
+                const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.freightwaves.com%2Fnews%2Ffeed');
+                const data = await response.json();
+                
+                if (data && data.status === 'ok' && data.items.length > 0) {
+                    fetchedNewsData = data.items.slice(0, 15).map(article => ({
+                        tag: "Logistics", 
+                        title: article.title.substring(0, 85) + "...",
+                        url: article.link
+                    }));
+                } else {
+                    fetchedNewsData = fallbackNews; 
+                }
+            } catch (error) {
+                fetchedNewsData = fallbackNews; 
+            }
+
+            startLiveNewsDisplay();
+        }
+
+        function renderLiveNews() {
+            const feed = document.getElementById('dashboardNewsFeed');
+            if(!feed) return;
+
+            feed.innerHTML = '';
+            activeNewsDisplay.forEach(news => {
+                feed.innerHTML += `
+                    <li class="data-item">
+                        <div class="news-meta">
+                            <span class="news-tag">${news.tag}</span>
+                            <span class="news-time">Live Update</span>
+                        </div>
+                        <h4 class="news-title">
+                            <a href="${news.url}" target="_blank">${news.title}</a>
+                        </h4>
+                    </li>
+                `;
+            });
+        }
+
+        function startLiveNewsDisplay() {
+            activeNewsDisplay = [fetchedNewsData[0], fetchedNewsData[1], fetchedNewsData[2]];
+            currentNewsIndex = 2;
+            renderLiveNews();
+
+            setInterval(() => {
+                currentNewsIndex = (currentNewsIndex + 1) % fetchedNewsData.length;
+                activeNewsDisplay.unshift(fetchedNewsData[currentNewsIndex]);
+                if (activeNewsDisplay.length > 3) activeNewsDisplay.pop();
+                renderLiveNews();
+            }, 8000);
+        }
+
+        // Run functions immediately when the page opens
+        loadUserProfile();
+        loadSystemNotices();
+        fetchLiveNewsFromInternet();
+
+    </script>
+</body>
+</html>

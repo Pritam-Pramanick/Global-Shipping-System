@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal - SecureLogix</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="../css/login.css">
+    <script src="../Javascript/login.js"></script>
+</head>
+
+<body>
+
+    <div class="layout-wrapper">
+        <div class="left-panel">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+
+            <div class="brand-showcase">
+                <h1>Global Logistics,<br>Secured.</h1>
+                <p>Access the central SecureLogix portal to manage global allocations, track secure document
+                    integration, and optimize the supply chain matrix in real-time.</p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="login-container">
+
+                <div class="login-header">
+                    <div class="logo-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h2 id="loginTitle">User Login</h2>
+                    <p id="loginSubtitle">Please enter your details to sign in.</p>
+                </div>
+
+                <div class="role-toggle-container" id="toggleContainer">
+                    <div class="role-slider"></div>
+                    <button type="button" class="role-btn active" id="userToggle">User</button>
+                    <button type="button" class="role-btn" id="registerToggle">Registration</button>
+                    <button type="button" class="role-btn" id="adminToggle">Admin</button>
+                </div>
+
+                <div class="sys-message sys-error" id="errorMsg">Incorrect Details or Unauthorized Role.</div>
+                <div class="sys-message sys-success" id="successMsg">Account Created! Please log in.</div>
+
+                <form id="loginForm">
+
+                    <div class="input-group">
+                        <input type="text" id="employeeId" placeholder=" " required autocomplete="username">
+                        <label for="employeeId">Employee ID or Email</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" id="password" placeholder=" " required autocomplete="current-password">
+                        <label for="password">Password</label>
+                    </div>
+
+                    <div class="input-group" id="mobileGroup" style="display: none;">
+                        <input type="tel" id="mobileNo" placeholder=" ">
+                        <label for="mobileNo">Admin Mobile No.</label>
+                    </div>
+
+                    <div class="input-group" id="adminRoleGroup" style="display: none;">
+                        <select id="adminRole">
+                            <option value="" disabled selected></option>
+                            <option value="System Administrator">System Administrator (Full Access)</option>
+                            <option value="Logistics Manager">Logistics Manager (Operations)</option>
+                            <option value="Dispatcher">Dispatcher (Routing)</option>
+                        </select>
+                        <label for="adminRole">Admin Access Role</label>
+                    </div>
+
+                    <div class="form-actions">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox"> Remember me
+                        </label>
+                        <a href="../landing.html" class="forgot-link" title="Back to Landing Page"><i
+                                class="fa-solid fa-backward"></i></a>
+                        <a href="#" class="forgot-link">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span id="btnText">Sign In</span>
+                        <div class="spinner" id="btnSpinner"></div>
+                    </button>
+
+                </form>
+
+                <form id="registerForm" style="display: none;">
+
+                    <div class="input-group">
+                        <input type="text" id="regName" placeholder=" " required>
+                        <label for="regName">Full Name</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="email" id="regEmail" placeholder=" " required>
+                        <label for="regEmail">Work Email Address</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" id="regPassword" placeholder=" " required>
+                        <label for="regPassword">Create Password</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" id="regConfirmPassword" placeholder=" " required>
+                        <label for="regConfirmPassword">Confirm Password</label>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="regSubmitBtn">
+                        <span id="regBtnText">Create Account</span>
+                        <div class="spinner" id="regBtnSpinner"></div>
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

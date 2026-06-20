@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | Trans Global</title>
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Security Check (Optional for Admin) -->
+    <script>
+        // In a real app, verify admin role here
+        // if (localStorage.getItem('secureLogix_role') !== 'Admin') { window.location.replace('index.html'); }
+    </script>
+
+    <style>
+        /* --- CORE THEME (ADMIN VARIANT) --- */
+        :root {
+            --primary-blue: #0A2540;
+            --primary-blue-hover: #061a2e;
+            --action-orange: #FF6B35;
+            --success-green: #38A169;
+            --danger-red: #E53E3E;
+            --warning-yellow: #D69E2E;
+            --bg-color: #F1F5F9; 
+            --surface-color: #FFFFFF;
+            --text-dark: #1A202C;
+            --text-muted: #718096;
+            --border-color: #E2E8F0;
+            --sidebar-width: 280px;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --transition-fast: 0.2s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color); color: var(--text-dark);
+            font-family: 'Inter', sans-serif; line-height: 1.6;
+            display: flex; min-height: 100vh; overflow-x: hidden;
+        }
+
+        a, button { text-decoration: none; font-family: inherit; transition: var(--transition-fast); }
+        a:focus-visible, button:focus-visible { outline: 3px solid var(--action-orange); outline-offset: 2px; }
+
+        /* --- SIDEBAR (FIXED LEFT) --- */
+        .admin-sidebar {
+            width: var(--sidebar-width); background-color: var(--primary-blue); color: #fff;
+            position: fixed; top: 0; bottom: 0; left: 0; z-index: 100;
+            display: flex; flex-direction: column; transition: 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo-group { display: flex; flex-direction: column; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; line-height: 1.2;}
+        .admin-badge { font-size: 0.7rem; color: var(--action-orange); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
+
+        .sidebar-menu { flex: 1; padding: 1.5rem 0; overflow-y: auto; }
+        .menu-label { padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        
+        .nav-item {
+            display: flex; align-items: center; gap: 1rem; padding: 0.8rem 1.5rem;
+            color: #CBD5E0; font-weight: 500; border-left: 4px solid transparent;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.05); color: #fff; border-left-color: var(--action-orange); }
+        .nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+
+        .sidebar-footer { border-top: 1px solid rgba(255,255,255,0.1); padding: 1rem; }
+        .back-to-site { display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); color: #fff; border-radius: 8px; font-weight: 600; font-size: 0.9rem;}
+        .back-to-site:hover { background: rgba(255,255,255,0.2); }
+
+        /* --- MAIN CONTENT AREA --- */
+        .admin-main { flex: 1; margin-left: var(--sidebar-width); display: flex; flex-direction: column; min-height: 100vh; transition: 0.3s;}
+        
+        /* Top Header */
+        .admin-header {
+            background: var(--surface-color); height: 70px; padding: 0 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 90;
+        }
+        
+        .header-search { display: flex; align-items: center; background: var(--bg-color); padding: 0.5rem 1rem; border-radius: 8px; width: 300px; border: 1px solid transparent; transition: 0.2s;}
+        .header-search:focus-within { border-color: var(--primary-blue); background: #fff; box-shadow: 0 0 0 3px rgba(10,37,64,0.1);}
+        .header-search input { border: none; background: transparent; outline: none; margin-left: 0.5rem; width: 100%; font-family: inherit;}
+        
+        .header-actions { display: flex; align-items: center; gap: 1.5rem; }
+        .icon-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; position: relative;}
+        .icon-btn:hover { color: var(--primary-blue); }
+        .notification-dot { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: var(--danger-red); border-radius: 50%; }
+        
+        .admin-profile { display: flex; align-items: center; gap: 0.8rem; cursor: pointer; border-left: 1px solid var(--border-color); padding-left: 1.5rem;}
+        .admin-avatar { width: 35px; height: 35px; background: var(--action-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.9rem;}
+        .admin-info h4 { font-size: 0.9rem; color: var(--text-dark); line-height: 1.2;}
+        .admin-info p { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Dashboard Content */
+        .content-wrapper { padding: 2rem; animation: slideUpFade 0.4s ease forwards; }
+
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .page-title { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; }
+        .page-title h1 { font-size: 1.8rem; color: var(--text-dark); letter-spacing: -0.5px; }
+        .page-title p { color: var(--text-muted); font-size: 0.95rem; }
+        .btn-primary { background: var(--primary-blue); color: white; padding: 0.6rem 1.2rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;}
+        .btn-primary:hover { background: var(--action-orange); }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: var(--surface-color); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); display: flex; align-items: center; gap: 1rem; }
+        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;}
+        .icon-blue { background: rgba(10,37,64,0.1); color: var(--primary-blue); }
+        .icon-orange { background: rgba(255,107,53,0.1); color: var(--action-orange); }
+        .icon-green { background: rgba(56,161,105,0.1); color: var(--success-green); }
+        .icon-yellow { background: rgba(214,158,46,0.1); color: var(--warning-yellow); }
+        .stat-details h3 { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem;}
+        .stat-details p { font-size: 1.6rem; font-weight: 800; color: var(--text-dark); line-height: 1;}
+
+        /* Data Tables Layout */
+        .data-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+        @media (max-width: 1200px) { .data-grid { grid-template-columns: 1fr; } }
+        
+        .data-card { background: var(--surface-color); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); overflow: hidden; display: flex; flex-direction: column;}
+        .card-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #F8FAFC; }
+        .card-header h3 { font-size: 1.1rem; color: var(--primary-blue); }
+        .card-action { font-size: 0.85rem; color: var(--action-orange); font-weight: 600; cursor: pointer; }
+
+        .table-responsive { overflow-x: auto; }
+        .admin-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .admin-table th { padding: 1rem 1.5rem; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; border-bottom: 1px solid var(--border-color); background: #F8FAFC;}
+        .admin-table td { padding: 1rem 1.5rem; font-size: 0.9rem; color: var(--text-dark); border-bottom: 1px solid var(--border-color); font-weight: 500; vertical-align: middle;}
+        .admin-table tr:last-child td { border-bottom: none; }
+        .admin-table tr:hover td { background: var(--bg-color); }
+        
+        .badge { padding: 0.3rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;}
+        .badge-green { background: rgba(56,161,105,0.1); color: var(--success-green); }
+        .badge-yellow { background: rgba(214,158,46,0.1); color: var(--warning-yellow); }
+        .badge-red { background: rgba(229,62,62,0.1); color: var(--danger-red); }
+        .badge-blue { background: rgba(10,37,64,0.1); color: var(--primary-blue); }
+
+        .action-icon-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.4rem; transition: 0.2s; font-size: 1rem;}
+        .action-icon-btn:hover { color: var(--primary-blue); }
+
+        /* Modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(10,37,64,0.8); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-card { background: var(--surface-color); width: 90%; max-width: 500px; border-radius: 16px; padding: 2rem; transform: translateY(20px); transition: 0.3s; }
+        .modal-overlay.active .modal-card { transform: translateY(0); }
+        
+        .modal-card h2 { color: var(--primary-blue); margin-bottom: 1.5rem; font-size: 1.4rem;}
+        .form-group { margin-bottom: 1.2rem; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem; }
+        .form-control { width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 1rem; outline: none; background: var(--bg-color); transition: 0.2s;}
+        .form-control:focus { border-color: var(--primary-blue); background: #fff;}
+        textarea.form-control { resize: vertical; min-height: 100px; }
+        
+        .modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; }
+        .btn-cancel { background: transparent; border: 1px solid var(--border-color); padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-muted);}
+        .btn-cancel:hover { background: var(--bg-color); color: var(--text-dark);}
+        .btn-submit { background: var(--action-orange); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600;}
+        .btn-submit:hover { background: #e55a2b; }
+
+        /* Responsive Sidebar Toggle */
+        .mobile-toggle { display: none; background: none; border: none; font-size: 1.5rem; color: var(--primary-blue); cursor: pointer; }
+        @media (max-width: 900px) {
+            .admin-sidebar { left: calc(-1 * var(--sidebar-width)); }
+            .admin-sidebar.mobile-open { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+            .admin-main { margin-left: 0; }
+            .mobile-toggle { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <div class="logo-group">
+                <span class="logo">Trans Global</span>
+                <span class="admin-badge">Admin Portal</span>
+            </div>
+            <button class="icon-btn mobile-toggle" style="color:white;" onclick="toggleSidebar()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-label">Overview</div>
+            <a href="#" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-ship"></i> Shipments</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> Users</a>
+            
+            <div class="menu-label" style="margin-top: 1.5rem;">Operations</div>
+            <a href="#" class="nav-item"><i class="fa-solid fa-wallet"></i> Finance & Billing</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-headset"></i> Support Tickets</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-bullhorn"></i> Global Notices</a>
+            
+            <div class="menu-label" style="margin-top: 1.5rem;">System</div>
+            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="index.html" class="back-to-site"><i class="fa-solid fa-arrow-right-from-bracket"></i> Exit to Main Site</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-main">
+        
+        <!-- TOP HEADER -->
+        <header class="admin-header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                <div class="header-search">
+                    <i class="fa-solid fa-search" style="color: var(--text-muted);"></i>
+                    <input type="text" placeholder="Search tracking ID, user email...">
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button class="icon-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="admin-profile">
+                    <div class="admin-avatar" id="adminAvatar">AD</div>
+                    <div class="admin-info">
+                        <h4 id="adminName">Admin User</h4>
+                        <p>System Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD CONTENT -->
+        <div class="content-wrapper">
+            
+            <div class="page-title">
+                <div>
+                    <h1>Command Center</h1>
+                    <p>Overview of global operations and dynamic system health.</p>
+                </div>
+                <button class="btn-primary" onclick="openNoticeModal()">
+                    <i class="fa-solid fa-bullhorn"></i> Broadcast Notice
+                </button>
+            </div>
+
+            <!-- STATS GRID -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon icon-blue"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="stat-details">
+                        <h3>Total Wallet Revenue</h3>
+                        <p id="statRevenue">₹0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-orange"><i class="fa-solid fa-box-open"></i></div>
+                    <div class="stat-details">
+                        <h3>Active Shipments</h3>
+                        <p>1,420</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-yellow"><i class="fa-solid fa-ticket"></i></div>
+                    <div class="stat-details">
+                        <h3>Open Tickets</h3>
+                        <p id="statTickets">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-green"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-details">
+                        <h3>Registered Users</h3>
+                        <p id="statUsers">2</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DATA TABLES GRID -->
+            <div class="data-grid">
+                
+                <!-- Left: Active Shipments -->
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3>Recent Shipments</h3>
+                        <span class="card-action">View All</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Tracking ID</th>
+                                    <th>Client</th>
+                                    <th>Route</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="font-family: monospace; color: var(--action-orange); font-weight: 700;">TXG-847291</td>
+                                    <td id="shipmentUser">John Doe</td>
+                                    <td>Mumbai &rarr; Dubai</td>
+                                    <td><span class="badge badge-blue">In Transit</span></td>
+                                    <td><button class="action-icon-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-family: monospace; color: var(--action-orange); font-weight: 700;">TXG-592100</td>
+                                    <td>BioHealth LLC</td>
+                                    <td>Delhi &rarr; New York</td>
+                                    <td><span class="badge badge-yellow">Customs Hold</span></td>
+                                    <td><button class="action-icon-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right: Support Tickets (DYNAMIC) -->
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3>Support Queue</h3>
+                        <span class="card-action">Manage</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticket / User</th>
+                                    <th>Category</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTicketTable">
+                                <!-- Dynamically injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Bottom Full Width Table: Wallet Transactions (DYNAMIC) -->
+            <div class="data-card" style="margin-top: 1.5rem;">
+                <div class="card-header">
+                    <h3>Recent System-Wide Wallet Top-Ups</h3>
+                    <span class="card-action">Export CSV</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>User Email</th>
+                                <th>Date / Method</th>
+                                <th>Amount (INR)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTransactionTable">
+                            <!-- Dynamically injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- 🟢 BROADCAST NOTICE MODAL 🟢 -->
+    <div class="modal-overlay" id="noticeModal">
+        <div class="modal-card">
+            <h2>Broadcast System Notice</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Push an alert to all user dashboards and wallet screens.</p>
+            
+            <form id="noticeForm" onsubmit="submitNotice(event)">
+                <div class="form-group">
+                    <label class="form-label">Alert Type</label>
+                    <select class="form-control" id="noticeType" required>
+                        <option value="info">General Info (Blue)</option>
+                        <option value="warning">Warning / Delay (Yellow)</option>
+                        <option value="success">Success / Resolved (Green)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Headline</label>
+                    <input type="text" class="form-control" id="noticeTitle" placeholder="e.g. Scheduled Maintenance" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Message Body</label>
+                    <textarea class="form-control" id="noticeBody" placeholder="Enter full details here..." required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeNoticeModal()">Cancel</button>
+                    <button type="submit" class="btn-submit">Publish Live</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- Mobile Sidebar Toggle ---
+        function toggleSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('mobile-open');
+        }
+
+        // --- Load Admin Profile Data ---
+        function loadAdminProfile() {
+            const userName = localStorage.getItem('secureLogix_displayName') || "Admin User";
+            const customAvatar = localStorage.getItem('secureLogix_avatar');
+            const initials = userName.substring(0, 2).toUpperCase();
+
+            document.getElementById('adminName').textContent = userName;
+            document.getElementById('shipmentUser').textContent = userName; // Apply to mock shipment
+            
+            const avatarEl = document.getElementById('adminAvatar');
+            if (customAvatar) {
+                avatarEl.style.backgroundImage = `url(${customAvatar})`;
+                avatarEl.textContent = "";
+            } else {
+                avatarEl.style.backgroundImage = "none";
+                avatarEl.textContent = initials;
+            }
+        }
+
+        // --- 🟢 DYNAMIC WALLET TRANSACTIONS 🟢 ---
+        function loadWalletTransactions() {
+            const tbody = document.getElementById('adminTransactionTable');
+            let transactions = JSON.parse(localStorage.getItem('secureLogix_transactions') || "[]");
+            let totalRevenue = 0;
+            
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">No wallet transactions found on the system.</td></tr>';
+            } else {
+                tbody.innerHTML = '';
+                // Reverse to show newest first
+                transactions.slice().reverse().forEach(t => {
+                    if(t.type === 'in') {
+                        totalRevenue += parseFloat(t.amount);
+                    }
+                    
+                    const userEmail = localStorage.getItem('secureLogix_user') || 'user@transglobal.com';
+                    const amountFormatted = parseFloat(t.amount).toLocaleString('en-IN');
+                    const color = t.type === 'in' ? 'var(--success-green)' : 'var(--danger-red)';
+                    const prefix = t.type === 'in' ? '+ ₹' : '- ₹';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-family: monospace;">${t.id || 'N/A'}</td>
+                            <td>${userEmail}</td>
+                            <td>${t.date} <br><span style="font-size:0.75rem; color:var(--text-muted);">${t.title}</span></td>
+                            <td style="color: ${color}; font-weight: 700;">${prefix}${amountFormatted}</td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            // Update Revenue Stat Card
+            document.getElementById('statRevenue').textContent = `₹${totalRevenue.toLocaleString('en-IN')}`;
+        }
+
+        // --- 🟢 DYNAMIC SUPPORT TICKETS 🟢 ---
+        function loadSupportTickets() {
+            // Read from DB or create Mock Data if empty
+            let tickets = JSON.parse(localStorage.getItem('secureLogix_tickets') || "[]");
+            
+            if (tickets.length === 0) {
+                tickets = [
+                    { id: "TG-88921", user: "John Doe", category: "Billing Issue", status: "open" },
+                    { id: "TG-44102", user: "Sarah Smith", category: "Customs Hold", status: "open" },
+                    { id: "TG-11933", user: "BioHealth LLC", category: "Tracking Inquiry", status: "resolved" }
+                ];
+                localStorage.setItem('secureLogix_tickets', JSON.stringify(tickets));
+            }
+
+            const tbody = document.getElementById('adminTicketTable');
+            tbody.innerHTML = '';
+            let openCount = 0;
+
+            tickets.forEach((t, index) => {
+                if (t.status === 'open') openCount++;
+                
+                const btnHtml = t.status === 'open' 
+                    ? `<button class="badge badge-red" style="border:none; cursor:pointer;" onclick="resolveTicket(${index})">Resolve</button>`
+                    : `<span class="badge badge-green">Resolved</span>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <div style="font-family: monospace; font-weight: 700; font-size: 0.8rem;">#${t.id}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">${t.user}</div>
+                        </td>
+                        <td style="font-size: 0.85rem;">${t.category}</td>
+                        <td>${btnHtml}</td>
+                    </tr>
+                `;
+            });
+            
+            // Update Open Tickets Stat Card
+            document.getElementById('statTickets').textContent = openCount;
+        }
+
+        function resolveTicket(index) {
+            if(confirm("Mark this support ticket as Resolved?")) {
+                let tickets = JSON.parse(localStorage.getItem('secureLogix_tickets') || "[]");
+                tickets[index].status = "resolved"; // Update state permanently
+                localStorage.setItem('secureLogix_tickets', JSON.stringify(tickets));
+                loadSupportTickets(); // Refresh table and stats dynamically
+            }
+        }
+
+        // --- Broadcast Notice Modal ---
+        const noticeModal = document.getElementById('noticeModal');
+        
+        function openNoticeModal() { noticeModal.classList.add('active'); }
+        function closeNoticeModal() { noticeModal.classList.remove('active'); document.getElementById('noticeForm').reset(); }
+
+        function submitNotice(event) {
+            event.preventDefault();
+            const btn = event.target.querySelector('.btn-submit');
+            const originalText = btn.textContent;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Broadcasting...';
+            
+            setTimeout(() => {
+                const newNotice = {
+                    type: document.getElementById('noticeType').value,
+                    title: document.getElementById('noticeTitle').value,
+                    text: document.getElementById('noticeBody').value,
+                    date: "Just Now"
+                };
+                
+                // Save to localStorage so wallet.html can actually read it
+                let notices = JSON.parse(localStorage.getItem('secureLogix_customNotices') || "[]");
+                notices.unshift(newNotice);
+                localStorage.setItem('secureLogix_customNotices', JSON.stringify(notices));
+
+                alert("Notice successfully broadcasted to all active user sessions!");
+                closeNoticeModal();
+                btn.textContent = originalText;
+            }, 1000);
+        }
+
+        // Initialize Dynamic Data on Page Load
+        window.onload = () => {
+            loadAdminProfile();
+            loadWalletTransactions();
+            loadSupportTickets();
+        };
+    </script>
+</body>
+</html>

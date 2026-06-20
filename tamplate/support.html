@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Support | Trans Global Logistics</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/support.css">
+    <script>
+        const sessionToken = sessionStorage.getItem('secureLogix_session_token');
+        if (!sessionToken || sessionToken.split('.').length !== 3) {
+            // Comment this out if you are testing locally without a login page!
+            // window.location.replace('login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-sidebar-btn" id="closeSidebar">&times;</button>
+        </div>
+
+        <div class="sidebar-content">
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1rem;">Main</div>
+            
+            <a href="../index.html" class="sidebar-item">
+                <i class="fa-solid fa-house" style="width: 25px;"></i> Dashboard
+            </a>
+            <a href="about.html" class="sidebar-item">
+                <i class="fa-solid fa-building" style="width: 25px;"></i> About Us
+            </a>
+            <a href="services.html" class="sidebar-item">
+                <i class="fa-solid fa-globe" style="width: 25px;"></i> Services
+            </a>
+            <a href="our-work.html" class="sidebar-item">
+                <i class="fa-solid fa-briefcase" style="width: 25px;"></i> Our Work
+            </a>
+            <a href="profile.html" class="sidebar-item">
+                <i class="fa-solid fa-user" style="width: 25px;"></i> My Profile
+            </a>
+
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1.5rem;">Operations</div>
+            
+            <button class="sidebar-item sidebar-dropdown" onclick="toggleDropdown('dropdown1', this)">
+                <i class="fa-solid fa-ship" style="width: 25px;"></i> Freight Services <span>▼</span>
+            </button>
+            <div class="dropdown-menu" id="dropdown1">
+                <a href="booking.html">Book New Shipment</a>
+                <a href="#">My Active Shipments</a>
+                <a href="#">Saved Quotes</a>
+            </div>
+
+            <a href="#" class="sidebar-item">
+                <i class="fa-solid fa-file-contract" style="width: 25px;"></i> Document Center
+            </a>
+
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1.5rem;">Finance & Support</div>
+            
+            <a href="wallet.html" class="sidebar-item">
+                <i class="fa-solid fa-wallet" style="width: 25px;"></i> Wallet & Billing
+            </a>
+            <a href="support.html" class="sidebar-item active-menu">
+                <i class="fa-solid fa-headset" style="width: 25px;"></i> Support Tickets
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-profile-menu" id="sidebarProfileMenu">
+                <a href="profile.html">View Profile</a>
+                <a href="wallet.html">Account Settings</a>
+                <button class="sign-out" onclick="signOut()">Sign Out</button>
+            </div>
+
+            <button class="profile-widget" onclick="toggleSidebarProfile()">
+                <div class="profile-avatar" id="userAvatar">JD</div>
+                <div class="profile-details">
+                    <span class="profile-name" id="userNameDisplay">John Doe</span>
+                    <span class="profile-role" id="userRoleDisplay">Supply Chain Mgr</span>
+                </div>
+                <i class="fa-solid fa-chevron-up profile-caret"></i>
+            </button>
+        </div>
+    </aside>
+
+    <header class="layout-card main-header">
+        <div class="header-left">
+            <button class="menu-toggle-btn" id="openSidebar"><i class="fa-solid fa-bars"></i></button>
+            <a href="../index.html" class="logo">Trans Global</a>
+        </div>
+        <nav class="main-nav">
+            <a href="../index.html">Dashboard</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="our-work.html">Our Work</a>
+            <a href="support.html" style="color: var(--primary-blue); font-weight: 700;">Support</a>
+            <a href="booking.html" class="book-now-link">Book Now</a>
+
+            <a href="profile.html" class="header-profile-link" title="My Profile">
+                <div class="header-avatar" id="headerAvatar">JD</div>
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        
+        <section class="layout-card support-hero">
+            <h1>How can we help you?</h1>
+            <p>Search our knowledge base, submit a ticket, or chat with our AI agent.</p>
+
+            <form class="search-container" id="kbSearchForm">
+                <input type="text" class="search-input" id="kbSearchInput"
+                    placeholder="Try searching 'Customs delay' or 'Billing issue'..." required>
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </section>
+
+        <div class="quick-actions">
+            <div class="action-card" onclick="document.getElementById('kbSearchInput').focus();">
+                <i class="fa-solid fa-box action-icon"></i>
+                <h3>Track a Shipment</h3>
+                <p>Locate your cargo instantly.</p>
+            </div>
+            <div class="action-card" onclick="window.location.href='wallet.html'">
+                <i class="fa-solid fa-credit-card action-icon"></i>
+                <h3>Billing & Invoices</h3>
+                <p>Manage payments and accounts.</p>
+            </div>
+            <div class="action-card" onclick="window.location.href='booking.html'">
+                <i class="fa-solid fa-file-contract action-icon"></i>
+                <h3>Customs & Docs</h3>
+                <p>Clearance guides and forms.</p>
+            </div>
+            <div class="action-card">
+                <i class="fa-solid fa-server action-icon"></i>
+                <h3>API & Technical</h3>
+                <p>Developer docs and system status.</p>
+            </div>
+        </div>
+
+        <div class="system-status">
+            <div class="status-left">
+                <div class="status-dot"></div>
+                All Systems Operational
+            </div>
+            <a href="#" class="status-link">View Platform Status</a>
+        </div>
+
+        <section class="support-content">
+
+            <div class="col-left">
+                <div class="faq-section">
+                    <div class="section-header" style="text-align: left; margin-bottom: 2rem;">
+                        <h2>Frequently Asked Questions</h2>
+                        <p>Quick answers to our most common inquiries.</p>
+                    </div>
+
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFaq(this)">
+                                How do I file a cargo claim?
+                                <i class="fa-solid fa-plus faq-icon"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <div class="faq-answer-inner">
+                                    To file a cargo claim, navigate to your Dashboard, select the specific shipment, and click "File Exception/Claim". Please ensure you have photos of the damaged goods and the original commercial invoice ready to upload. Claims must be filed within 14 days of delivery.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFaq(this)">
+                                Why is my shipment marked 'Customs Hold'?
+                                <i class="fa-solid fa-plus faq-icon"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <div class="faq-answer-inner">
+                                    A customs hold usually means the destination country requires additional documentation or duty payments before releasing the cargo. Check the "Documents" tab on your shipment profile. If an action is required from you, it will be highlighted in red.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFaq(this)">
+                                Can I change the delivery address in transit?
+                                <i class="fa-solid fa-plus faq-icon"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <div class="faq-answer-inner">
+                                    Yes, "In-Transit Rerouting" is available for Air and Ground transport. However, this may incur additional fees and affect the ETA. Please submit a support ticket using the form on this page with the subject "Reroute Request" for immediate assistance.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFaq(this)">
+                                How do I get an API Key for my software?
+                                <i class="fa-solid fa-plus faq-icon"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <div class="faq-answer-inner">
+                                    API access requires an Enterprise tier account. If you are an Enterprise user, go to "My Profile" > "Developer Settings" to generate your secure API keys and access our Postman documentation.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-grid">
+                    <div class="contact-card">
+                        <h4><i class="fa-solid fa-headset"></i> Global Support</h4>
+                        <p>Available 24/7 for Enterprise Clients.</p>
+                        <a href="tel:+18005550199">+1 (800) 555-0199</a>
+                    </div>
+                    <div class="contact-card">
+                        <h4><i class="fa-solid fa-envelope"></i> Email Us</h4>
+                        <p>Standard response time: 2-4 hours.</p>
+                        <a href="mailto:support@transglobal.com">support@transglobal.com</a>
+                    </div>
+                    <div class="contact-card">
+                        <h4><i class="fa-solid fa-location-dot"></i> HQ Office</h4>
+                        <p>1200 Logistics Blvd, Suite 400<br>Los Angeles, CA 90001</p>
+                    </div>
+                    <div class="contact-card">
+                        <h4><i class="fa-solid fa-clock"></i> Working Hours</h4>
+                        <p>Mon-Fri: 8AM - 8PM (EST)<br>Sat-Sun: Closed</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-right">
+
+                <div class="ticket-section">
+                    <div class="section-header" style="text-align: left; margin-bottom: 2rem;">
+                        <h2>Submit a Support Ticket</h2>
+                        <p>Need specific help? Our team responds within 2 hours.</p>
+                    </div>
+
+                    <form class="ticket-form" id="supportTicketForm">
+                        <div class="form-group">
+                            <label class="form-label">Issue Category</label>
+                            <select class="form-control" id="ticketCategory" required>
+                                <option value="" disabled selected>Select a category...</option>
+                                <option value="Tracking Inquiry">Tracking / Where is my cargo?</option>
+                                <option value="Billing Issue">Billing / Invoice Inquiry</option>
+                                <option value="Customs Documentation">Customs / Documentation</option>
+                                <option value="Cargo Claim">Report Damage / File Claim</option>
+                                <option value="Technical Support">Technical / API Issue</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tracking Number (Optional)</label>
+                            <input type="text" class="form-control" id="ticketTracking" placeholder="e.g. TXG-847291">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="ticketSubject" placeholder="Brief summary of the issue" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Detailed Description</label>
+                            <textarea class="form-control" placeholder="Please provide as much detail as possible..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            Submit Ticket <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="my-tickets-section">
+                    <h3 style="color: var(--primary-blue); font-size: 1.3rem; margin-bottom: 0.5rem;">My Support Tickets</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">View the status of your recent inquiries.</p>
+
+                    <div class="table-responsive">
+                        <table class="ticket-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Subject</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ticketTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+    </main>
+
+    <button class="chat-btn" id="chatToggleBtn" aria-label="Open Live Chat">
+        <i class="fa-solid fa-headset"></i>
+    </button>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <span><i class="fa-solid fa-robot"></i> AI Support Agent</span>
+            <button class="chat-close" id="chatCloseBtn"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-msg msg-bot">
+                Hello! I'm the Trans Global AI assistant. How can I help you route your cargo today?
+            </div>
+        </div>
+        <form class="chat-input-area" id="chatForm">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." autocomplete="off" required>
+            <button type="submit" class="chat-send"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+    </div>
+
+    <footer class="layout-card main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h2 style="color:var(--surface-color); margin-bottom:1rem;">Trans Global</h2>
+                <p>Revolutionizing global trade through smart logistics, high-performance infrastructure, and uncompromising reliability.</p>
+            </div>
+
+            <nav class="footer-col">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">Ocean Freight</a></li>
+                    <li><a href="services.html">Air Cargo</a></li>
+                    <li><a href="services.html">Ground Transport</a></li>
+                    <li><a href="services.html">Warehousing</a></li>
+                </ul>
+            </nav>
+
+            <nav class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="support.html">Help Center</a></li>
+                    <li><a href="#">Tracking API</a></li>
+                    <li><a href="#">Customs Guide</a></li>
+                    <li><a href="#">Claims</a></li>
+                </ul>
+            </nav>
+
+            <nav class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="our-work.html">Our Work</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Trans Global Logistics. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../Javascript/support.js"></script>
+</body>
+</html>

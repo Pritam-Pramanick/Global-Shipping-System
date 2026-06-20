@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center | Trans Global Enterprise</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #0A2540;
+            --primary-blue-hover: #061a2e;
+            --action-orange: #FF6B35;
+            --action-orange-hover: #e55a2b;
+            --success-green: #38A169;
+            --bg-color: #F7FAFC;
+            --surface-color: #FFFFFF;
+            --text-dark: #1A202C;
+            --text-muted: #4A5568;
+            --border-color: #E2E8F0;
+            --transition-fast: 0.2s ease;
+            --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        a { text-decoration: none; }
+
+        /* --- 🟢 DYNAMIC NAVIGATION 🟢 --- */
+        .public-nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; background: transparent; position: fixed;
+            top: 0; width: 100%; z-index: 1000; transition: var(--transition-smooth);
+        }
+        .public-nav.scrolled {
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08); padding: 1rem 5%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; transition: var(--transition-smooth); letter-spacing: -0.5px;}
+        .public-nav.scrolled .logo { color: var(--primary-blue); }
+        
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+        .nav-links a { color: rgba(255,255,255,0.9); font-weight: 600; transition: var(--transition-fast); }
+        .public-nav.scrolled .nav-links a { color: var(--text-dark); }
+        .nav-links a:hover { color: var(--action-orange) !important; }
+
+        .btn-login {
+            border: 2px solid rgba(255,255,255,0.5); color: white !important;
+            padding: 0.6rem 1.5rem; border-radius: 50px; transition: var(--transition-smooth);
+            font-weight: 600; backdrop-filter: blur(5px);
+        }
+        .public-nav.scrolled .btn-login { border-color: var(--border-color); color: var(--primary-blue) !important; }
+        .btn-login:hover { background: var(--primary-blue); color: white !important; border-color: var(--primary-blue); }
+
+        .btn-cta {
+            background: linear-gradient(135deg, var(--action-orange) 0%, #ff8e63 100%);
+            color: white !important; padding: 0.7rem 1.8rem; border-radius: 50px; font-weight: 700; border: none; cursor: pointer;
+            transition: var(--transition-smooth); box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4); display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6); }
+
+        /* --- 🟢 HERO SECTION 🟢 --- */
+        .hero {
+            position: relative; padding: 10rem 5% 6rem; 
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+            background: linear-gradient(135deg, rgba(10, 37, 64, 0.95) 0%, rgba(5, 17, 31, 0.8) 100%), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=2000') center/cover;
+        }
+
+        .hero-content { position: relative; z-index: 2; text-align: center; max-width: 800px; color: white; animation: slideUpFade 0.8s forwards; }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 1.5rem; font-weight: 900; letter-spacing: -1px;}
+        .hero p { font-size: 1.2rem; color: #CBD5E0; margin-bottom: 3rem; }
+
+        /* Search Bar */
+        .search-box {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);
+            padding: 0.6rem; border-radius: 50px; display: flex; gap: 0.5rem;
+            max-width: 600px; margin: 0 auto; border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); transition: 0.3s;
+        }
+        .search-box:focus-within { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.4); }
+        .search-box input {
+            flex: 1; padding: 1rem 1.5rem; border: none; border-radius: 50px;
+            font-size: 1.1rem; outline: none; background: transparent; color: white;
+        }
+        .search-box input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .search-box button {
+            background: var(--primary-blue); color: white; border: 1px solid rgba(255,255,255,0.2);
+            padding: 0 2rem; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s;
+        }
+        .search-box button:hover { background: white; color: var(--primary-blue); }
+
+        /* --- 🟢 MAIN SUPPORT GRID 🟢 --- */
+        .support-container { max-width: 1400px; margin: -3rem auto 4rem; padding: 0 5%; position: relative; z-index: 10;}
+        
+        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 4rem; }
+        .action-card { background: var(--surface-color); padding: 2.5rem 2rem; border-radius: 20px; text-align: center; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08); border: 1px solid var(--border-color); cursor: pointer; transition: var(--transition-smooth); }
+        .action-card:hover { transform: translateY(-10px); border-color: var(--action-orange); }
+        .action-icon { font-size: 2.5rem; color: var(--primary-blue); margin-bottom: 1rem; display: block; transition: 0.3s;}
+        .action-card:hover .action-icon { color: var(--action-orange); transform: scale(1.1);}
+        .action-card h3 { color: var(--text-dark); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;}
+        .action-card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .content-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;}
+
+        /* FAQ Section */
+        .faq-section h2 { font-size: 2rem; color: var(--primary-blue); margin-bottom: 2rem; font-weight: 800; letter-spacing: -0.5px;}
+        .faq-item { background: var(--surface-color); border-radius: 16px; margin-bottom: 1rem; border: 1px solid var(--border-color); overflow: hidden;}
+        .faq-question { width: 100%; text-align: left; background: none; border: none; padding: 1.5rem; font-size: 1.1rem; font-weight: 600; color: var(--text-dark); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;}
+        .faq-question:hover { color: var(--action-orange); }
+        .faq-icon { font-size: 1.2rem; transition: transform 0.3s; color: var(--primary-blue);}
+        .faq-item.active .faq-icon { transform: rotate(180deg); color: var(--action-orange); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .faq-answer p { padding: 0 1.5rem 1.5rem; color: var(--text-muted); line-height: 1.6; }
+
+        /* Public Ticket Form */
+        .ticket-form-card { background: white; padding: 3rem; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid var(--border-color);}
+        .ticket-form-card h2 { font-size: 2rem; color: var(--primary-blue); margin-bottom: 0.5rem; font-weight: 800; letter-spacing: -0.5px;}
+        .ticket-form-card > p { color: var(--text-muted); margin-bottom: 2rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-input { width: 100%; padding: 1.2rem 1.5rem; border: 2px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; outline: none; transition: 0.3s; background: var(--bg-color); }
+        .form-input:focus { border-color: var(--action-orange); background: white; box-shadow: 0 0 0 4px rgba(255,107,53,0.1); }
+        textarea.form-input { resize: vertical; min-height: 120px; }
+
+        /* Floating Chat Bot */
+        .chat-btn { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--action-orange); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2rem; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 107, 53, 0.4); z-index: 1000; border: none; transition: 0.3s; }
+        .chat-btn:hover { transform: scale(1.1); }
+        .chat-window { position: fixed; bottom: 110px; right: 30px; width: 350px; background: var(--surface-color); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid var(--border-color); z-index: 1000; overflow: hidden; transform: translateY(20px); opacity: 0; visibility: hidden; transition: 0.3s; }
+        .chat-window.active { transform: translateY(0); opacity: 1; visibility: visible; }
+        .chat-header { background: var(--primary-blue); color: white; padding: 1.5rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .chat-close { background: none; border: none; color: white; cursor: pointer; font-size: 1.5rem; line-height: 1;}
+        .chat-body { padding: 1.5rem; height: 320px; background: var(--bg-color); overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+        .chat-msg { padding: 1rem; border-radius: 12px; font-size: 0.95rem; max-width: 85%; line-height: 1.4; word-wrap: break-word;}
+        .msg-bot { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-dark); }
+        .msg-user { background: var(--primary-blue); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; }
+        .chat-input { flex: 1; border: 1px solid var(--border-color); border-radius: 20px; padding: 0.8rem 1rem; outline: none; font-family: inherit;}
+        .chat-input:focus { border-color: var(--primary-blue); }
+        .chat-send { background: var(--action-orange); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;}
+
+        /* Footer */
+        .main-footer { background: #05111f; color: #A0AEC0; padding: 6rem 5% 2rem; margin-top: 4rem;}
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; max-width: 1400px; margin-inline: auto;}
+        .footer-col h4 { color: white; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 700;}
+        .footer-col p { margin-bottom: 1.5rem; line-height: 1.8;}
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 1rem; }
+        .footer-links a { color: #A0AEC0; transition: var(--transition-fast); font-weight: 500;}
+        .footer-links a:hover { color: var(--action-orange); }
+        .social-links { display: flex; gap: 1rem; }
+        .social-links a { color: white; background: rgba(255, 255, 255, 0.05); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1);}
+        .social-links a:hover { background: var(--action-orange); transform: translateY(-3px); border-color: var(--action-orange);}
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.9rem; }
+
+        @media (max-width: 1024px) { .content-split { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { .nav-links, .btn-login { display: none; } .footer-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 600px) { .footer-grid { grid-template-columns: 1fr; } .ticket-form-card { padding: 2rem;} .search-box { flex-direction: column; border-radius: 20px;} .search-box input, .search-box button { border-radius: 12px;} .search-box button { padding: 1rem; } }
+    </style>
+</head>
+<body>
+
+    <!-- 🟢 DYNAMIC NAVIGATION (LINKS BACK TO LANDING) 🟢 -->
+    <nav class="public-nav" id="navbar">
+        <a href="landing.html" class="logo">Trans Global</a>
+        
+        <div class="nav-links">
+            <a href="landing.html#services">Services</a>
+            <a href="landing.html#platform">Platform</a>
+            <a href="landing.html#inquiry">Inquiry</a>
+            <a href="#" style="color: var(--action-orange);">Support</a>
+        </div>
+
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <a href="tamplate/login.html" class="btn-login"><i class="fa-solid fa-lock" style="margin-right: 5px;"></i> Client Login</a>
+            <i class="fa-solid fa-bars" style="color: white; font-size: 1.5rem; display: none;" id="mobileMenuIcon"></i>
+        </div>
+    </nav>
+
+    <!-- 🟢 HERO SECTION 🟢 -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>How can we help you?</h1>
+            <p>Search our public knowledge base or submit a general inquiry below. To track a shipment or manage invoices, please access the Client Portal.</p>
+            
+            <form class="search-box" onsubmit="searchKB(event)">
+                <input type="text" id="searchInput" placeholder="Try searching 'Become a partner' or 'Locations'..." required>
+                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search Help</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="support-container">
+        
+        <!-- Quick Public Actions -->
+        <div class="quick-actions">
+            <div class="action-card" onclick="trackSecurely()">
+                <i class="fa-solid fa-location-crosshairs action-icon"></i>
+                <h3>Track a Shipment</h3>
+                <p><i class="fa-solid fa-lock" style="font-size: 0.8rem;"></i> Client Login Required</p>
+            </div>
+            <div class="action-card" onclick="window.location.href='landing.html#inquiry'">
+                <i class="fa-solid fa-handshake action-icon"></i>
+                <h3>Sales & Quotes</h3>
+                <p>Request an enterprise consultation.</p>
+            </div>
+            <div class="action-card" onclick="document.getElementById('ticketSubject').focus();">
+                <i class="fa-solid fa-envelope-open-text action-icon"></i>
+                <h3>General Inquiry</h3>
+                <p>Contact our support team directly.</p>
+            </div>
+        </div>
+
+        <div class="content-split">
+            
+            <!-- Public FAQ Section -->
+            <div class="faq-section">
+                <h2>Frequently Asked Questions</h2>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        How do I become a Trans Global client?
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We work exclusively with enterprise businesses. To become a partner, please fill out the "Customer Inquiry" form on our main landing page. A logistics engineer will contact you within 2 hours to discuss your supply chain needs and establish an account.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Why can't I track my package here?
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>For absolute security, live GPS tracking and customs documentation are restricted to authorized clients only. If you are expecting a shipment, please log into your Client Dashboard using the credentials provided by your account manager.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        What regions do you service?
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We provide full end-to-end logistics in over 150 countries. Our primary high-volume lanes operate between North America, the European Union, and Southeast Asia. We support Air, Ocean, and Ground freight.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Do you handle personal/consumer shipments?
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No. Trans Global is strictly a Business-to-Business (B2B) enterprise logistics provider. We specialize in high-volume, continuous supply chain routing rather than single consumer package delivery.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Public Ticket Form -->
+            <div class="ticket-form-card">
+                <h2>Contact Support</h2>
+                <p>Have a general question? Drop us a message and our team will get back to you within 24 hours. (If you are a client, please log in for priority support).</p>
+                
+                <form onsubmit="submitPublicTicket(event)">
+                    <div class="form-group">
+                        <input type="text" class="form-input" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-input" placeholder="Your Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-input" required>
+                            <option value="" disabled selected>What is this regarding?</option>
+                            <option value="partnership">Becoming a Client / Partnership</option>
+                            <option value="careers">Careers & Hiring</option>
+                            <option value="media">Press & Media</option>
+                            <option value="other">Other / General Question</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="ticketSubject" placeholder="Subject" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-input" placeholder="How can we help you?" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-cta" id="submitBtn" style="width: 100%; justify-content: center; font-size: 1.1rem; padding: 1.2rem;">
+                        Send Message <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Floating Live Chat Widget -->
+    <button class="chat-btn" id="chatToggleBtn" aria-label="Open Live Chat">
+        <i class="fa-solid fa-robot"></i>
+    </button>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <span><i class="fa-solid fa-robot"></i> AI Support Agent</span>
+            <button class="chat-close" id="chatCloseBtn"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-msg msg-bot">
+                Hello! I'm the Trans Global AI assistant. How can I help you today? (Note: I cannot track packages without a secure client login).
+            </div>
+        </div>
+        <form class="chat-input-area" id="chatForm">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." autocomplete="off" required>
+            <button type="submit" class="chat-send"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 style="color: var(--action-orange); font-size: 1.8rem; font-weight: 900; letter-spacing:-0.5px;">Trans Global</h4>
+                <p>Next-generation logistics and supply chain management for enterprise teams worldwide.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Solutions</h4>
+                <ul class="footer-links">
+                    <li><a href="landing.html#services">Ocean Freight</a></li>
+                    <li><a href="landing.html#services">Air Transport</a></li>
+                    <li><a href="landing.html#services">Customs Brokerage</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Secure Platform</h4>
+                <ul class="footer-links">
+                    <li><a href="tamplate/login.html"><i class="fa-solid fa-lock" style="font-size: 0.8rem; margin-right:5px;"></i> Client Login</a></li>
+                    <li><a href="tamplate/login.html"><i class="fa-solid fa-lock" style="font-size: 0.8rem; margin-right:5px;"></i> Live Tracking System</a></li>
+                    <li><a href="landing.html#inquiry">Request API Access</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Public Support</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fa-solid fa-headset" style="margin-right: 8px;"></i> Help Center</a></li>
+                    <li><a href="mailto:support@transglobal.com"><i class="fa-solid fa-envelope" style="margin-right: 8px;"></i> support@transglobal.com</a></li>
+                    <li><a href="#"><i class="fa-solid fa-phone" style="margin-right: 8px;"></i> +1 (800) 555-0199</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Trans Global Logistics. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sticky Navigation Blur Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+                document.getElementById('mobileMenuIcon').style.color = 'var(--primary-blue)';
+            } else {
+                nav.classList.remove('scrolled');
+                document.getElementById('mobileMenuIcon').style.color = 'white';
+            }
+        });
+
+        // FAQ Accordion
+        function toggleFaq(btn) {
+            const item = btn.parentElement;
+            const answer = btn.nextElementSibling;
+            
+            // Close others
+            document.querySelectorAll('.faq-item').forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.remove('active');
+                    otherItem.querySelector('.faq-answer').style.maxHeight = null;
+                }
+            });
+
+            // Toggle current
+            item.classList.toggle('active');
+            if (item.classList.contains('active')) {
+                answer.style.maxHeight = answer.scrollHeight + "px";
+            } else {
+                answer.style.maxHeight = null;
+            }
+        }
+
+        // Public Tracking Block
+        function trackSecurely() {
+            alert("🔒 Secure Access Required\n\nLive tracking and GPS coordinates are restricted to authorized clients only. Please log in to the Client Portal.");
+            window.location.href = "tamplate/login.html";
+        }
+
+        // Search Knowledge Base (Dummy)
+        function searchKB(event) {
+            event.preventDefault();
+            const input = document.getElementById('searchInput').value;
+            const btn = event.target.querySelector('button');
+            const orig = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Searching...';
+            setTimeout(() => {
+                alert(`Search results for "${input}":\n\nNo public articles found. Please submit a message using the Contact Support form.`);
+                btn.innerHTML = orig;
+            }, 800);
+        }
+
+        // Submit Public Ticket
+        function submitPublicTicket(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending Message...';
+            
+            setTimeout(() => {
+                alert("Thank you! Your message has been sent successfully. A representative will reach out to you within 24 hours.");
+                btn.innerHTML = 'Message Sent <i class="fa-solid fa-check"></i>';
+                btn.style.background = "var(--success-green)";
+                event.target.reset();
+            }, 1200);
+        }
+
+        // Chat Bot Logic
+        const chatWindow = document.getElementById('chatWindow');
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
+        const chatCloseBtn = document.getElementById('chatCloseBtn');
+        const chatForm = document.getElementById('chatForm');
+        const chatInput = document.getElementById('chatInput');
+        const chatBody = document.getElementById('chatBody');
+
+        chatToggleBtn.addEventListener('click', () => {
+            chatWindow.classList.add('active');
+            chatToggleBtn.style.transform = "scale(0)";
+        });
+
+        chatCloseBtn.addEventListener('click', () => {
+            chatWindow.classList.remove('active');
+            chatToggleBtn.style.transform = "scale(1)";
+        });
+
+        async function fetchChatbotResponse(userMessage) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const msg = userMessage.toLowerCase();
+                    let reply = "I am a virtual assistant. Please use the Contact form for detailed questions.";
+                    
+                    if (msg.includes('track') || msg.includes('where')) {
+                        reply = "Tracking is secured for clients only. Please click 'Client Login' at the top of the page to track a shipment.";
+                    } else if (msg.includes('quote') || msg.includes('partner') || msg.includes('client')) {
+                        reply = "We'd love to work with you! Please click the 'Sales & Quotes' button to fill out a partnership inquiry.";
+                    } else if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey')) {
+                        reply = "Hello! How can I help you learn about Trans Global today?";
+                    }
+
+                    resolve(reply);
+                }, 1000); 
+            });
+        }
+
+        chatForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-msg msg-user';
+            userMsg.innerText = message;
+            chatBody.appendChild(userMsg);
+            
+            chatInput.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'chat-msg msg-bot';
+            typingIndicator.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Typing...';
+            chatBody.appendChild(typingIndicator);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            const botReplyText = await fetchChatbotResponse(message);
+
+            chatBody.removeChild(typingIndicator);
+            
+            const botMsg = document.createElement('div');
+            botMsg.className = 'chat-msg msg-bot';
+            botMsg.innerText = botReplyText;
+            chatBody.appendChild(botMsg);
+            
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
+    </script>
+</body>
+</html>

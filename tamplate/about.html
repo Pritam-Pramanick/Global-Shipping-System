@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Trans Global Logistics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- 🟢 UPGRADED SECURITY CHECK 🟢 -->
+    <!-- <script>
+        const sessionToken = sessionStorage.getItem('secureLogix_session_token');
+        if (!sessionToken || sessionToken.split('.').length !== 3) {
+            // Comment this out if you are testing locally without a login page!
+            window.location.replace('login.html');
+        }
+    </script> -->
+    <link rel="stylesheet" href="../css/about.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+   <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-sidebar-btn" id="closeSidebar">&times;</button>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- Main Section -->
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1rem;">Main</div>
+            
+            <a href="../index.html" class="sidebar-item">
+                <i class="fa-solid fa-house" style="width: 25px;"></i> Dashboard
+            </a>
+            <a href="about.html" class="sidebar-item active-menu">
+                <i class="fa-solid fa-building" style="width: 25px;"></i> About Us
+            </a>
+            <a href="services.html" class="sidebar-item">
+                <i class="fa-solid fa-globe" style="width: 25px;"></i> Services
+            </a>
+            <a href="our-work.html" class="sidebar-item">
+                <i class="fa-solid fa-briefcase" style="width: 25px;"></i> Our Work
+            </a>
+            <a href="profile.html" class="sidebar-item">
+                <i class="fa-solid fa-user" style="width: 25px;"></i> My Profile
+            </a>
+
+            <!-- Operations Section -->
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1.5rem;">Operations</div>
+            
+            <button class="sidebar-item sidebar-dropdown" onclick="toggleDropdown('dropdown1', this)">
+                <i class="fa-solid fa-ship" style="width: 25px;"></i> Freight Services <span>▼</span>
+            </button>
+            <div class="dropdown-menu" id="dropdown1">
+                <a href="booking.html">Book New Shipment</a>
+                <a href="#">My Active Shipments</a>
+                <a href="#">Saved Quotes</a>
+            </div>
+
+            <a href="#" class="sidebar-item">
+                <i class="fa-solid fa-file-contract" style="width: 25px;"></i> Document Center
+            </a>
+
+            <!-- Finance & Support Section -->
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1.5rem;">Finance & Support</div>
+            
+            <a href="wallet.html" class="sidebar-item">
+                <i class="fa-solid fa-wallet" style="width: 25px;"></i> Wallet & Billing
+            </a>
+            <a href="support.html" class="sidebar-item">
+                <i class="fa-solid fa-headset" style="width: 25px;"></i> Support Tickets
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-profile-menu" id="sidebarProfileMenu">
+                <a href="profile.html">View Profile</a>
+                <a href="wallet.html">Account Settings</a>
+                <button class="sign-out" onclick="signOut()">Sign Out</button>
+            </div>
+
+            <button class="profile-widget" onclick="toggleSidebarProfile()">
+                <div class="profile-avatar" id="userAvatar">JD</div>
+                <div class="profile-details">
+                    <span class="profile-name" id="userNameDisplay">John Doe</span>
+                    <span class="profile-role" id="userRoleDisplay">Supply Chain Mgr</span>
+                </div>
+                <span class="profile-caret">▲</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- HEADER -->
+    <header class="layout-card">
+        <div class="header-left">
+            <button class="menu-toggle-btn" id="openSidebar"><i class="fa-solid fa-bars"></i></button>
+            <a href="index.html" class="logo">Trans Global</a>
+        </div>
+        <nav>
+            <a href="index.html">Dashboard</a>
+            <a href="about.html" style="color: var(--primary-blue); font-weight: 700;">About Us</a>
+            <a href="services.html">Services</a>
+            <a href="our-work.html">Our Work</a>
+            <a href="support.html">Support</a>
+            <a href="booking.html" class="book-now-link">Book Now</a>
+            <!-- 🟢 SYNCED HEADER PROFILE ICON 🟢 -->
+            <a href="profile.html" class="header-profile-link" title="My Profile">
+                <div class="header-avatar" id="headerAvatar">JD</div>
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="layout-card about-hero">
+            <h1>Defining the Future of Freight.</h1>
+            <p>We provide the infrastructure, technology, and intelligence that powers the world's most ambitious global
+                supply chains.</p>
+        </section>
+
+        <section class="layout-card content-padding">
+
+            <!-- MISSION -->
+            <div class="split-grid">
+                <div class="text-block">
+                    <h2>Our Mission</h2>
+                    <p>At Trans Global, we believe that logistics should be completely invisible to your end customer.
+                        You shouldn't have to worry about where your cargo is—it should just be where you need it,
+                        exactly when you need it.</p>
+                    <p>Founded in 2011, we have built a network that spans over 120 countries. We utilize AI-driven
+                        route optimization and real-time IoT tracking to eliminate the traditional "black holes" of
+                        international shipping. We don't just move boxes; we engineer global trade.</p>
+                </div>
+                <div class="image-block">
+                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800"
+                        alt="Warehouse Operations">
+                </div>
+            </div>
+
+            <!-- 🟢 NEW: OUR JOURNEY TIMELINE 🟢 -->
+            <div class="timeline-section">
+                <h2 class="section-title">Our Evolution</h2>
+                <p class="section-subtitle">From a local freight forwarder to a global logistics powerhouse.</p>
+
+                <div class="timeline-grid">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"><i class="fa-solid fa-flag"></i></div>
+                        <div class="timeline-year">2011</div>
+                        <div class="timeline-text">Founded in London with a focus on trans-Atlantic ocean freight.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"><i class="fa-solid fa-plane"></i></div>
+                        <div class="timeline-year">2016</div>
+                        <div class="timeline-text">Launched dedicated Air Cargo division and expanded to the APAC
+                            region.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"><i class="fa-solid fa-microchip"></i></div>
+                        <div class="timeline-year">2021</div>
+                        <div class="timeline-text">Deployed proprietary AI routing and Blockchain customs clearance.
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"><i class="fa-solid fa-globe"></i></div>
+                        <div class="timeline-year">2026</div>
+                        <div class="timeline-text">Managing over 1,400 active daily global supply chains worldwide.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🟢 NEW: GLOBAL FOOTPRINT MAP 🟢 -->
+            <div class="global-map-section">
+                <h2>Our Global Reach</h2>
+                <p>Operating out of 5 major continental hubs, connecting you to 120+ countries effortlessly.</p>
+                <div class="map-container">
+                    <!-- Interactive Hub Dots -->
+                    <div class="map-node node-ny" title="New York Hub"></div>
+                    <div class="map-node node-ldn" title="London Hub"></div>
+                    <div class="map-node node-dxb" title="Dubai Hub"></div>
+                    <div class="map-node node-sgp" title="Singapore Hub"></div>
+                    <div class="map-node node-syd" title="Sydney Hub"></div>
+                </div>
+            </div>
+
+            <!-- GLOBAL INFRASTRUCTURE -->
+            <h2 class="section-title">Physical Infrastructure</h2>
+            <p class="section-subtitle">Our owned and operated assets provide unmatched reliability, even during global
+                supply chain disruptions.</p>
+
+            <div class="asset-grid">
+                <div class="asset-card">
+                    <span class="asset-icon"><i class="fa-solid fa-ship"></i></span>
+                    <h3>420+</h3>
+                    <h4>Ocean Vessels</h4>
+                    <p>A modern, fuel-efficient maritime fleet capable of handling standard TEU, oversized cargo, and
+                        hazardous materials.</p>
+                </div>
+                <div class="asset-card">
+                    <span class="asset-icon"><i class="fa-solid fa-plane-up"></i></span>
+                    <h3>150+</h3>
+                    <h4>Cargo Aircraft</h4>
+                    <p>Our dedicated air fleet guarantees expedited delivery across North America, Europe, and the
+                        Asia-Pacific region.</p>
+                </div>
+                <div class="asset-card">
+                    <span class="asset-icon"><i class="fa-solid fa-warehouse"></i></span>
+                    <h3>2.4M sq ft</h3>
+                    <h4>Smart Warehousing</h4>
+                    <p>Strategically located, automated fulfillment centers that bring your inventory closer to your
+                        customers.</p>
+                </div>
+            </div>
+
+            <!-- TECHNOLOGY & INNOVATION -->
+            <div class="split-grid" style="direction: rtl;">
+                <div class="image-block" style="direction: ltr;">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+                        alt="Data Analytics">
+                </div>
+                <div class="text-block" style="direction: ltr;">
+                    <h2>Powered by Intelligence</h2>
+                    <p>Our digital infrastructure is just as robust as our physical fleet. We offer absolute
+                        transparency through our proprietary technology stack.</p>
+
+                    <ul class="tech-list">
+                        <li>
+                            <div class="tech-icon"><i class="fa-solid fa-brain"></i></div>
+                            <div class="tech-text">
+                                <h4>Predictive AI Routing</h4>
+                                <p>Our systems analyze weather patterns, port congestion, and fuel prices in real-time
+                                    to calculate the fastest routes.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="tech-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+                            <div class="tech-text">
+                                <h4>IoT Telematics</h4>
+                                <p>Every premium shipment is outfitted with sensors tracking GPS, temperature, and
+                                    shock—accessible 24/7.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="tech-icon"><i class="fa-solid fa-link"></i></div>
+                            <div class="tech-text">
+                                <h4>Automated Customs</h4>
+                                <p>Blockchain-verified documentation is transmitted instantly to customs authorities,
+                                    reducing border hold-ups by up to 40%.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SUSTAINABILITY -->
+            <div class="eco-card">
+                <div>
+                    <h2>Goal: Zero-Carbon<br>by 2040.</h2>
+                    <p>The global shipping industry accounts for nearly 3% of global CO2 emissions. We are committed to
+                        changing that narrative.</p>
+                    <p>Our <strong>Eco-Route Initiative</strong> utilizes wind-assisted vessel propulsion, Bio-LNG
+                        fuels, and AI-optimized speed reduction. For emissions we cannot eliminate today, we
+                        automatically purchase verified carbon offsets.</p>
+                    <div style="margin-top: 2rem;">
+                        <span class="eco-badge">100% Carbon Neutral Warehousing</span>
+                        <span class="eco-badge">Bio-LNG Fleet Integration</span>
+                    </div>
+                </div>
+                <div>
+                    <img class="eco-img"
+                        src="https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=80&w=800"
+                        alt="Forest">
+                </div>
+            </div>
+
+            <!-- LEADERSHIP TEAM -->
+            <h2 class="section-title">Global Leadership</h2>
+            <p class="section-subtitle">Guided by industry veterans with a combined 120 years of logistics, tech, and
+                operations experience.</p>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-photo">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400"
+                            alt="Marcus Vance">
+                    </div>
+                    <h4>Marcus Vance</h4>
+                    <p>CEO & Founder</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-photo">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400"
+                            alt="Sarah Jenkins">
+                    </div>
+                    <h4>Sarah Jenkins</h4>
+                    <p>Chief Operations Officer</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-photo">
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400"
+                            alt="Dr. Aris Chen">
+                    </div>
+                    <h4>Dr. Aris Chen</h4>
+                    <p>VP of AI & Technology</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-photo">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400"
+                            alt="Elena Rodriguez">
+                    </div>
+                    <h4>Elena Rodriguez</h4>
+                    <p>Director of Global Customs</p>
+                </div>
+            </div>
+
+            <!-- COMPLIANCE & CERTIFICATIONS -->
+            <div class="compliance-strip">
+                <p>Fully Certified, Compliant, and Trusted Globally</p>
+                <div class="compliance-logos">
+                    <span>ISO 9001</span>
+                    <span>CTPAT Certified</span>
+                    <span>IATA Approved</span>
+                    <span>FMC Licensed</span>
+                    <span>AEO Status</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 🟢 NEW: CALL TO ACTION 🟢 -->
+        <div class="cta-container">
+            <section class="cta-box">
+                <h2>Join the Logistics Revolution</h2>
+                <p>Whether you are looking for a career in global trade or seeking a reliable logistics partner, we want
+                    to hear from you.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="booking.html" class="btn-cta">Partner With Us</a>
+                    <a href="#" class="btn-cta"
+                        style="background: transparent; border: 2px solid white; color: white;">View Careers</a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Stats Strip -->
+        <section class="layout-card stats-strip" style="margin-bottom: 0; border-radius: 24px 24px 0 0;">
+            <div class="stat-item">
+                <h4>15+</h4>
+                <p>Years Experience</p>
+            </div>
+            <div class="stat-item">
+                <h4>500M+</h4>
+                <p>Tons Delivered</p>
+            </div>
+            <div class="stat-item">
+                <h4>120+</h4>
+                <p>Countries Active</p>
+            </div>
+            <div class="stat-item">
+                <h4>24/7</h4>
+                <p>Live Monitoring</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="layout-card" style="border-radius: 0 0 24px 24px;">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h2 style="color:#fff; margin-bottom:1rem;">Trans Global</h2>
+                <p>Revolutionizing global trade through smart logistics, high-performance infrastructure, and
+                    uncompromising reliability.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">Ocean Freight</a></li>
+                    <li><a href="services.html">Air Cargo</a></li>
+                    <li><a href="services.html">Ground Transport</a></li>
+                    <li><a href="services.html">Warehousing</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="support.html">Help Center</a></li>
+                    <li><a href="#">Tracking API</a></li>
+                    <li><a href="#">Customs Guide</a></li>
+                    <li><a href="#">Claims</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Investor Relations</a></li>
+                    <li><a href="#">Sustainability</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Trans Global Logistics. All rights reserved.</p>
+            <div>
+                <a href="#" style="color:#CBD5E0; margin-right:20px; text-decoration:none;">Privacy Policy</a>
+                <a href="#" style="color:#CBD5E0; text-decoration:none;">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../Javascript/about.js">
+
+    </script>
+</body>
+
+</html>

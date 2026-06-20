@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services | Trans Global Logistics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- 🟢 UPGRADED SECURITY CHECK 🟢 -->
+    <!-- <script>
+        const sessionToken = sessionStorage.getItem('secureLogix_session_token');
+        if (!sessionToken || sessionToken.split('.').length !== 3) {
+            // window.location.replace('login.html'); 
+        }
+    </script> -->
+<link rel="stylesheet" href="../css/services.css">
+</head>
+<body>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- 🟢 UPGRADED SIDEBAR 🟢 -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Mobile Navigation">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-sidebar-btn" id="closeSidebar" aria-label="Close Sidebar">&times;</button>
+        </div>
+        
+        <div class="sidebar-content">
+            <!-- Main Section -->
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1rem;">Main</div>
+            
+            <a href="../index.html" class="sidebar-item">
+                <i class="fa-solid fa-house" style="width: 25px;"></i> Dashboard
+            </a>
+            <a href="about.html" class="sidebar-item">
+                <i class="fa-solid fa-building" style="width: 25px;"></i> About Us
+            </a>
+            <a href="services.html" class="sidebar-item active-menu">
+                <i class="fa-solid fa-globe" style="width: 25px;"></i> Services
+            </a>
+            <a href="our-work.html" class="sidebar-item">
+                <i class="fa-solid fa-briefcase" style="width: 25px;"></i> Our Work
+            </a>
+            <a href="profile.html" class="sidebar-item">
+                <i class="fa-solid fa-user" style="width: 25px;"></i> My Profile
+            </a>
+
+            <!-- Operations Section -->
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1.5rem;">Operations</div>
+            
+            <button class="sidebar-item sidebar-dropdown" onclick="toggleDropdown('dropdown1', this)">
+                <i class="fa-solid fa-ship" style="width: 25px;"></i> Freight Services <span>▼</span>
+            </button>
+            <div class="dropdown-menu" id="dropdown1">
+                <a href="booking.html">Book New Shipment</a>
+                <a href="#">My Active Shipments</a>
+                <a href="#">Saved Quotes</a>
+            </div>
+
+            <a href="#" class="sidebar-item">
+                <i class="fa-solid fa-file-contract" style="width: 25px;"></i> Document Center
+            </a>
+
+            <!-- Finance & Support Section -->
+            <div style="padding: 0 1.5rem 0.5rem; font-size: 0.75rem; color: #A0AEC0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 1.5rem;">Finance & Support</div>
+            
+            <a href="wallet.html" class="sidebar-item">
+                <i class="fa-solid fa-wallet" style="width: 25px;"></i> Wallet & Billing
+            </a>
+            <a href="support.html" class="sidebar-item">
+                <i class="fa-solid fa-headset" style="width: 25px;"></i> Support Tickets
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-profile-menu" id="sidebarProfileMenu">
+                <a href="profile.html">View Profile</a>
+                <a href="wallet.html">Account Settings</a>
+                <button class="sign-out" onclick="signOut()">Sign Out</button>
+            </div>
+
+            <button class="profile-widget" onclick="toggleSidebarProfile()">
+                <div class="profile-avatar" id="userAvatar">JD</div>
+                <div class="profile-details">
+                    <span class="profile-name" id="userNameDisplay">John Doe</span>
+                    <span class="profile-role" id="userRoleDisplay">Supply Chain Mgr</span>
+                </div>
+                <span class="profile-caret">▲</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- 🟢 UPGRADED HEADER 🟢 -->
+    <header class="layout-card lay">
+        <div class="header-left">
+            <button class="menu-toggle-btn" id="openSidebar" aria-label="Open Navigation Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="../index.html" class="logo">Trans Global</a>
+        </div>
+        <nav class="main-nav" role="navigation" aria-label="Desktop Navigation">
+            <a href="../index.html">Dashboard</a>
+            <a href="about.html">About Us</a>
+            <a href="services.html" style="color: var(--primary-blue); font-weight: 700;">Services</a>
+            <a href="our-work.html">Our Work</a>
+            <a href="support.html">Support</a>
+            <a href="booking.html" class="book-now-link">Book Now</a>
+            
+            <a href="profile.html" class="header-profile-link" title="My Profile">
+                <div class="header-avatar" id="headerAvatar">JD</div>
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="layout-card services-hero">
+            <h1>Engineered for Global Trade</h1>
+            <p>We provide the end-to-end infrastructure, technology, and industry expertise required to scale your supply chain operations flawlessly.</p>
+        </section>
+
+        <!-- Core Services Cards Grid -->
+        <section class="services-grid">
+            <article class="service-card">
+                <span class="service-card__icon"><i class="fa-solid fa-ship"></i></span>
+                <h3 class="service-card__title">Ocean Freight</h3>
+                <p class="service-card__text">Full-container load (FCL) and less-than-container load (LCL) services across all major global trade lanes with AI-optimized routing.</p>
+            </article>
+
+            <article class="service-card">
+                <span class="service-card__icon"><i class="fa-solid fa-plane-up"></i></span>
+                <h3 class="service-card__title">Air Cargo</h3>
+                <p class="service-card__text">Time-critical global transport for high-value goods, featuring guaranteed next-flight-out capabilities and strict handling protocols.</p>
+            </article>
+
+            <article class="service-card">
+                <span class="service-card__icon"><i class="fa-solid fa-truck-fast"></i></span>
+                <h3 class="service-card__title">Ground Transport</h3>
+                <p class="service-card__text">A massive network of long-haul trucks, flatbeds, and local delivery vans ensures seamless, point-to-point continental transit.</p>
+            </article>
+
+            <article class="service-card">
+                <span class="service-card__icon"><i class="fa-solid fa-train"></i></span>
+                <h3 class="service-card__title">Rail Freight</h3>
+                <p class="service-card__text">Highly sustainable and cost-effective overland transit, perfect for moving heavy industrial goods and raw resources across continents.</p>
+            </article>
+
+            <article class="service-card">
+                <span class="service-card__icon"><i class="fa-solid fa-warehouse"></i></span>
+                <h3 class="service-card__title">Smart Warehousing</h3>
+                <p class="service-card__text">Automated storage and fulfillment centers strategically positioned near major hubs to dramatically reduce your holding costs.</p>
+            </article>
+
+            <article class="service-card">
+                <span class="service-card__icon"><i class="fa-solid fa-file-signature"></i></span>
+                <h3 class="service-card__title">Customs Brokerage</h3>
+                <p class="service-card__text">Proprietary AI document compliance and global legal experts to ensure your goods pass through borders without administrative friction.</p>
+            </article>
+        </section>
+
+        <!-- HOW IT WORKS TIMELINE -->
+        <section class="process-section">
+            <div class="section-header" style="margin-bottom: 3rem;">
+                <h2>How It Works</h2>
+                <p>A streamlined, transparent process from your loading dock to final delivery.</p>
+            </div>
+            
+            <div class="process-grid">
+                <div class="process-step">
+                    <div class="step-number"><i class="fa-solid fa-calculator"></i></div>
+                    <h3>1. Quote & Book</h3>
+                    <p>Use our portal to instantly compare rates, select your transit mode, and secure capacity.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number"><i class="fa-solid fa-box-open"></i></div>
+                    <h3>2. Pick-Up & Prep</h3>
+                    <p>We dispatch ground units to collect, securely palletize, and route your cargo to the terminal.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number"><i class="fa-solid fa-earth-americas"></i></div>
+                    <h3>3. Global Transit</h3>
+                    <p>Your freight clears customs and crosses borders while you monitor it 24/7 via GPS tracking.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number"><i class="fa-solid fa-check-double"></i></div>
+                    <h3>4. Final Delivery</h3>
+                    <p>Last-mile logistics ensure your goods arrive safely at the destination with verified proof of delivery.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE FREIGHT ESTIMATOR -->
+        <section class="calculator-section">
+            <div class="section-header">
+                <h2>Quick Freight Estimator</h2>
+                <p>Select your parameters below to generate an instant, rough estimate for your shipment.</p>
+            </div>
+
+            <div class="calc-wrapper">
+                <form class="calc-form" id="freightCalc" onsubmit="calculateEstimate(event)">
+                    <div class="form-group">
+                        <label>Transport Mode</label>
+                        <select id="calcMode" required>
+                            <option value="ocean">Ocean Freight (Slowest, Most Affordable)</option>
+                            <option value="air">Air Cargo (Fastest, Premium Cost)</option>
+                            <option value="ground">Ground Transport (Continental Only)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Shipping Distance</label>
+                        <select id="calcDistance" required>
+                            <option value="domestic">Domestic (0 - 1,500 km)</option>
+                            <option value="continental">Continental (1,500 - 4,000 km)</option>
+                            <option value="global">Intercontinental (4,000+ km)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Weight (KG)</label>
+                        <input type="number" id="calcWeight" placeholder="e.g., 500" min="10" required>
+                    </div>
+                    <button type="submit" class="btn-calc">Calculate Estimate</button>
+                </form>
+
+                <div class="calc-result">
+                    <h4 style="font-weight: 500; text-transform: uppercase; letter-spacing: 1px; color: #CBD5E0;">Estimated Cost</h4>
+                    <div class="result-amount" id="resultPrice">$0</div>
+                    <div class="result-time" id="resultTime">Awaiting Input...</div>
+                    <p style="font-size: 0.8rem; opacity: 0.7;">*This is a rough estimate. Proceed to Booking for an exact quote.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Industry Specific Solutions -->
+        <section class="industry-section">
+            <div class="section-header">
+                <h2>Industry-Specific Logistics</h2>
+                <p>We don't believe in one-size-fits-all. Our operations are tailored to meet the strict regulatory and timing demands of your specific sector.</p>
+            </div>
+            
+            <div class="industry-grid">
+                <div class="industry-card">
+                    <span class="industry-card__icon"><i class="fa-solid fa-briefcase-medical"></i></span>
+                    <h3 class="industry-card__title">Healthcare & Pharma</h3>
+                    <p class="industry-card__text">Strict cold-chain integrity, GDP-compliant handling, and IoT temperature monitoring for vaccines and sensitive medical devices.</p>
+                </div>
+                <div class="industry-card">
+                    <span class="industry-card__icon"><i class="fa-solid fa-gears"></i></span>
+                    <h3 class="industry-card__title">Automotive & Industrial</h3>
+                    <p class="industry-card__text">Precision Just-In-Time (JIT) and Just-In-Sequence (JIS) delivery to keep assembly lines moving without excess inventory.</p>
+                </div>
+                <div class="industry-card">
+                    <span class="industry-card__icon"><i class="fa-solid fa-cart-arrow-down"></i></span>
+                    <h3 class="industry-card__title">Retail & E-Commerce</h3>
+                    <p class="industry-card__text">High-volume automated sorting, multi-channel distribution, and rapid peak-season scaling to meet consumer demands.</p>
+                </div>
+                <div class="industry-card">
+                    <span class="industry-card__icon"><i class="fa-solid fa-laptop"></i></span>
+                    <h3 class="industry-card__title">Technology & Electronics</h3>
+                    <p class="industry-card__text">Anti-static packaging, secure vault transit, and expedited global distribution for high-value consumer electronics and components.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Value Added Services Section -->
+        <section class="value-added-section">
+            <div class="section-header">
+                <h2>Value-Added Solutions</h2>
+                <p>Beyond moving freight, we provide the strategic tools necessary to mitigate risk and optimize your entire supply chain network.</p>
+            </div>
+
+            <div class="value-grid">
+                <div class="value-item">
+                    <div class="value-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="value-content">
+                        <h3>Comprehensive Cargo Insurance</h3>
+                        <p>Protect your bottom line. We offer flexible underwriting that protects your assets against loss, damage, or geopolitical delays.</p>
+                    </div>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon"><i class="fa-solid fa-diagram-project"></i></div>
+                    <div class="value-content">
+                        <h3>Supply Chain Consulting</h3>
+                        <p>Our logistics engineers will audit your network, identify bottlenecks, and redesign your routing to reduce logistical spend by up to 15%.</p>
+                    </div>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                    <div class="value-content">
+                        <h3>Reverse Logistics (Returns)</h3>
+                        <p>Turn returns into a competitive advantage. We manage product recall, automated RMA processing, and restocking to keep inventory fluid.</p>
+                    </div>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon"><i class="fa-solid fa-code"></i></div>
+                    <div class="value-content">
+                        <h3>Developer API & Telematics</h3>
+                        <p>Integrate our logistics engine into your ERP. Pull real-time GPS coordinates, predictive ETAs, and carbon emissions data instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Box -->
+        <div class="cta-container">
+            <section class="cta-box">
+                <h2 class="cta-box__title">Ready to Optimize Your Supply Chain?</h2>
+                <p class="cta-box__text">Get a transparent, instant quote and secure capacity for your next shipment today.</p>
+                <a href="booking.html" class="btn-cta">Start Your Booking &rarr;</a>
+            </section>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="layout-card main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h2 style="color:var(--surface-color); margin-bottom:1rem;">Trans Global</h2>
+                <p>Revolutionizing global trade through smart logistics, high-performance infrastructure, and uncompromising reliability.</p>
+            </div>
+            
+            <nav class="footer-col">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="#">Ocean Freight</a></li>
+                    <li><a href="#">Air Cargo</a></li>
+                    <li><a href="#">Ground Transport</a></li>
+                    <li><a href="#">Warehousing</a></li>
+                </ul>
+            </nav>
+            
+            <nav class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="support.html">Help Center</a></li>
+                    <li><a href="#">Tracking API</a></li>
+                    <li><a href="#">Customs Guide</a></li>
+                    <li><a href="#">Claims</a></li>
+                </ul>
+            </nav>
+            
+            <nav class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="our-work.html">Our Work</a></li>
+                    <li><a href="#">Sustainability</a></li>
+                </ul>
+            </nav>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 Trans Global Logistics. All rights reserved. Registered Headquarters, London, UK.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script src="../Javascript/services.js">
+
+    </script>
+</body>
+</html>
