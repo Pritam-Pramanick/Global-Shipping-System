@@ -54,7 +54,7 @@
             content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px;
             background-color: var(--action-orange); transition: var(--transition-smooth);
         }
-        .nav-links a:hover { color: var(--action-orange) !important; }                                                      
+        .nav-links a:hover { color: var(--action-orange) !important; }                                       
         .nav-links a:hover::after { width: 100%; }
 
         .btn-login {
@@ -132,7 +132,7 @@
         
         .rotating-wrapper { display: inline-flex; height: 1.1em; overflow: hidden; vertical-align: top; text-align: left; }
         .rotating-inner { display: flex; flex-direction: column; animation: slideWordsSmooth 9s infinite cubic-bezier(0.64, 0, 0.35, 1); }
-        .rotating-inner span { display: block; height: 1.1em; line-height: 1.1; background: linear-gradient(to right, var(--action-orange), #ffb088); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; padding-right: 10px; }
+        .rotating-inner span { display: block; height: 1.1em; line-height: 1.1; background: linear-gradient(to right, var(--action-orange), #ffb088); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; padding-right: 10px; } 
         
         @keyframes slideWordsSmooth {
             0%, 25% { transform: translateY(0); }
@@ -168,7 +168,7 @@
         .secure-notice i { color: var(--action-orange); }
 
         /* --- MARQUEE --- */
-        .marquee-section { background: white; padding: 3rem 0; overflow: hidden; border-bottom: 1px solid var(--border-color); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+        .marquee-section { background: white; padding: 3rem 0; overflow: hidden; border-bottom: 1px solid var(--border-color); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }        
         .marquee-container { display: flex; width: 200%; animation: scroll 25s linear infinite; }
         .marquee-content { display: flex; justify-content: space-around; width: 100%; align-items: center; }
         .marquee-content span { font-size: 1.8rem; font-weight: 900; color: #CBD5E0; font-family: 'Inter', sans-serif; letter-spacing: -1px; transition: var(--transition-smooth);}
@@ -202,7 +202,7 @@
         /* --- ANIMATED STATS --- */
         .stats-section { background: linear-gradient(135deg, var(--primary-blue) 0%, #1a365d 100%); color: white; padding: 6rem 5%; position: relative;}
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; text-align: center; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
-        .stat-item h3 { font-size: 4.5rem; color: transparent; margin-bottom: 0.5rem; font-weight: 900; line-height: 1; background: linear-gradient(to bottom, #ffffff, #a0aec0); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-item h3 { font-size: 4.5rem; color: transparent; margin-bottom: 0.5rem; font-weight: 900; line-height: 1; background: linear-gradient(to bottom, #ffffff, #a0aec0); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }       
         .stat-item p { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--action-orange); }
 
         /* --- ABOUT/TECH SPLIT --- */
@@ -258,6 +258,7 @@
         
         .footer-links { list-style: none; }
         .footer-links li { margin-bottom: 1rem; }
+        /* Footer Link Hover Animation */
         .footer-links a { color: #A0AEC0; transition: var(--transition-fast); font-weight: 500; display: inline-flex; align-items: center; gap: 5px;}
         .footer-links a i.fa-chevron-right { font-size: 0.7rem; opacity: 0; transform: translateX(-10px); transition: 0.3s; color: var(--action-orange);}
         .footer-links a:hover { color: var(--action-orange); transform: translateX(5px); }
@@ -267,6 +268,30 @@
         .social-links a { color: white; background: rgba(255, 255, 255, 0.05); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: var(--transition-smooth); border: 1px solid rgba(255,255,255,0.1);}
         .social-links a:hover { background: var(--action-orange); transform: translateY(-3px); border-color: var(--action-orange); box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);}
         .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.9rem; }
+
+        /* --- 🟢 FLOATING CONSULTANT BUTTON 🟢 --- */
+        .floating-consultant {
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--primary-blue); color: white;
+            padding: 0.8rem 1.5rem; border-radius: 50px;
+            display: flex; align-items: center; gap: 1rem;
+            font-weight: 700; box-shadow: 0 10px 25px rgba(10, 37, 64, 0.4);
+            z-index: 2000; transition: var(--transition-smooth);
+            border: 2px solid rgba(255,255,255,0.1); text-decoration: none;
+        }
+        .floating-consultant:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: var(--action-orange);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.5);
+            border-color: var(--action-orange); color: white;
+        }
+        .floating-consultant img {
+            width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+            border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .fc-text { display: flex; flex-direction: column; }
+        .fc-title { font-size: 0.75rem; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
+        .fc-action { font-size: 1.05rem; }
 
         @media (max-width: 1024px) {
             .split-grid, .quote-container { grid-template-columns: 1fr; gap: 3rem;}
@@ -288,44 +313,47 @@
             .quick-track-box button { padding: 1.2rem; justify-content: center; border-radius: 12px;}
             .quote-right { padding: 3rem 2rem; }
             .hero h1 { font-size: 2.8rem; }
+            
+            /* Compact Floating Button for Mobile */
+            .floating-consultant { bottom: 20px; right: 20px; padding: 0.6rem; border-radius: 50%; }
+            .fc-text { display: none; }
+            .floating-consultant img { width: 50px; height: 50px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 🟢 DYNAMIC NAVIGATION 🟢 -->
     <nav class="public-nav" id="navbar">
         <a href="#" class="logo">Trans Global</a>
         
         <div class="nav-links">
             <a href="#services">Services</a>
             <a href="#platform">Platform</a>
+            <a href="landing_pages/consulting.html">Consulting</a>
             <a href="#testimonials">Reviews</a>
-            <a href="#inquiry">Inquiry</a>
             <a href="landing_pages/public-support.html">Support</a> 
         </div>
 
         <div class="nav-buttons">
             <a href="tamplate/login.html" class="btn-login"><i class="fa-solid fa-lock" style="margin-right: 5px;"></i> Client Login</a>
-            <a href="tamplate/login.html" class="btn-cta">Start Shipping <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="tamplate/booking.html" class="btn-cta">Book Consultant <i class="fa-solid fa-arrow-right"></i></a>
             <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
         </div>
     </nav>
 
-    <!-- 🟢 MOBILE MENU OVERLAY 🟢 -->
     <div class="mobile-menu-overlay" id="mobileMenu">
         <button class="close-mobile-menu" onclick="toggleMobileMenu()">&times;</button>
         <a href="#services" onclick="toggleMobileMenu()">Services</a>
         <a href="#platform" onclick="toggleMobileMenu()">Platform</a>
+        <a href="landing_pages/consulting.html" onclick="toggleMobileMenu()">Consulting</a>
         <a href="#testimonials" onclick="toggleMobileMenu()">Reviews</a>
-        <a href="#inquiry" onclick="toggleMobileMenu()">Inquiry</a>
         <a href="landing_pages/public-support.html" onclick="toggleMobileMenu()">Support</a>
         <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; align-items: center;">
             <a href="tamplate/login.html" class="btn-login" style="font-size: 1.1rem; border-color: white;">Client Login</a>
+            <a href="tamplate/booking.html" class="btn-cta" style="font-size: 1.1rem;">Book Consultant <i class="fa-solid fa-arrow-right"></i></a>
         </div>
     </div>
 
-    <!-- 🟢 HERO SECTION 🟢 -->
     <header class="hero">
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
@@ -371,7 +399,6 @@
         </div>
     </section>
 
-    <!-- 🟢 LINKED SERVICES CARDS 🟢 -->
     <section class="features" id="services">
         <span class="section-tag">Enterprise Capabilities</span>
         <h2>Why Industry Leaders Choose Us</h2>
@@ -447,13 +474,11 @@
         </div>
     </section>
 
-    <!-- 🟢 UPDATED TESTIMONIALS WITH 'LOAD MORE' FUNCTIONALITY 🟢 -->
     <section class="testimonials" id="testimonials">
         <span class="section-tag">Client Success</span>
         <h2>Don't just take our word for it.</h2>
         <div class="test-grid">
             
-            <!-- Default 3 Reviews -->
             <div class="test-card">
                 <i class="fa-solid fa-quote-left"></i>
                 <div class="test-stars">★★★★★</div>
@@ -491,7 +516,6 @@
                 </div>
             </div>
 
-            <!-- Hidden Reviews -->
             <div class="test-card hidden-review">
                 <i class="fa-solid fa-quote-left"></i>
                 <div class="test-stars">★★★★★</div>
@@ -536,7 +560,6 @@
         </div>
     </section>
 
-    <!-- 🟢 PUBLIC CUSTOMER INQUIRY / QUOTE SECTION 🟢 -->
     <section class="quote-section" id="inquiry">
         <div class="quote-container">
             <div class="quote-left">
@@ -572,7 +595,6 @@
         </div>
     </section>
 
-    <!-- 🟢 LINKED FOOTER 🟢 -->
     <footer class="main-footer">
         <div class="footer-grid">
             <div class="footer-col">
@@ -613,6 +635,14 @@
             <p>&copy; 2026 Trans Global Logistics. All rights reserved.</p>
         </div>
     </footer>
+
+    <a href="tamplate/booking.html" class="floating-consultant">
+        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100" alt="Consultant Expert">
+        <div class="fc-text">
+            <span class="fc-title">Live Expert</span>
+            <span class="fc-action">Talk to a Consultant</span>
+        </div>
+    </a>
 
     <script>
         // Sticky Navigation Blur Effect

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Consulting | Trans Global Logistics</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #0A2540;
+            --primary-blue-hover: #061a2e;
+            --action-orange: #FF6B35;
+            --action-orange-hover: #e55a2b;
+            --success-green: #38A169;
+            --bg-color: #F7FAFC;
+            --surface-color: #FFFFFF;
+            --text-dark: #1A202C;
+            --text-muted: #4A5568;
+            --border-color: #E2E8F0;
+            --transition-fast: 0.2s ease;
+            --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        a { text-decoration: none; }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* --- 🟢 DYNAMIC NAVIGATION (CENTERED) 🟢 --- */
+        .public-nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 1.5rem 5%; background: transparent; position: fixed; top: 0; width: 100%; z-index: 1000; transition: var(--transition-smooth); }
+        .public-nav.scrolled { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08); padding: 1rem 5%; border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; transition: var(--transition-smooth); letter-spacing: -0.5px; justify-self: start;}
+        .public-nav.scrolled .logo { color: var(--primary-blue); }
+        
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; justify-self: center; }
+        .nav-links a { color: rgba(255,255,255,0.9); font-weight: 600; transition: var(--transition-fast); position: relative; padding-bottom: 4px; }
+        .public-nav.scrolled .nav-links a { color: var(--text-dark); }
+        .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; background-color: var(--action-orange); transition: var(--transition-smooth); }
+        .nav-links a:hover { color: var(--action-orange) !important; }                                       
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-buttons { display: flex; gap: 1rem; align-items: center; justify-self: end; }
+        .btn-login { border: 2px solid rgba(255,255,255,0.5); color: white !important; padding: 0.6rem 1.5rem; border-radius: 50px; transition: var(--transition-smooth); font-weight: 600; backdrop-filter: blur(5px); }
+        .public-nav.scrolled .btn-login { border-color: var(--border-color); color: var(--primary-blue) !important; }
+        .btn-login:hover { background: var(--primary-blue); color: white !important; border-color: var(--primary-blue); }
+        
+        .btn-cta { background: linear-gradient(135deg, var(--action-orange) 0%, #ff8e63 100%); color: white !important; padding: 0.7rem 1.8rem; border-radius: 50px; font-weight: 700; border: none; cursor: pointer; transition: var(--transition-smooth); box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4); display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6); }
+
+        .mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; transition: var(--transition-fast);}
+        .public-nav.scrolled .mobile-menu-btn { color: var(--primary-blue); }
+
+        /* Mobile Menu */
+        .mobile-menu-overlay { position: fixed; inset: 0; background: rgba(10, 37, 64, 0.95); backdrop-filter: blur(15px); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem; opacity: 0; visibility: hidden; transition: var(--transition-smooth); }
+        .mobile-menu-overlay.active { opacity: 1; visibility: visible; }
+        .close-mobile-menu { position: absolute; top: 1.5rem; right: 2rem; background: none; border: none; color: white; font-size: 3rem; cursor: pointer; transition: 0.2s;}
+        .close-mobile-menu:hover { color: var(--action-orange); transform: rotate(90deg);}
+        .mobile-menu-overlay a { color: white; font-size: 2rem; font-weight: 700; transition: 0.2s; }
+        .mobile-menu-overlay a:hover { color: var(--action-orange); transform: scale(1.1); }
+
+        /* --- 🟢 CONSULTING HERO SECTION 🟢 --- */
+        .consulting-hero {
+            position: relative; padding: 14rem 5% 10rem; min-height: 80vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            background: linear-gradient(rgba(10, 37, 64, 0.9), rgba(10, 37, 64, 0.7)), url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=2000') center/cover;
+            background-attachment: fixed; color: white; overflow: hidden;
+        }
+        .consulting-hero h1 { font-size: clamp(3rem, 6vw, 5.5rem); line-height: 1.1; margin-bottom: 1.5rem; font-weight: 900; letter-spacing: -2px; max-width: 1000px;}
+        .consulting-hero h1 span { color: var(--action-orange); }
+        .consulting-hero p { font-size: 1.25rem; color: #CBD5E0; margin-bottom: 3.5rem; font-weight: 400; max-width: 800px; line-height: 1.8;}
+        
+        .hero-tags { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem;}
+        .hero-tags span { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 0.5rem 1.5rem; border-radius: 50px; font-weight: 600; font-size: 0.9rem; backdrop-filter: blur(10px); display: flex; align-items: center; gap: 0.5rem;}
+        .hero-tags span i { color: var(--action-orange); }
+
+        /* --- 🟢 METRICS BAR 🟢 --- */
+        .metrics-bar { background: var(--surface-color); padding: 4rem 5%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; border-bottom: 1px solid var(--border-color); position: relative; z-index: 10; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05); max-width: 1400px; margin: -50px auto 4rem; border-radius: 20px;}
+        .metric-card { text-align: center; border-right: 1px solid var(--border-color); }
+        .metric-card:last-child { border-right: none; }
+        .metric-card h3 { font-size: 3.5rem; color: var(--primary-blue); font-weight: 900; line-height: 1; margin-bottom: 0.5rem;}
+        .metric-card p { color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;}
+
+        /* --- 🟢 CONSULTING PILLARS 🟢 --- */
+        .section-header { text-align: center; margin-bottom: 4rem; padding: 0 5%;}
+        .section-tag { color: var(--action-orange); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem; display: block; font-size: 0.9rem;}
+        .section-header h2 { font-size: clamp(2.5rem, 4vw, 3.5rem); color: var(--primary-blue); margin-bottom: 1.5rem; letter-spacing: -1px; font-weight: 800;}
+        .section-header p { font-size: 1.2rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.8;}
+
+        .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; max-width: 1400px; margin: 0 auto 8rem; padding: 0 5%;}
+        .pillar-card { background: var(--surface-color); border: 1px solid var(--border-color); padding: 3rem; border-radius: 24px; transition: var(--transition-smooth); position: relative; overflow: hidden; z-index: 1;}
+        .pillar-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--action-orange); transform: scaleY(0); transition: var(--transition-smooth); transform-origin: top;}
+        .pillar-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(10, 37, 64, 0.08); border-color: transparent;}
+        .pillar-card:hover::before { transform: scaleY(1); }
+        .pillar-icon { width: 70px; height: 70px; background: rgba(10, 37, 64, 0.05); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; font-size: 2rem; color: var(--primary-blue); transition: 0.3s;}
+        .pillar-card:hover .pillar-icon { background: var(--primary-blue); color: white; transform: rotate(-10deg) scale(1.1);}
+        .pillar-card h3 { font-size: 1.5rem; color: var(--primary-blue); margin-bottom: 1rem; font-weight: 800;}
+        .pillar-card p { color: var(--text-muted); line-height: 1.7; font-size: 1.05rem;}
+
+        /* --- 🟢 THE PROCESS TIMELINE 🟢 --- */
+        .process-section { background: var(--primary-blue); color: white; padding: 8rem 5%; position: relative; overflow: hidden;}
+        .process-section .section-header h2 { color: white; }
+        .process-section .section-header p { color: #CBD5E0; }
+        
+        .timeline { max-width: 1200px; margin: 0 auto; position: relative; padding: 2rem 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;}
+        .timeline::before { content: ''; position: absolute; top: 50%; left: 5%; width: 90%; height: 2px; background: rgba(255,255,255,0.2); transform: translateY(-50%); z-index: 1;}
+        
+        .process-step { text-align: center; position: relative; z-index: 2;}
+        .step-number { width: 60px; height: 60px; background: var(--action-orange); border: 4px solid var(--primary-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; margin: 0 auto 1.5rem; box-shadow: 0 0 0 4px rgba(255,107,53,0.3); transition: 0.3s;}
+        .process-step:hover .step-number { transform: scale(1.2); box-shadow: 0 0 0 8px rgba(255,107,53,0.2); }
+        .process-step h4 { font-size: 1.3rem; margin-bottom: 1rem; font-weight: 700;}
+        .process-step p { color: #CBD5E0; font-size: 0.95rem; line-height: 1.6;}
+
+        /* --- 🟢 EXPERT TEAM SHOWCASE 🟢 --- */
+        .team-section { padding: 8rem 5%; background: var(--bg-color); }
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem; max-width: 1400px; margin: 0 auto;}
+        
+        .team-card { background: var(--surface-color); border-radius: 24px; overflow: hidden; border: 1px solid var(--border-color); transition: var(--transition-smooth); text-align: center; padding-bottom: 2rem;}
+        .team-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(10, 37, 64, 0.1); border-color: var(--primary-blue);}
+        .team-img-wrapper { width: 100%; height: 300px; overflow: hidden; margin-bottom: 1.5rem; position: relative;}
+        .team-img-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: 0.5s;}
+        .team-card:hover .team-img-wrapper img { transform: scale(1.05); }
+        
+        .team-social { position: absolute; bottom: -50px; left: 0; width: 100%; display: flex; justify-content: center; gap: 1rem; padding: 1rem; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); transition: 0.3s ease; opacity: 0;}
+        .team-card:hover .team-social { bottom: 0; opacity: 1;}
+        .team-social a { color: white; font-size: 1.2rem; transition: 0.2s;}
+        .team-social a:hover { color: var(--action-orange); transform: translateY(-3px);}
+
+        .team-info h3 { font-size: 1.4rem; color: var(--primary-blue); margin-bottom: 0.3rem; font-weight: 800;}
+        .team-info .role { color: var(--action-orange); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; display: block;}
+        .team-info p { color: var(--text-muted); font-size: 0.95rem; padding: 0 1.5rem;}
+
+        /* --- 🟢 CTA SECTION 🟢 --- */
+        .consulting-cta { padding: 8rem 5%; background: var(--surface-color); text-align: center; }
+        .cta-wrapper { background: linear-gradient(135deg, var(--bg-color) 0%, #E2E8F0 100%); padding: 6rem 3rem; border-radius: 30px; max-width: 1200px; margin: 0 auto; border: 1px solid white; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.1);}
+        .cta-wrapper h2 { font-size: clamp(2rem, 4vw, 3.5rem); color: var(--primary-blue); margin-bottom: 1.5rem; letter-spacing: -1px; font-weight: 900;}
+        .cta-wrapper p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 3rem; max-width: 600px; margin-inline: auto;}
+        .btn-large { font-size: 1.2rem; padding: 1.2rem 3.5rem; }
+
+        /* --- FOOTER --- */
+        .main-footer { background: #05111f; color: #A0AEC0; padding: 6rem 5% 2rem; position: relative; z-index: 2;}
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; max-width: 1400px; margin-inline: auto;}
+        .footer-col h4 { color: white; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 700;}
+        .footer-col p { margin-bottom: 1.5rem; line-height: 1.8;}
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 1rem; }
+        .footer-links a { color: #A0AEC0; transition: var(--transition-fast); font-weight: 500; display: inline-flex; align-items: center; gap: 5px;}
+        .footer-links a i.fa-chevron-right { font-size: 0.7rem; opacity: 0; transform: translateX(-10px); transition: 0.3s; color: var(--action-orange);}
+        .footer-links a:hover { color: var(--action-orange); transform: translateX(5px); }
+        .footer-links a:hover i.fa-chevron-right { opacity: 1; transform: translateX(0); }
+        .social-links { display: flex; gap: 1rem; }
+        .social-links a { color: white; background: rgba(255, 255, 255, 0.05); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: var(--transition-smooth); border: 1px solid rgba(255,255,255,0.1);}
+        .social-links a:hover { background: var(--action-orange); transform: translateY(-3px); border-color: var(--action-orange); box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);}
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.9rem; }
+
+        @media (max-width: 1024px) { 
+            .metrics-bar { grid-template-columns: 1fr 1fr; padding: 2rem;}
+            .metric-card:nth-child(2) { border-right: none; }
+            .metric-card { padding-bottom: 1.5rem;}
+            .timeline { grid-template-columns: 1fr 1fr; gap: 4rem 2rem;}
+            .timeline::before { display: none; }
+        }
+        @media (max-width: 900px) {
+            .public-nav { grid-template-columns: 1fr auto; }
+            .nav-links, .btn-login, .btn-cta { display: none; }
+            .mobile-menu-btn { display: block; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem;}
+        }
+        @media (max-width: 600px) {
+            .metrics-bar { grid-template-columns: 1fr; }
+            .metric-card { border-right: none; border-bottom: 1px solid var(--border-color); padding: 2rem 0;}
+            .metric-card:last-child { border-bottom: none; }
+            .timeline { grid-template-columns: 1fr; gap: 3rem;}
+            .footer-grid { grid-template-columns: 1fr; }
+            .consulting-hero h1 { font-size: 2.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🟢 DYNAMIC NAVIGATION 🟢 -->
+    <nav class="public-nav" id="navbar">
+        <a href="landing.html" class="logo">Trans Global</a>
+        
+        <div class="nav-links">
+            <a href="landing.html#services">Services</a>
+            <a href="landing.html#platform">Platform</a>
+            <a href="our-work.html">Our Work</a>
+            <a href="consulting.html" style="color: var(--action-orange);">Consulting</a>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="tamplate/login.html" class="btn-login"><i class="fa-solid fa-lock" style="margin-right: 5px;"></i> Client Login</a>
+            <a href="tamplate/booking.html" class="btn-cta">Book Consultation <i class="fa-solid fa-arrow-right"></i></a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU OVERLAY -->
+    <div class="mobile-menu-overlay" id="mobileMenu">
+        <button class="close-mobile-menu" onclick="toggleMobileMenu()">&times;</button>
+        <a href="landing.html#services" onclick="toggleMobileMenu()">Services</a>
+        <a href="landing.html#platform" onclick="toggleMobileMenu()">Platform</a>
+        <a href="our-work.html" onclick="toggleMobileMenu()">Our Work</a>
+        <a href="consulting.html" onclick="toggleMobileMenu()">Consulting</a>
+        <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+            <a href="tamplate/login.html" class="btn-login" style="font-size: 1.1rem; border-color: white;">Client Login</a>
+            <a href="tamplate/booking.html" class="btn-cta" style="font-size: 1.1rem;">Book Consultation <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <!-- 🟢 HERO SECTION 🟢 -->
+    <header class="consulting-hero">
+        <div class="hero-tags reveal">
+            <span><i class="fa-solid fa-chart-line"></i> Supply Chain Optimization</span>
+            <span><i class="fa-solid fa-scale-balanced"></i> Customs & Trade Law</span>
+            <span><i class="fa-solid fa-shield-halved"></i> Risk Mitigation</span>
+        </div>
+        
+        <h1 class="reveal reveal-delay-1">Transform Your Supply Chain Into a <span>Competitive Advantage</span>.</h1>
+        <p class="reveal reveal-delay-2">Stop viewing logistics as a pure cost center. Our global enterprise engineers redesign your physical and digital networks to accelerate velocity, ensure absolute compliance, and drastically reduce overhead.</p>
+        
+        <a href="tamplate/booking.html" class="btn-cta reveal reveal-delay-3" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
+            Schedule a Diagnostic Audit <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </header>
+
+    <!-- 🟢 METRICS BAR 🟢 -->
+    <section class="metrics-bar reveal">
+        <div class="metric-card">
+            <h3>$2B+</h3>
+            <p>Annual Client Savings</p>
+        </div>
+        <div class="metric-card">
+            <h3>15+</h3>
+            <p>Avg. Years Expertise</p>
+        </div>
+        <div class="metric-card">
+            <h3>800+</h3>
+            <p>Networks Optimized</p>
+        </div>
+        <div class="metric-card">
+            <h3>99%</h3>
+            <p>Audit Success Rate</p>
+        </div>
+    </section>
+
+    <!-- 🟢 STRATEGIC PILLARS 🟢 -->
+    <section style="padding-top: 4rem;">
+        <div class="section-header reveal">
+            <span class="section-tag">Core Competencies</span>
+            <h2>How We Re-Engineer Global Trade</h2>
+            <p>We deploy cross-functional teams of data scientists, customs attorneys, and veteran freight engineers to attack supply chain inefficiencies from every angle.</p>
+        </div>
+
+        <div class="pillars-grid">
+            <div class="pillar-card reveal">
+                <div class="pillar-icon"><i class="fa-solid fa-route"></i></div>
+                <h3>Network Optimization</h3>
+                <p>We analyze historical shipping data to identify bottlenecks. By restructuring inland transit paths and consolidating freight at key strategic hubs, we reduce per-unit shipping costs by an average of 18%.</p>
+            </div>
+            <div class="pillar-card reveal reveal-delay-1">
+                <div class="pillar-icon"><i class="fa-solid fa-file-contract"></i></div>
+                <h3>Trade & Tariff Strategy</h3>
+                <p>Don't overpay at the border. Our licensed brokers and trade attorneys map your product classifications against global Free Trade Agreements (FTAs) to legally minimize duty exposure and secure tariff refunds.</p>
+            </div>
+            <div class="pillar-card reveal reveal-delay-2">
+                <div class="pillar-icon"><i class="fa-solid fa-tower-observation"></i></div>
+                <h3>Resilience Planning</h3>
+                <p>Geopolitical shifts and natural disasters disrupt operations. We design robust "Plan B" architecture, securing secondary carrier contracts and multi-modal fallback routes so your cargo keeps moving regardless of global events.</p>
+            </div>
+            <div class="pillar-card reveal reveal-delay-3">
+                <div class="pillar-icon"><i class="fa-solid fa-server"></i></div>
+                <h3>Digital ERP Integration</h3>
+                <p>Siloed data destroys efficiency. We directly integrate our SecureLogix™ API into your existing SAP or Oracle systems, automating purchasing, invoicing, and real-time inventory visibility across all departments.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🟢 THE PROCESS TIMELINE 🟢 -->
+    <section class="process-section">
+        <div class="section-header reveal">
+            <span class="section-tag" style="color: #ffb088;">Our Methodology</span>
+            <h2>The Diagnostic Roadmap</h2>
+            <p>We do not guess. Our consulting methodology is rooted in rigorous data analysis and proven execution frameworks.</p>
+        </div>
+
+        <div class="timeline reveal">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <h4>Discovery Audit</h4>
+                <p>We ingest your last 12 months of shipping data, tariff payments, and carrier contracts to identify immediate financial leaks.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <h4>Data Simulation</h4>
+                <p>Our engineers run your data through AI routing simulations to model potential savings, faster transit times, and risk exposure.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <h4>Strategic Blueprint</h4>
+                <p>We deliver a comprehensive, actionable boardroom strategy detailing new operational workflows, required digital integrations, and legal compliance structures.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <h4>Live Execution</h4>
+                <p>We don't just hand you a PDF. Our team embeds with your operations department to physically implement the new infrastructure and train your staff.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🟢 EXPERT TEAM SHOWCASE 🟢 -->
+    <section class="team-section">
+        <div class="section-header reveal">
+            <span class="section-tag">The Strategists</span>
+            <h2>Meet Your Consulting Board</h2>
+            <p>When you hire Trans Global, you aren't just getting software; you are getting direct access to industry veterans who have managed billions of dollars in international freight.</p>
+        </div>
+
+        <div class="team-grid">
+            <!-- Expert 1 -->
+            <div class="team-card reveal">
+                <div class="team-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600" alt="David Chen">
+                    <div class="team-social">
+                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="team-info">
+                    <h3>David Chen</h3>
+                    <span class="role">Head of APAC Logistics</span>
+                    <p>Former Port Director with 20 years of experience navigating complex Asian export markets and scaling massive ocean freight consolidations.</p>
+                </div>
+            </div>
+
+            <!-- Expert 2 -->
+            <div class="team-card reveal reveal-delay-1">
+                <div class="team-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600" alt="Elena Rostova">
+                    <div class="team-social">
+                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="team-info">
+                    <h3>Dr. Elena Rostova</h3>
+                    <span class="role">Chief Compliance Attorney</span>
+                    <p>Licensed Customs Broker and international trade lawyer specializing in tariff reduction strategies and FDA/Pharma cold-chain regulations.</p>
+                </div>
+            </div>
+
+            <!-- Expert 3 -->
+            <div class="team-card reveal reveal-delay-2">
+                <div class="team-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600" alt="Marcus Wright">
+                    <div class="team-social">
+                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="team-info">
+                    <h3>Marcus Wright</h3>
+                    <span class="role">VP of Digital Infrastructure</span>
+                    <p>Lead architect of the SecureLogix platform. Specializes in integrating complex logistics data directly into Fortune 500 ERP systems.</p>
+                </div>
+            </div>
+            
+            <!-- Expert 4 -->
+            <div class="team-card reveal reveal-delay-3">
+                <div class="team-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600" alt="Sarah Jenkins">
+                    <div class="team-social">
+                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="team-info">
+                    <h3>Sarah Jenkins</h3>
+                    <span class="role">Director of Air & Priority</span>
+                    <p>Expert in rapid-response supply chains, charter flight negotiations, and Next-Flight-Out (NFO) routing for time-critical manufacturing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🟢 FINAL CTA 🟢 -->
+    <section class="consulting-cta">
+        <div class="cta-wrapper reveal">
+            <h2>Stop Leaving Money at the Border.</h2>
+            <p>Every day your supply chain runs inefficiently, you are bleeding capital. Let our experts run a diagnostic audit and show you exactly where we can cut costs and increase speed.</p>
+            <a href="tamplate/booking.html" class="btn-cta btn-large">Request Your Consultation <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 style="color: var(--action-orange); font-size: 1.8rem; font-weight: 900; letter-spacing:-0.5px;">Trans Global</h4>
+                <p>Next-generation logistics and supply chain management for enterprise teams worldwide.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Solutions</h4>
+                <ul class="footer-links">
+                    <li><a href="landing_pages/global-network.html"><i class="fa-solid fa-chevron-right"></i> Ocean & Air Network</a></li>
+                    <li><a href="landing_pages/automated-customs.html"><i class="fa-solid fa-chevron-right"></i> Customs Brokerage</a></li>
+                    <li><a href="landing_pages/risk-coverage.html"><i class="fa-solid fa-chevron-right"></i> Risk Coverage</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Secure Platform</h4>
+                <ul class="footer-links">
+                    <li><a href="tamplate/login.html"><i class="fa-solid fa-lock" style="font-size: 0.8rem; margin-right:5px;"></i> Client Login</a></li>
+                    <li><a href="tamplate/login.html"><i class="fa-solid fa-lock" style="font-size: 0.8rem; margin-right:5px;"></i> Live Tracking System</a></li>
+                    <li><a href="#inquiry"><i class="fa-solid fa-chevron-right"></i> Request API Access</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Public Support</h4>
+                <ul class="footer-links">
+                    <li><a href="landing_pages/public-support.html"><i class="fa-solid fa-headset" style="margin-right: 8px;"></i> Visit Help Center</a></li>
+                    <li><a href="mailto:support@transglobal.com"><i class="fa-solid fa-envelope" style="margin-right: 8px;"></i> support@transglobal.com</a></li>
+                    <li><a href="#"><i class="fa-solid fa-phone" style="margin-right: 8px;"></i> +1 (800) 555-0199</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Trans Global Logistics. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sticky Navigation Blur Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+                document.getElementById('mobileMenuIcon')?.setAttribute('style', 'color: var(--primary-blue);');
+            } else {
+                nav.classList.remove('scrolled');
+                document.getElementById('mobileMenuIcon')?.setAttribute('style', 'color: white;');
+            }
+        });
+
+        // Mobile Menu Logic
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('active');
+        }
+
+        // --- 🟢 SCROLL REVEAL ANIMATIONS 🟢 ---
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger on load
+    </script>
+</body>
+</html>
