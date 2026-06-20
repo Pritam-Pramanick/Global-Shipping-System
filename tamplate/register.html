@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Enterprise Account | Trans Global</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #0A2540;
+            --primary-blue-hover: #061a2e;
+            --action-orange: #FF6B35;
+            --action-orange-hover: #e55a2b;
+            --success-green: #38A169;
+            --bg-color: #F7FAFC;
+            --surface-color: #FFFFFF;
+            --text-dark: #1A202C;
+            --text-muted: #4A5568;
+            --border-color: #E2E8F0;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- Left Panel (Branding) --- */
+        .left-panel {
+            flex: 1.2;
+            position: relative;
+            background: linear-gradient(135deg, rgba(10, 37, 64, 0.95) 0%, rgba(10, 37, 64, 0.7) 100%), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2000') center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 4rem;
+            color: white;
+            overflow: hidden;
+        }
+
+        .brand-header { animation: fadeSlideUp 0.8s forwards; }
+        .logo-text { font-size: 2rem; font-weight: 900; letter-spacing: -1px; display: flex; align-items: center; gap: 0.8rem; margin-bottom: 2rem;}
+        .logo-text i { color: var(--action-orange); font-size: 2.2rem;}
+        
+        .brand-content h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -1px; }
+        .brand-content h1 span { color: var(--action-orange); }
+        .brand-content p { font-size: 1.2rem; color: #CBD5E0; max-width: 450px; line-height: 1.6; font-weight: 400;}
+
+        .trust-quote {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            animation: fadeSlideUp 1s 0.2s forwards 0;
+        }
+        .trust-quote p { font-style: italic; margin-bottom: 1rem; color: white; font-size: 1.05rem;}
+        .trust-author { display: flex; align-items: center; gap: 1rem; }
+        .trust-author img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--action-orange); }
+        .trust-author h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.1rem;}
+        .trust-author span { font-size: 0.8rem; color: #CBD5E0; }
+
+        /* --- Right Panel (Form) --- */
+        .right-panel {
+            flex: 1.5; /* Given a bit more flex space for wider form */
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-color);
+            padding: 2rem;
+            height: 100vh;
+            overflow-y: auto; 
+        }
+
+        .back-link {
+            align-self: flex-end;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            margin-bottom: 2rem;
+            flex-shrink: 0;
+        }
+        .back-link:hover { color: var(--primary-blue); transform: translateX(-5px); }
+
+        .register-wrapper {
+            width: 100%;
+            max-width: 700px; /* Widened to perfectly fit 2 columns */
+            margin: auto;
+            background: var(--surface-color);
+            padding: 3.5rem 3rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            flex-shrink: 0; 
+            margin-bottom: 4rem; 
+        }
+
+        .login-header { text-align: center; margin-bottom: 2.5rem; }
+        .login-header h2 { font-size: 1.8rem; font-weight: 800; color: var(--primary-blue); margin-bottom: 0.5rem; letter-spacing: -0.5px;}
+        .login-header p { color: var(--text-muted); font-size: 1rem; }
+
+        /* --- Messages --- */
+        .sys-message { padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-size: 0.95rem; font-weight: 600; display: none; align-items: center; gap: 0.8rem;}
+        .sys-error { background-color: #FFF5F5; color: #E53E3E; border: 1px solid #FEB2B2; }
+        .sys-success { background-color: #F0FFF4; color: var(--success-green); border: 1px solid #9AE6B4; }
+
+        /* --- Form Grid & Inputs --- */
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        
+        .input-group { position: relative; margin-bottom: 1.2rem; }
+        .input-group.full-width { grid-column: 1 / -1; }
+        
+        .input-icon {
+            position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%);
+            color: #A0AEC0; font-size: 1.1rem; transition: var(--transition); z-index: 2;
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%; padding: 1.2rem 1rem 1.2rem 3rem; font-size: 1rem;
+            border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-color);
+            outline: none; color: var(--text-dark); transition: var(--transition); font-family: inherit; font-weight: 500;
+        }
+        
+        .input-group select {
+            appearance: none; cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234A5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 1.2rem center; background-size: 1em;
+        }
+
+        .input-group label {
+            position: absolute; left: 3rem; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 1rem; transition: var(--transition); 
+            pointer-events: none; background: transparent; padding: 0;
+        }
+
+        /* Focus & Filled States */
+        .input-group input:focus, .input-group input:not(:placeholder-shown), .input-group select:focus, .input-group select:not(:invalid) { 
+            border-color: var(--action-orange); background: white; box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1); 
+        }
+        .input-group input:focus ~ .input-icon, .input-group input:not(:placeholder-shown) ~ .input-icon, .input-group select:focus ~ .input-icon, .input-group select:not(:invalid) ~ .input-icon {
+            color: var(--action-orange);
+        }
+        .input-group input:focus ~ label, .input-group input:not(:placeholder-shown) ~ label, .input-group select:focus ~ label, .input-group select:not(:invalid) ~ label {
+            top: -0.6rem; left: 1rem; font-size: 0.8rem; color: var(--primary-blue); font-weight: 700; background: white; padding: 0 0.5rem; border-radius: 4px;
+        }
+
+        /* Password Strength UI */
+        .password-strength { display: flex; gap: 5px; margin-top: -0.5rem; margin-bottom: 1.5rem; padding-left: 0.5rem;}
+        .strength-bar { height: 4px; flex: 1; background: var(--border-color); border-radius: 50px; transition: 0.3s;}
+        .strength-text { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; width: 100%; text-align: right; margin-top: 5px;}
+
+        /* --- Actions & Buttons --- */
+        .form-actions { margin-top: 0.5rem; margin-bottom: 2rem; font-size: 0.95rem; }
+        
+        .checkbox-wrapper { display: flex; align-items: flex-start; gap: 0.8rem; cursor: pointer; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; line-height: 1.4;}
+        .checkbox-wrapper input[type="checkbox"] {
+            appearance: none; width: 22px; height: 22px; border: 2px solid var(--border-color);
+            border-radius: 6px; display: grid; place-content: center; cursor: pointer; transition: 0.2s; background: var(--bg-color); flex-shrink: 0; margin-top: 2px;
+        }
+        .checkbox-wrapper input[type="checkbox"]::before {
+            content: ""; width: 12px; height: 12px; transform: scale(0); box-shadow: inset 1em 1em white;
+            transform-origin: center; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); transition: 0.2s;
+        }
+        .checkbox-wrapper input[type="checkbox"]:checked { background-color: var(--action-orange); border-color: var(--action-orange); }
+        .checkbox-wrapper input[type="checkbox"]:checked::before { transform: scale(1); }
+        .checkbox-wrapper a { color: var(--primary-blue); font-weight: 700; text-decoration: underline;}
+
+        .btn-submit {
+            width: 100%; padding: 1.2rem; border: none; border-radius: 12px;
+            background: linear-gradient(135deg, var(--action-orange) 0%, #ff8e63 100%);
+            color: white; font-size: 1.1rem; font-weight: 800; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3); transition: var(--transition);
+        }
+        .btn-submit:hover { box-shadow: 0 15px 25px rgba(255, 107, 53, 0.4); transform: translateY(-3px); }
+        .btn-submit:disabled { background: #CBD5E0; box-shadow: none; cursor: not-allowed; transform: none; }
+
+        .spinner {
+            display: none; width: 22px; height: 22px; border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; border-top-color: white; animation: spin 1s linear infinite;
+        }
+
+        .login-link { display: block; text-align: center; margin-top: 2rem; color: var(--text-muted); font-size: 0.95rem; font-weight: 500;}
+        .login-link a { color: var(--primary-blue); font-weight: 700; text-decoration: underline;}
+
+        @media (max-width: 900px) {
+            .left-panel { display: none; }
+            body { display: block; overflow-y: auto; }
+            .right-panel { height: auto; overflow: visible; padding: 1.5rem; }
+            .back-link { float: right; margin-bottom: 2rem; display: inline-flex; }
+            .register-wrapper { padding: 2.5rem 2rem; margin: 4rem auto 2rem; clear: both; }
+            .form-row { grid-template-columns: 1fr; gap: 0; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="left-panel">
+        <div class="brand-header">
+            <div class="logo-text"><i class="fa-solid fa-earth-americas"></i> Trans Global</div>
+        </div>
+        
+        <div class="brand-content">
+            <h1>Join the Global<br><span>Network.</span></h1>
+            <p>Create your enterprise account to unlock predictive routing, automated customs brokerage, and live GPS tracking.</p>
+        </div>
+
+        <div class="trust-quote">
+            <p>"Integrating Trans Global's API into our purchasing software completely transformed our operational speed. Onboarding was seamless."</p>
+            <div class="trust-author">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100" alt="Elena Rostova">
+                <div>
+                    <h4>Dr. Elena Rostova</h4>
+                    <span>Director Logistics, BioHealth</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <a href="../landing.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        
+        <div class="register-wrapper">
+            <div class="login-header">
+                <h2>Create Account</h2>
+                <p>Provide your corporate details to request network access.</p>
+            </div>
+
+            <!-- Messages -->
+            <div class="sys-message sys-error" id="errorMsg" style="display: none;">
+                <i class="fa-solid fa-circle-exclamation"></i> <span id="errorText">Error message goes here.</span>
+            </div>
+            <div class="sys-message sys-success" id="successMsg" style="display: none;">
+                <i class="fa-solid fa-circle-check"></i> <span>Account Created! Redirecting to login...</span>
+            </div>
+
+            <form id="registerForm">
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <i class="fa-solid fa-user input-icon"></i>
+                        <input type="text" id="regName" placeholder=" " required>
+                        <label for="regName">Full Name</label>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-id-badge input-icon"></i>
+                        <input type="text" id="regTitle" placeholder=" " required>
+                        <label for="regTitle">Job Title</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="email" id="regEmail" placeholder=" " required>
+                        <label for="regEmail">Work Email Address</label>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-phone input-icon"></i>
+                        <input type="tel" id="regPhone" placeholder=" " required>
+                        <label for="regPhone">Phone Number</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <i class="fa-solid fa-building input-icon"></i>
+                        <input type="text" id="regCompany" placeholder=" " required>
+                        <label for="regCompany">Company Name</label>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-industry input-icon"></i>
+                        <select id="regIndustry" required>
+                            <option value="" disabled selected></option>
+                            <option value="auto">Automotive</option>
+                            <option value="health">Healthcare & Pharma</option>
+                            <option value="retail">Retail & E-Commerce</option>
+                            <option value="heavy">Heavy Lift & Energy</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <label for="regIndustry">Primary Industry</label>
+                    </div>
+                </div>
+
+                <div class="input-group full-width">
+                    <i class="fa-solid fa-chart-line input-icon"></i>
+                    <select id="regVolume" required>
+                        <option value="" disabled selected></option>
+                        <option value="tier1">&lt; $1M Annually</option>
+                        <option value="tier2">$1M - $10M Annually</option>
+                        <option value="tier3">$10M - $50M Annually</option>
+                        <option value="tier4">$50M+ Annually</option>
+                    </select>
+                    <label for="regVolume">Estimated Annual Freight Spend</label>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="regPassword" placeholder=" " required onkeyup="checkStrength()">
+                        <label for="regPassword">Create Password</label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <i class="fa-solid fa-shield-check input-icon"></i>
+                        <input type="password" id="regConfirmPassword" placeholder=" " required>
+                        <label for="regConfirmPassword">Confirm Password</label>
+                    </div>
+                </div>
+                
+                <!-- UX Element: Password Strength -->
+                <div class="password-strength full-width">
+                    <div class="strength-bar" id="bar1"></div>
+                    <div class="strength-bar" id="bar2"></div>
+                    <div class="strength-bar" id="bar3"></div>
+                </div>
+
+                <div class="form-actions">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" id="termsCheck" required> 
+                        <span>I agree to the <a href="#">Terms of Service</a>, <a href="#">Privacy Policy</a>, and Data Processing Agreement.</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit" id="regSubmitBtn">
+                    <span id="regBtnText">Submit Enterprise Request</span>
+                    <div class="spinner" id="regBtnSpinner"></div>
+                </button>
+                
+                <div class="login-link">
+                    Already have an account? <a href="login.html">Sign in here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // UX: Password Strength Logic
+        function checkStrength() {
+            const val = document.getElementById('regPassword').value;
+            const b1 = document.getElementById('bar1');
+            const b2 = document.getElementById('bar2');
+            const b3 = document.getElementById('bar3');
+
+            b1.style.background = 'var(--border-color)';
+            b2.style.background = 'var(--border-color)';
+            b3.style.background = 'var(--border-color)';
+
+            if (val.length > 0) { b1.style.background = '#F56565'; } // Weak: Red
+            if (val.length >= 6 && /[A-Z]/.test(val)) { 
+                b1.style.background = '#ECC94B'; 
+                b2.style.background = '#ECC94B'; // Medium: Yellow
+            }
+            if (val.length >= 8 && /[A-Z]/.test(val) && /[0-9]/.test(val) && /[^A-Za-z0-9]/.test(val)) { 
+                b1.style.background = 'var(--success-green)'; 
+                b2.style.background = 'var(--success-green)'; 
+                b3.style.background = 'var(--success-green)'; // Strong: Green
+            }
+        }
+
+        // Form Submission Logic
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const errorMsg = document.getElementById('errorMsg');
+            const successMsg = document.getElementById('successMsg');
+            const errorText = document.getElementById('errorText');
+            
+            const name = document.getElementById('regName').value;
+            const title = document.getElementById('regTitle').value;
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const pass = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+            
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+
+            if (pass !== confirm) {
+                errorText.innerText = "Passwords do not match.";
+                errorMsg.style.display = 'flex';
+                return;
+            }
+
+            const btn = document.getElementById('regSubmitBtn');
+            const btnText = document.getElementById('regBtnText');
+            const spinner = document.getElementById('regBtnSpinner');
+
+            btn.disabled = true;
+            btnText.innerText = 'Analyzing Profile...';
+            spinner.style.display = 'block';
+
+            // Simulate API Call
+            setTimeout(() => {
+                // Pre-fill local storage so login page knows who they are and their role
+                localStorage.setItem('secureLogix_displayName', name);
+                localStorage.setItem('secureLogix_registeredRole', title);
+                
+                btn.style.background = 'linear-gradient(135deg, var(--success-green) 0%, #2f855a 100%)';
+                btnText.innerText = 'Request Approved!';
+                spinner.style.display = 'none';
+                
+                successMsg.style.display = 'flex';
+
+                // Redirect to login page after 1.5 seconds
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

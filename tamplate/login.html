@@ -1,135 +1,503 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal - SecureLogix</title>
+    <title>Secure Portal Login | Trans Global</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #0A2540;
+            --primary-blue-hover: #061a2e;
+            --action-orange: #FF6B35;
+            --action-orange-hover: #e55a2b;
+            --success-green: #38A169;
+            --bg-color: #F7FAFC;
+            --surface-color: #FFFFFF;
+            --text-dark: #1A202C;
+            --text-muted: #4A5568;
+            --border-color: #E2E8F0;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    <link rel="stylesheet" href="../css/login.css">
-    <script src="../Javascript/login.js"></script>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- Left Panel (Branding) --- */
+        .left-panel {
+            flex: 1.2;
+            position: relative;
+            background: linear-gradient(135deg, rgba(10, 37, 64, 0.95) 0%, rgba(10, 37, 64, 0.7) 100%), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=2000') center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 4rem;
+            color: white;
+            overflow: hidden;
+        }
+
+        .brand-header { animation: fadeSlideUp 0.8s forwards; }
+        .logo-text { font-size: 2rem; font-weight: 900; letter-spacing: -1px; display: flex; align-items: center; gap: 0.8rem; margin-bottom: 2rem;}
+        .logo-text i { color: var(--action-orange); font-size: 2.2rem;}
+        
+        .brand-content h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -1px; }
+        .brand-content h1 span { color: var(--action-orange); }
+        .brand-content p { font-size: 1.2rem; color: #CBD5E0; max-width: 450px; line-height: 1.6; font-weight: 400;}
+
+        .trust-quote {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            animation: fadeSlideUp 1s 0.2s forwards  0;
+        }
+        .trust-quote p { font-style: italic; margin-bottom: 1rem; color: white; font-size: 1.05rem;}
+        .trust-author { display: flex; align-items: center; gap: 1rem; }
+        .trust-author img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--action-orange); }
+        .trust-author h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.1rem;}
+        .trust-author span { font-size: 0.8rem; color: #CBD5E0; }
+
+        /* --- Right Panel (Form) --- */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-color);
+            padding: 2rem;
+            height: 100vh;
+            overflow-y: auto; /* Enables scrolling on small screens */
+        }
+
+        .back-link {
+            align-self: flex-end;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            margin-bottom: 2rem;
+            flex-shrink: 0;
+        }
+        .back-link:hover { color: var(--primary-blue); transform: translateX(-5px); }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 460px;
+            margin: auto;
+            background: var(--surface-color);
+            padding: 3.5rem 3rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            flex-shrink: 0; 
+            margin-bottom: 4rem; 
+        }
+
+        .login-header { text-align: center; margin-bottom: 2rem; }
+        .login-header h2 { font-size: 1.8rem; font-weight: 800; color: var(--primary-blue); margin-bottom: 0.5rem; letter-spacing: -0.5px;}
+        .login-header p { color: var(--text-muted); font-size: 1rem; }
+
+        /* --- Elegant Segmented Toggle --- */
+        .role-toggle-container {
+            position: relative; display: flex; background: var(--bg-color);
+            border-radius: 12px; padding: 5px; margin-bottom: 2.5rem;
+            border: 1px solid var(--border-color);
+        }
+        .role-btn {
+            flex: 1; padding: 0.8rem 0; border: none; background: transparent;
+            font-weight: 700; color: var(--text-muted); cursor: pointer;
+            position: relative; z-index: 2; transition: var(--transition); font-size: 0.9rem;
+        }
+        .role-btn.active { color: white; }
+        .role-slider {
+            position: absolute; top: 5px; bottom: 5px; left: 5px;
+            width: calc(50% - 7.5px); background: var(--primary-blue);
+            border-radius: 8px; box-shadow: 0 4px 10px rgba(10, 37, 64, 0.2);
+            transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1;
+        }
+        .admin-mode .role-slider { left: calc(50% + 2.5px); }
+
+        /* --- Messages --- */
+        .sys-message { padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-size: 0.95rem; font-weight: 600; display: none; align-items: center; gap: 0.8rem;}
+        .sys-error { background-color: #FFF5F5; color: #E53E3E; border: 1px solid #FEB2B2; }
+        .sys-success { background-color: #F0FFF4; color: var(--success-green); border: 1px solid #9AE6B4; }
+
+        /* --- Inputs with Icons --- */
+        .input-group { position: relative; margin-bottom: 1.2rem; }
+        .input-icon {
+            position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%);
+            color: #A0AEC0; font-size: 1.1rem; transition: var(--transition); z-index: 2;
+        }
+        
+        .input-group input {
+            width: 100%; padding: 1.2rem 1rem 1.2rem 3rem; font-size: 1rem;
+            border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-color);
+            outline: none; color: var(--text-dark); transition: var(--transition); font-family: inherit; font-weight: 500;
+        }
+
+        .input-group label {
+            position: absolute; left: 3rem; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 1rem; transition: var(--transition); 
+            pointer-events: none; background: transparent; padding: 0;
+        }
+
+        /* Focus & Filled States */
+        .input-group input:focus, .input-group input:not(:placeholder-shown) { 
+            border-color: var(--action-orange); background: white; box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1); 
+        }
+        .input-group input:focus ~ .input-icon, .input-group input:not(:placeholder-shown) ~ .input-icon {
+            color: var(--action-orange);
+        }
+        .input-group input:focus ~ label, .input-group input:not(:placeholder-shown) ~ label {
+            top: -0.6rem; left: 1rem; font-size: 0.8rem; color: var(--primary-blue); font-weight: 700; background: white; padding: 0 0.5rem; border-radius: 4px;
+        }
+
+        /* --- Actions & Buttons --- */
+        .form-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; margin-bottom: 2rem; font-size: 0.95rem; }
+        
+        .checkbox-wrapper { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; color: var(--text-dark); font-weight: 600; }
+        .checkbox-wrapper input[type="checkbox"] {
+            appearance: none; width: 20px; height: 20px; border: 2px solid var(--border-color);
+            border-radius: 6px; display: grid; place-content: center; cursor: pointer; transition: 0.2s; background: var(--bg-color);
+        }
+        .checkbox-wrapper input[type="checkbox"]::before {
+            content: ""; width: 10px; height: 10px; transform: scale(0); box-shadow: inset 1em 1em white;
+            transform-origin: center; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); transition: 0.2s;
+        }
+        .checkbox-wrapper input[type="checkbox"]:checked { background-color: var(--action-orange); border-color: var(--action-orange); }
+        .checkbox-wrapper input[type="checkbox"]:checked::before { transform: scale(1); }
+
+        .forgot-link { color: var(--text-muted); text-decoration: none; font-weight: 600; transition: 0.2s; }
+        .forgot-link:hover { color: var(--action-orange); }
+
+        .btn-submit {
+            width: 100%; padding: 1.2rem; border: none; border-radius: 12px;
+            background: linear-gradient(135deg, var(--action-orange) 0%, #ff8e63 100%);
+            color: white; font-size: 1.1rem; font-weight: 800; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3); transition: var(--transition);
+        }
+        .btn-submit:hover { box-shadow: 0 15px 25px rgba(255, 107, 53, 0.4); transform: translateY(-3px); }
+        .btn-submit:disabled { background: #CBD5E0; box-shadow: none; cursor: not-allowed; transform: none; }
+
+        /* Secondary Outline Registration Button */
+        .btn-register {
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            width: 100%; padding: 1.2rem; margin-top: 1rem; border-radius: 12px;
+            background: transparent; color: var(--primary-blue); font-size: 1rem; font-weight: 700; 
+            border: 2px solid var(--border-color); text-decoration: none; transition: var(--transition);
+        }
+        .btn-register:hover { border-color: var(--primary-blue); background: rgba(10, 37, 64, 0.03); }
+
+        .spinner {
+            display: none; width: 22px; height: 22px; border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; border-top-color: white; animation: spin 1s linear infinite;
+        }
+
+        .divider { display: flex; align-items: center; text-align: center; margin: 1.5rem 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 500;}
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
+        .divider:not(:empty)::before { margin-right: .5em; }
+        .divider:not(:empty)::after { margin-left: .5em; }
+
+        @media (max-width: 900px) {
+            .left-panel { display: none; }
+            body { display: block; overflow-y: auto; }
+            .right-panel { height: auto; overflow: visible; padding: 1.5rem; }
+            .back-link { float: right; margin-bottom: 2rem; display: inline-flex; }
+            .login-wrapper { padding: 2.5rem 2rem; margin: 4rem auto 2rem; clear: both; }
+        }
+    </style>
 </head>
 
 <body>
 
-    <div class="layout-wrapper">
-        <div class="left-panel">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-
-            <div class="brand-showcase">
-                <h1>Global Logistics,<br>Secured.</h1>
-                <p>Access the central SecureLogix portal to manage global allocations, track secure document
-                    integration, and optimize the supply chain matrix in real-time.</p>
-            </div>
+    <div class="left-panel">
+        <div class="brand-header">
+            <div class="logo-text"><i class="fa-solid fa-earth-americas"></i> Trans Global</div>
+        </div>
+        
+        <div class="brand-content">
+            <h1>Global Logistics,<br><span>Secured.</span></h1>
+            <p>Access the SecureLogix™ portal to manage active shipments, review customs documentation, and optimize your supply chain matrix in real-time.</p>
         </div>
 
-        <div class="right-panel">
-            <div class="login-container">
-
-                <div class="login-header">
-                    <div class="logo-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        </svg>
-                    </div>
-                    <h2 id="loginTitle">User Login</h2>
-                    <p id="loginSubtitle">Please enter your details to sign in.</p>
+        <div class="trust-quote">
+            <p>"Trans Global's predictive AI routing saved us over $2.4M in freight costs last year alone. Their dashboard transparency is unmatched."</p>
+            <div class="trust-author">
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100" alt="David Chen">
+                <div>
+                    <h4>David Chen</h4>
+                    <span>VP Supply Chain, TechNova</span>
                 </div>
-
-                <div class="role-toggle-container" id="toggleContainer">
-                    <div class="role-slider"></div>
-                    <button type="button" class="role-btn active" id="userToggle">User</button>
-                    <button type="button" class="role-btn" id="registerToggle">Registration</button>
-                    <button type="button" class="role-btn" id="adminToggle">Admin</button>
-                </div>
-
-                <div class="sys-message sys-error" id="errorMsg">Incorrect Details or Unauthorized Role.</div>
-                <div class="sys-message sys-success" id="successMsg">Account Created! Please log in.</div>
-
-                <form id="loginForm">
-
-                    <div class="input-group">
-                        <input type="text" id="employeeId" placeholder=" " required autocomplete="username">
-                        <label for="employeeId">Employee ID or Email</label>
-                    </div>
-
-                    <div class="input-group">
-                        <input type="password" id="password" placeholder=" " required autocomplete="current-password">
-                        <label for="password">Password</label>
-                    </div>
-
-                    <div class="input-group" id="mobileGroup" style="display: none;">
-                        <input type="tel" id="mobileNo" placeholder=" ">
-                        <label for="mobileNo">Admin Mobile No.</label>
-                    </div>
-
-                    <div class="input-group" id="adminRoleGroup" style="display: none;">
-                        <select id="adminRole">
-                            <option value="" disabled selected></option>
-                            <option value="System Administrator">System Administrator (Full Access)</option>
-                            <option value="Logistics Manager">Logistics Manager (Operations)</option>
-                            <option value="Dispatcher">Dispatcher (Routing)</option>
-                        </select>
-                        <label for="adminRole">Admin Access Role</label>
-                    </div>
-
-                    <div class="form-actions">
-                        <label class="checkbox-wrapper">
-                            <input type="checkbox"> Remember me
-                        </label>
-                        <a href="../landing.html" class="forgot-link" title="Back to Landing Page"><i
-                                class="fa-solid fa-backward"></i></a>
-                        <a href="#" class="forgot-link">Forgot Password?</a>
-                    </div>
-
-                    <button type="submit" class="btn-submit" id="submitBtn">
-                        <span id="btnText">Sign In</span>
-                        <div class="spinner" id="btnSpinner"></div>
-                    </button>
-
-                </form>
-
-                <form id="registerForm" style="display: none;">
-
-                    <div class="input-group">
-                        <input type="text" id="regName" placeholder=" " required>
-                        <label for="regName">Full Name</label>
-                    </div>
-
-                    <div class="input-group">
-                        <input type="email" id="regEmail" placeholder=" " required>
-                        <label for="regEmail">Work Email Address</label>
-                    </div>
-
-                    <div class="input-group">
-                        <input type="password" id="regPassword" placeholder=" " required>
-                        <label for="regPassword">Create Password</label>
-                    </div>
-
-                    <div class="input-group">
-                        <input type="password" id="regConfirmPassword" placeholder=" " required>
-                        <label for="regConfirmPassword">Confirm Password</label>
-                    </div>
-
-                    <button type="submit" class="btn-submit" id="regSubmitBtn">
-                        <span id="regBtnText">Create Account</span>
-                        <div class="spinner" id="regBtnSpinner"></div>
-                    </button>
-
-                </form>
-
             </div>
         </div>
-
     </div>
 
-</body>
+    <div class="right-panel">
+        <a href="../landing.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        
+        <div class="login-wrapper">
+            <div class="login-header">
+                <h2 id="loginTitle">Client Portal</h2>
+                <p id="loginSubtitle">Enter your credentials to access your dashboard.</p>
+            </div>
 
+            <div class="role-toggle-container" id="toggleContainer">
+                <div class="role-slider"></div>
+                <button type="button" class="role-btn active" id="userToggle">Client</button>
+                <button type="button" class="role-btn" id="adminToggle">Admin</button>
+            </div>
+
+            <div class="sys-message sys-error" id="errorMsg" style="display: none;">
+                <i class="fa-solid fa-circle-exclamation"></i> <span id="errorText">Incorrect Details or Unauthorized Role.</span>
+            </div>
+            <div class="sys-message sys-success" id="successMsg" style="display: none;">
+                <i class="fa-solid fa-circle-check"></i> <span>Login Successful!</span>
+            </div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope input-icon"></i>
+                    <input type="text" id="employeeId" placeholder=" " required autocomplete="username">
+                    <label for="employeeId">Email Address</label>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="password" placeholder=" " required autocomplete="current-password">
+                    <label for="password">Password</label>
+                </div>
+
+                <div class="input-group" id="mobileGroup" style="display: none;">
+                    <i class="fa-solid fa-phone input-icon"></i>
+                    <input type="tel" id="mobileNo" placeholder=" ">
+                    <label for="mobileNo">Authentication PIN</label>
+                </div>
+
+                <div class="form-actions" id="loginActions">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox"> Remember me
+                    </label>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span id="btnText">Secure Sign In</span>
+                    <div class="spinner" id="btnSpinner"></div>
+                </button>
+                
+                <div class="divider" id="registerDivider">OR</div>
+
+                <a href="register.html" class="btn-register" id="registerBtn">
+                    Create New Account <i class="fa-solid fa-user-plus"></i>
+                </a>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Forms & UI Elements
+            const loginForm = document.getElementById('loginForm');
+            const errorMsg = document.getElementById('errorMsg');
+            const successMsg = document.getElementById('successMsg');
+            const loginTitle = document.getElementById('loginTitle');
+            const loginSubtitle = document.getElementById('loginSubtitle');
+
+            // Login Button Elements
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+
+            // Toggle Bar Elements
+            const toggleContainer = document.getElementById('toggleContainer');
+            const userToggle = document.getElementById('userToggle');
+            const adminToggle = document.getElementById('adminToggle');
+
+            // Admin specific inputs
+            const mobileGroup = document.getElementById('mobileGroup');
+            const mobileInput = document.getElementById('mobileNo');
+
+            // Registration specific UI elements
+            const registerDivider = document.getElementById('registerDivider');
+            const registerBtn = document.getElementById('registerBtn');
+
+            let currentMode = 'user';
+
+            function clearMessages() {
+                errorMsg.style.display = 'none';
+                successMsg.style.display = 'none';
+            }
+
+            // 🟢 Toggle Interaction Logic 🟢
+            userToggle.addEventListener('click', () => {
+                currentMode = 'user';
+                toggleContainer.className = 'role-toggle-container';
+                userToggle.classList.add('active');
+                adminToggle.classList.remove('active');
+
+                loginTitle.innerText = "Client Portal";
+                loginSubtitle.innerText = "Enter your credentials to access your dashboard.";
+                clearMessages();
+
+                mobileGroup.style.display = 'none';
+                mobileInput.required = false;
+
+                // Show register button on User Mode
+                registerDivider.style.display = 'flex';
+                registerBtn.style.display = 'flex';
+            });
+
+            adminToggle.addEventListener('click', () => {
+                currentMode = 'admin';
+                toggleContainer.className = 'role-toggle-container admin-mode';
+                adminToggle.classList.add('active');
+                userToggle.classList.remove('active');
+
+                loginTitle.innerText = "Admin Console";
+                loginSubtitle.innerText = "Secure master access node.";
+                clearMessages();
+
+                mobileGroup.style.display = 'block';
+                mobileInput.required = true;
+
+                // Hide register button on Admin Mode
+                registerDivider.style.display = 'none';
+                registerBtn.style.display = 'none';
+            });
+
+            // 🟢 The Fake Database 🟢
+            const allowedUsers = [
+                {
+                    email: "sanjupramanick2026@gmail.com",
+                    password: "1123",
+                    mobile: "0000000000",
+                    type: "admin",
+                    role: "System Administrator", 
+                    redirectUrl: "../admin.html"
+                },
+                {
+                    email: "manager@.com",
+                    password: "managerpass123",
+                    mobile: "1122334455",
+                    type: "admin",
+                    role: "Logistics Manager", 
+                    redirectUrl: "../admin.html"
+                },
+                {   
+                    email: "sanjupramanick2026@gmail.com",
+                    password: "1234",
+                    type: "user",
+                    role: "Logistics Specialist",
+                    redirectUrl: "../index.html"
+                }
+            ];
+
+            function generateFakeJWT(email, role) {
+                const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+                const payload = btoa(JSON.stringify({ user: email, role: role, exp: Date.now() + 86400000 }));
+                const signature = "fake_secure_signature_hash";
+                return `${header}.${payload}.${signature}`;
+            }
+
+            function handleAdminLogin(inputEmail, inputPassword, inputMobile) {
+                return allowedUsers.find(user => 
+                    user.type === 'admin' &&
+                    user.email === inputEmail &&
+                    user.password === inputPassword &&
+                    user.mobile === inputMobile
+                );
+            }
+
+            function handleUserLogin(inputEmail, inputPassword) {
+                return allowedUsers.find(user => 
+                    user.type === 'user' &&
+                    user.email === inputEmail &&
+                    user.password === inputPassword
+                );
+            }
+
+            // 🟢 Form LOGIN SUBMIT 🟢
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                clearMessages();
+
+                const inputEmail = document.getElementById('employeeId').value.trim().toLowerCase();
+                const inputPassword = document.getElementById('password').value.trim();
+
+                submitBtn.disabled = true;
+                btnText.textContent = 'Authenticating...';
+                btnSpinner.style.display = 'block';
+
+                setTimeout(() => {
+                    let foundUser = null;
+
+                    if (currentMode === 'admin') {
+                        const inputMobile = document.getElementById('mobileNo').value.trim();
+                        // Removed Role check, now just checks email, pass, and mobile PIN
+                        foundUser = handleAdminLogin(inputEmail, inputPassword, inputMobile);
+                    } else if (currentMode === 'user') {
+                        foundUser = handleUserLogin(inputEmail, inputPassword);
+                    }
+
+                    if (foundUser) {
+                        submitBtn.style.background = 'linear-gradient(135deg, var(--success-green) 0%, #2f855a 100%)';
+                        btnText.textContent = `Welcome, ${foundUser.role}`;
+                        btnSpinner.style.display = 'none';
+
+                        const sessionToken = generateFakeJWT(foundUser.email, foundUser.role);
+                        sessionStorage.setItem('secureLogix_session_token', sessionToken);
+
+                        localStorage.setItem('secureLogix_auth', 'true');
+                        localStorage.setItem('secureLogix_user', foundUser.email);
+                        localStorage.setItem('secureLogix_role', foundUser.role);
+                        localStorage.setItem('secureLogix_type', foundUser.type);
+
+                        setTimeout(() => { window.location.href = foundUser.redirectUrl; }, 1200);
+                    } else {
+                        errorMsg.querySelector('span').innerText = "Invalid credentials or unauthorized role.";
+                        errorMsg.style.display = 'flex';
+                        submitBtn.disabled = false;
+                        submitBtn.style.background = '';
+                        btnText.textContent = 'Secure Sign In'; 
+                        btnSpinner.style.display = 'none';
+                    }
+                }, 1200);
+            });
+        });
+    </script>
+</body>
 </html>
