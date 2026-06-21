@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industry Solutions | Trans Global Logistics</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #0A2540;
+            --primary-blue-hover: #061a2e;
+            --action-orange: #FF6B35;
+            --action-orange-hover: #e55a2b;
+            --success-green: #38A169;
+            --danger-red: #E53E3E;
+            --bg-color: #F7FAFC;
+            --surface-color: #FFFFFF;
+            --text-dark: #1A202C;
+            --text-muted: #4A5568;
+            --border-color: #E2E8F0;
+            --transition-fast: 0.2s ease;
+            --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --card-shadow: 0 20px 40px -10px rgba(10, 37, 64, 0.08);
+            --hover-shadow: 0 30px 60px -15px rgba(10, 37, 64, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        a { text-decoration: none; }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* --- 🟢 PREMIUM FLOATING NAVBAR 🟢 --- */
+        .public-nav { 
+            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; 
+            padding: 1.5rem 5%; background: transparent; position: fixed; 
+            top: 0; left: 0; right: 0; width: 100%; z-index: 1000; 
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .public-nav.scrolled { 
+            padding: 1rem 5%; background: rgba(255, 255, 255, 0.92); 
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px -10px rgba(10, 37, 64, 0.15); border-bottom: 1px solid rgba(226, 232, 240, 0.8); 
+        }
+        
+        .public-nav .logo { justify-self: start; font-size: 1.6rem; font-weight: 900; color: white; letter-spacing: -0.5px; display: flex; align-items: center; gap: 0.6rem; transition: var(--transition-smooth); }
+        .public-nav .logo i { color: var(--action-orange); font-size: 1.8rem; }
+        .public-nav.scrolled .logo { color: var(--primary-blue); }
+        
+        .nav-links { justify-self: center; display: flex; gap: 0.5rem; align-items: center; background: rgba(255, 255, 255, 0.1); padding: 0.4rem; border-radius: 50px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.4s ease; }
+        .public-nav.scrolled .nav-links { background: rgba(244, 247, 250, 0.8); border-color: rgba(226, 232, 240, 0.8); }
+        
+        .nav-links a { color: rgba(255, 255, 255, 0.9); font-weight: 600; font-size: 0.95rem; padding: 0.6rem 1.2rem; border-radius: 50px; transition: all 0.3s ease; }
+        .public-nav.scrolled .nav-links a { color: var(--text-muted); }
+        .nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.2); }
+        .public-nav.scrolled .nav-links a:hover { color: var(--primary-blue); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .nav-links a.active-link { background: var(--action-orange); color: white !important; box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);}
+        .public-nav.scrolled .nav-links a.active-link { background: var(--action-orange); color: white !important; }
+
+        .nav-buttons { justify-self: end; display: flex; gap: 1.5rem; align-items: center; }
+        .btn-login { color: white; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s ease; }
+        .public-nav.scrolled .btn-login { color: var(--primary-blue); }
+        .btn-login:hover { color: var(--action-orange); opacity: 0.9; transform: translateY(-1px);}
+        
+        .btn-cta { background: linear-gradient(135deg, var(--action-orange) 0%, #ff8e63 100%); color: white !important; padding: 0.7rem 1.5rem; border-radius: 50px; font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: var(--transition-smooth); box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3); border: none; }
+        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5); }
+
+        .mobile-menu-btn { display: none; justify-self: end; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; transition: 0.3s;}
+        .public-nav.scrolled .mobile-menu-btn { color: var(--primary-blue); }
+
+        /* Mobile Menu */
+        .mobile-menu-overlay { position: fixed; inset: 0; background: rgba(10, 37, 64, 0.98); backdrop-filter: blur(15px); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem; opacity: 0; visibility: hidden; transition: var(--transition-smooth); }
+        .mobile-menu-overlay.active { opacity: 1; visibility: visible; }
+        .close-mobile-menu { position: absolute; top: 1.5rem; right: 2rem; background: none; border: none; color: white; font-size: 3rem; cursor: pointer; transition: 0.2s;}
+        .close-mobile-menu:hover { color: var(--action-orange); transform: rotate(90deg);}
+        .mobile-menu-overlay a { color: white; font-size: 2rem; font-weight: 700; transition: 0.2s; }
+        .mobile-menu-overlay a:hover { color: var(--action-orange); transform: scale(1.1); }
+
+        /* --- 🟢 INDUSTRIES HERO SECTION 🟢 --- */
+        .industry-hero {
+            position: relative; padding: 14rem 5% 10rem; min-height: 70vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            background: linear-gradient(rgba(10, 37, 64, 0.85), rgba(10, 37, 64, 0.95)), url('https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80&w=2000') center/cover;
+            background-attachment: fixed; color: white; overflow: hidden;
+        }
+        .industry-hero h1 { font-size: clamp(3rem, 6vw, 5rem); line-height: 1.1; margin-bottom: 1.5rem; font-weight: 900; letter-spacing: -2px; max-width: 1000px;}
+        .industry-hero h1 span { color: var(--action-orange); }
+        .industry-hero p { font-size: 1.25rem; color: #CBD5E0; margin-bottom: 3.5rem; font-weight: 400; max-width: 800px; line-height: 1.8;}
+        
+        .hero-tags { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem;}
+        .hero-tags span { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 0.5rem 1.5rem; border-radius: 50px; font-weight: 600; font-size: 0.9rem; backdrop-filter: blur(10px); }
+
+        /* --- 🟢 INDUSTRY HOVER GRID (UPDATED 2S ANIMATIONS) 🟢 --- */
+        .industry-section { padding: 6rem 5% 8rem; max-width: 1400px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-tag { color: var(--action-orange); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem; display: block; font-size: 0.9rem;}
+        .section-header h2 { font-size: clamp(2.5rem, 4vw, 3.5rem); color: var(--primary-blue); margin-bottom: 1.5rem; letter-spacing: -1px; font-weight: 900;}
+        .section-header p { font-size: 1.15rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.8;}
+
+        .industry-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2.5rem; 
+        }
+
+        .industry-card {
+            position: relative; height: 450px; border-radius: 24px; overflow: hidden;
+            box-shadow: var(--card-shadow); border: 1px solid var(--border-color);
+            transition: all 2s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer;
+        }
+        .industry-card:hover { transform: translateY(-10px); box-shadow: var(--hover-shadow); }
+
+        .industry-bg {
+            position: absolute; inset: 0; background-size: cover; background-position: center;
+            transition: transform 2s ease; z-index: 1;
+        }
+        .industry-card:hover .industry-bg { transform: scale(1.08); }
+        
+        .bg-auto { background-image: url('https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800'); }
+        .bg-pharma { background-image: url('https://images.unsplash.com/photo-1587370560942-ad2a04eabb6d?auto=format&fit=crop&w=800'); }
+        .bg-retail { background-image: url('https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=800'); }
+        .bg-heavy { background-image: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=800'); }
+
+        .industry-overlay {
+            position: absolute; inset: 0; background: linear-gradient(to top, rgba(10, 37, 64, 0.95) 0%, rgba(10, 37, 64, 0.3) 100%);
+            z-index: 2; transition: all 2s ease;
+        }
+        .industry-card:hover .industry-overlay { background: rgba(10, 37, 64, 0.85); }
+
+        .industry-content {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 2.5rem;
+            z-index: 3; color: white; display: flex; flex-direction: column;
+        }
+        .industry-icon {
+            width: 60px; height: 60px; background: var(--action-orange); border-radius: 16px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+            margin-bottom: 1.5rem; transition: all 2s ease;
+        }
+        .industry-card:hover .industry-icon { transform: scale(0.9) translateY(-10px); background: white; color: var(--action-orange);}
+
+        .industry-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.2;}
+        
+        .industry-details {
+            max-height: 0; overflow: hidden; opacity: 0; transition: all 2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .industry-card:hover .industry-details { max-height: 250px; opacity: 1; margin-top: 1rem; }
+
+        .industry-details ul { list-style: none; margin-bottom: 1.5rem; }
+        .industry-details ul li { margin-bottom: 0.8rem; font-size: 0.95rem; display: flex; align-items: flex-start; gap: 0.8rem; color: #CBD5E0;}
+        .industry-details ul li i { color: var(--success-green); margin-top: 4px; font-size: 0.85rem;}
+
+        .btn-industry {
+            display: inline-flex; align-items: center; gap: 0.5rem; color: var(--action-orange);
+            font-weight: 700; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        .btn-industry:hover { color: white; gap: 0.8rem;}
+
+        /* --- 🟢 PLATFORM ECOSYSTEM SECTION 🟢 --- */
+        .ecosystem-section { background: var(--primary-blue); padding: 8rem 5%; color: white; text-align: center; }
+        .ecosystem-container { max-width: 1200px; margin: 0 auto;}
+        .ecosystem-container h2 { font-size: clamp(2.5rem, 4vw, 3.5rem); margin-bottom: 1.5rem; font-weight: 900;}
+        .ecosystem-container p { font-size: 1.2rem; color: #A0AEC0; margin-bottom: 4rem; max-width: 800px; margin-inline: auto;}
+        
+        .eco-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;}
+        .eco-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 3rem 2rem; border-radius: 20px; backdrop-filter: blur(10px); transition: 0.3s;}
+        .eco-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); border-color: var(--action-orange);}
+        .eco-card i { font-size: 2.5rem; color: var(--action-orange); margin-bottom: 1.5rem;}
+        .eco-card h3 { font-size: 1.3rem; margin-bottom: 1rem; font-weight: 700;}
+        .eco-card p { color: #CBD5E0; font-size: 0.95rem; line-height: 1.6;}
+
+        /* --- FOOTER --- */
+        .main-footer { background: #05111f; color: #A0AEC0; padding: 6rem 5% 2rem; position: relative; z-index: 2;}
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; max-width: 1400px; margin-inline: auto;}
+        .footer-col h4 { color: white; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 700;}
+        .footer-col p { margin-bottom: 1.5rem; line-height: 1.8;}
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 1rem; }
+        .footer-links a { color: #A0AEC0; transition: var(--transition-fast); font-weight: 500; display: inline-flex; align-items: center; gap: 5px;}
+        .footer-links a i.fa-chevron-right { font-size: 0.7rem; opacity: 0; transform: translateX(-10px); transition: 0.3s; color: var(--action-orange);}
+        .footer-links a:hover { color: var(--action-orange); transform: translateX(5px); }
+        .footer-links a:hover i.fa-chevron-right { opacity: 1; transform: translateX(0); }
+        .social-links { display: flex; gap: 1rem; }
+        .social-links a { color: white; background: rgba(255, 255, 255, 0.05); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: var(--transition-smooth); border: 1px solid rgba(255,255,255,0.1);}
+        .social-links a:hover { background: var(--action-orange); transform: translateY(-3px); border-color: var(--action-orange); box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);}
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.9rem; }
+
+        @media (max-width: 1024px) { 
+            .public-nav { grid-template-columns: auto 1fr auto; }
+            .industry-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 900px) {
+            .nav-links, .btn-login, .btn-cta { display: none; }
+            .mobile-menu-btn { display: block; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem;}
+            .public-nav { grid-template-columns: 1fr auto; }
+            
+            /* On mobile, permanently show the details to avoid hover issues */
+            .industry-card { height: auto; }
+            .industry-details { max-height: 500px; opacity: 1; margin-top: 1rem; }
+            .industry-overlay { background: rgba(10, 37, 64, 0.85); }
+            .industry-content { position: relative; }
+        }
+        @media (max-width: 600px) {
+            .industry-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .industry-hero h1 { font-size: 2.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🟢 DYNAMIC NAVIGATION 🟢 -->
+    <nav class="public-nav" id="navbar">
+        <a href="../landing.html" class="logo">
+            <i class="fa-solid fa-earth-americas"></i> Trans Global
+        </a>
+        
+        <div class="nav-links">
+            <a href="../landing.html#services">Services</a>
+            <a href="../landing.html#platform">Platform</a>
+            <a href="industries.html" class="active-link">Industries</a>
+            <a href="consulting.html">Consulting</a>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../tamplate/login.html" class="btn-login"><i class="fa-solid fa-lock"></i> Client Login</a>
+            <a href="../tamplate/booking.html" class="btn-cta">Book Consultation <i class="fa-solid fa-arrow-right"></i></a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU OVERLAY -->
+    <div class="mobile-menu-overlay" id="mobileMenu">
+        <button class="close-mobile-menu" onclick="toggleMobileMenu()">&times;</button>
+        <a href="../landing.html#services" onclick="toggleMobileMenu()">Services</a>
+        <a href="../landing.html#platform" onclick="toggleMobileMenu()">Platform</a>
+        <a href="industries.html" onclick="toggleMobileMenu()">Industries</a>
+        <a href="consulting.html" onclick="toggleMobileMenu()">Consulting</a>
+        <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+            <a href="../tamplate/login.html" class="btn-login" style="font-size: 1.1rem; border-color: white;"><i class="fa-solid fa-lock"></i> Client Login</a>
+            <a href="../tamplate/booking.html" class="btn-cta" style="font-size: 1.1rem;">Book Consultation <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <!-- 🟢 HERO SECTION 🟢 -->
+    <header class="industry-hero">
+        <div class="hero-tags reveal">
+            <span>Specialized Sector Logistics</span>
+        </div>
+        
+        <h1 class="reveal reveal-delay-1">Generalists move boxes.<br>We move <span>Industries</span>.</h1>
+        <p class="reveal reveal-delay-2">Every supply chain has unique DNA. From life-saving cold chain pharmaceuticals to massive offshore wind turbines, we engineer solutions designed explicitly for the physics, regulations, and demands of your specific sector.</p>
+        
+        <a href="#industries-grid" class="btn-cta reveal reveal-delay-3" style="padding: 1.2rem 3rem; font-size: 1.1rem; background: transparent; border: 2px solid white; box-shadow: none;">
+            Explore Your Sector <i class="fa-solid fa-arrow-down"></i>
+        </a>
+    </header>
+
+    <!-- 🟢 INDUSTRY HOVER GRID 🟢 -->
+    <section class="industry-section" id="industries-grid">
+        <div class="section-header reveal">
+            <span class="section-tag">Sector Capabilities</span>
+            <h2>Architected for Your World</h2>
+            <p>Select your industry below to see how our logistics engineers solve your most complex operational bottlenecks.</p>
+        </div>
+
+        <div class="industry-grid">
+            
+            <!-- Automotive -->
+            <div class="industry-card reveal">
+                <div class="industry-bg bg-auto"></div>
+                <div class="industry-overlay"></div>
+                <div class="industry-content">
+                    <div class="industry-icon"><i class="fa-solid fa-car"></i></div>
+                    <h3 class="industry-title">Automotive & Mobility</h3>
+                    <div class="industry-details">
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> <strong>JIT Precision:</strong> Exact-minute delivery to prevent assembly line stoppages.</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>Component Consolidation:</strong> Reducing inbound shipping costs via strategic hubs.</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>Aftermarket Network:</strong> High-speed global distribution for replacement parts.</li>
+                        </ul>
+                        <a href="consulting.html" class="btn-industry">Consult an Auto Expert <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pharma -->
+            <div class="industry-card reveal reveal-delay-1">
+                <div class="industry-bg bg-pharma"></div>
+                <div class="industry-overlay"></div>
+                <div class="industry-content">
+                    <div class="industry-icon"><i class="fa-solid fa-snowflake"></i></div>
+                    <h3 class="industry-title">Healthcare & Pharma</h3>
+                    <div class="industry-details">
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> <strong>Cold-Chain Integrity:</strong> Active cooling ULDs maintaining strict -70°C limits.</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>Regulatory Defense:</strong> FDA and global health compliance handled in-house.</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>IoT Monitoring:</strong> Real-time temperature and security tracking via SecureLogix.</li>
+                        </ul>
+                        <a href="consulting.html" class="btn-industry">Consult a Pharma Expert <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Retail -->
+            <div class="industry-card reveal">
+                <div class="industry-bg bg-retail"></div>
+                <div class="industry-overlay"></div>
+                <div class="industry-content">
+                    <div class="industry-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                    <h3 class="industry-title">Retail & E-Commerce</h3>
+                    <div class="industry-details">
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> <strong>Peak Season Elasticity:</strong> Scaling warehouse & transport capacity for Q4 rushes.</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>Omnichannel Fulfillment:</strong> Seamless B2B distribution and Direct-to-Consumer delivery.</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>Reverse Logistics:</strong> Automated, cost-effective return processing architecture.</li>
+                        </ul>
+                        <a href="consulting.html" class="btn-industry">Consult a Retail Expert <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Heavy Lift -->
+            <div class="industry-card reveal reveal-delay-1">
+                <div class="industry-bg bg-heavy"></div>
+                <div class="industry-overlay"></div>
+                <div class="industry-content">
+                    <div class="industry-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+                    <h3 class="industry-title">Energy & Heavy Lift</h3>
+                    <div class="industry-details">
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> <strong>Project Cargo:</strong> Engineering routes for oversized, multi-ton infrastructure.</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>Remote Installations:</strong> Logistics for offshore rigs and deep-inland energy sites.</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>Multi-Modal Strategy:</strong> Seamless transfers between ocean barges and specialized heavy-rail.</li>
+                        </ul>
+                        <a href="consulting.html" class="btn-industry">Consult a Heavy Lift Expert <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 🟢 PLATFORM ECOSYSTEM SECTION 🟢 -->
+    <section class="ecosystem-section">
+        <div class="ecosystem-container">
+            <h2 class="reveal">One Universal Platform.<br>Infinite Adaptability.</h2>
+            <p class="reveal reveal-delay-1">Regardless of what you are shipping, the Trans Global SecureLogix™ ecosystem provides absolute visibility and control over your cargo.</p>
+            
+            <div class="eco-grid">
+                <div class="eco-card reveal">
+                    <i class="fa-solid fa-satellite-dish"></i>
+                    <h3>Satellite GPS Integration</h3>
+                    <p>Live, second-by-second coordinate tracking integrated into a single pane of glass.</p>
+                </div>
+                <div class="eco-card reveal reveal-delay-1">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <h3>Blockchain Customs</h3>
+                    <p>Automated, immutable documentation that clears borders faster than traditional paperwork.</p>
+                </div>
+                <div class="eco-card reveal reveal-delay-2">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h3>Predictive Risk AI</h3>
+                    <p>Algorithms that monitor global weather, port congestion, and geopolitics to auto-reroute freight.</p>
+                </div>
+            </div>
+            
+            <a href="../tamplate/booking.html" class="btn-cta reveal reveal-delay-3" style="margin-top: 4rem; padding: 1.2rem 3rem; font-size: 1.1rem; background: white; color: var(--primary-blue) !important;">
+                Book a Platform Demo <i class="fa-solid fa-laptop-code"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 style="color: var(--action-orange); font-size: 1.8rem; font-weight: 900; letter-spacing:-0.5px;">Trans Global</h4>
+                <p>Next-generation logistics and supply chain management for enterprise teams worldwide.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Solutions</h4>
+                <ul class="footer-links">
+                    <li><a href="global-network.html"><i class="fa-solid fa-chevron-right"></i> Ocean & Air Network</a></li>
+                    <li><a href="automated-customs.html"><i class="fa-solid fa-chevron-right"></i> Customs Brokerage</a></li>
+                    <li><a href="risk-coverage.html"><i class="fa-solid fa-chevron-right"></i> Risk Coverage</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Secure Platform</h4>
+                <ul class="footer-links">
+                    <li><a href="../tamplate/login.html"><i class="fa-solid fa-lock" style="font-size: 0.8rem; margin-right:5px;"></i> Client Login</a></li>
+                    <li><a href="../tamplate/login.html"><i class="fa-solid fa-lock" style="font-size: 0.8rem; margin-right:5px;"></i> Live Tracking System</a></li>
+                    <li><a href="../landing.html#inquiry"><i class="fa-solid fa-chevron-right"></i> Request API Access</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Public Support</h4>
+                <ul class="footer-links">
+                    <li><a href="public-support.html"><i class="fa-solid fa-headset" style="margin-right: 8px;"></i> Visit Help Center</a></li>
+                    <li><a href="mailto:support@transglobal.com"><i class="fa-solid fa-envelope" style="margin-right: 8px;"></i> support@transglobal.com</a></li>
+                    <li><a href="#"><i class="fa-solid fa-phone" style="margin-right: 8px;"></i> +1 (800) 555-0199</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Trans Global Logistics. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sticky Navigation
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) { nav.classList.add('scrolled'); } 
+            else { nav.classList.remove('scrolled'); }
+        });
+
+        // Mobile Menu Logic
+        function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('active'); }
+
+        // --- SCROLL REVEAL ANIMATIONS ---
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) { reveals[i].classList.add("active"); }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger on load
+    </script>
+</body>
+</html>
