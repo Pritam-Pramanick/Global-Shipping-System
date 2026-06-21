@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Optimization | Trans Global Logistics</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #0A2540;
+            --primary-blue-hover: #061a2e;
+            --action-orange: #FF6B35;
+            --action-orange-hover: #e55a2b;
+            --success-green: #38A169;
+            --danger-red: #E53E3E;
+            --bg-color: #F7FAFC;
+            --surface-color: #FFFFFF;
+            --text-dark: #1A202C;
+            --text-muted: #4A5568;
+            --border-color: #E2E8F0;
+            --transition-fast: 0.2s ease;
+            --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --card-shadow: 0 20px 40px -10px rgba(10, 37, 64, 0.08);
+            --hover-shadow: 0 30px 60px -15px rgba(10, 37, 64, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        a { text-decoration: none; }
+
+        /* Scroll Reveal */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+
+        /* --- 🟢 NAVBAR 🟢 --- */
+        .public-nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 1.5rem 5%; background: transparent; position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 1000; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .public-nav.scrolled { padding: 1rem 5%; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(16px); box-shadow: 0 10px 30px -10px rgba(10, 37, 64, 0.15); border-bottom: 1px solid rgba(226, 232, 240, 0.8); }
+        .public-nav .logo { justify-self: start; font-size: 1.6rem; font-weight: 900; color: white; letter-spacing: -0.5px; display: flex; align-items: center; gap: 0.6rem; transition: var(--transition-smooth); }
+        .public-nav .logo i { color: var(--action-orange); font-size: 1.8rem; }
+        .public-nav.scrolled .logo { color: var(--primary-blue); }
+        
+        .nav-links { justify-self: center; display: flex; gap: 0.5rem; align-items: center; background: rgba(255, 255, 255, 0.1); padding: 0.4rem; border-radius: 50px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.4s ease; }
+        .public-nav.scrolled .nav-links { background: rgba(244, 247, 250, 0.8); border-color: rgba(226, 232, 240, 0.8); }
+        .nav-links a { color: rgba(255, 255, 255, 0.9); font-weight: 600; font-size: 0.95rem; padding: 0.6rem 1.2rem; border-radius: 50px; transition: all 0.3s ease; }
+        .public-nav.scrolled .nav-links a { color: var(--text-muted); }
+        .nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.2); }
+        .public-nav.scrolled .nav-links a:hover { color: var(--primary-blue); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .nav-buttons { justify-self: end; display: flex; gap: 1.5rem; align-items: center; }
+        .btn-login { color: white; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s ease; }
+        .public-nav.scrolled .btn-login { color: var(--primary-blue); }
+        .btn-login:hover { color: var(--action-orange); opacity: 0.9; transform: translateY(-1px);}
+        .btn-cta { background: linear-gradient(135deg, var(--action-orange) 0%, #ff8e63 100%); color: white !important; padding: 0.7rem 1.5rem; border-radius: 50px; font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: var(--transition-smooth); box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3); border: none; }
+        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5); }
+        
+        .mobile-menu-btn { display: none; justify-self: end; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; transition: 0.3s;}
+        .public-nav.scrolled .mobile-menu-btn { color: var(--primary-blue); }
+
+        /* Mobile Menu */
+        .mobile-menu-overlay { position: fixed; inset: 0; background: rgba(10, 37, 64, 0.98); backdrop-filter: blur(15px); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem; opacity: 0; visibility: hidden; transition: var(--transition-smooth); }
+        .mobile-menu-overlay.active { opacity: 1; visibility: visible; }
+        .close-mobile-menu { position: absolute; top: 1.5rem; right: 2rem; background: none; border: none; color: white; font-size: 3rem; cursor: pointer; transition: 0.2s;}
+        .close-mobile-menu:hover { color: var(--action-orange); transform: rotate(90deg);}
+        .mobile-menu-overlay a { color: white; font-size: 2rem; font-weight: 700; transition: 0.2s; }
+        .mobile-menu-overlay a:hover { color: var(--action-orange); transform: scale(1.1); }
+
+        /* --- 🟢 HERO SECTION 🟢 --- */
+        .service-hero {
+            position: relative; padding: 12rem 5% 8rem; min-height: 60vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            background: linear-gradient(rgba(10, 37, 64, 0.95), rgba(10, 37, 64, 0.8)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=2000') center/cover;
+            background-attachment: fixed; color: white;
+        }
+        .breadcrumb { font-size: 0.9rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--action-orange); margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: center;}
+        .breadcrumb a { color: #CBD5E0; transition: 0.2s; }
+        .breadcrumb a:hover { color: white; }
+        
+        .service-hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; margin-bottom: 1.5rem; font-weight: 900; letter-spacing: -1px; max-width: 900px;}
+        .service-hero p { font-size: 1.2rem; color: #CBD5E0; margin-bottom: 2.5rem; font-weight: 400; max-width: 700px; line-height: 1.8;}
+
+        /* --- 🟢 THE PROBLEM (AGITATION) 🟢 --- */
+        .problem-section { padding: 5rem 5%; background: var(--surface-color); text-align: center; border-bottom: 1px solid var(--border-color);}
+        .problem-text { font-size: 1.5rem; max-width: 900px; margin: 0 auto; font-weight: 600; color: var(--text-dark); line-height: 1.6;}
+        .problem-text span { color: var(--danger-red); font-weight: 800; background: rgba(229, 62, 62, 0.1); padding: 0 0.5rem; border-radius: 4px;}
+
+        /* --- 🟢 KEY POINTS (4 PILLARS) 🟢 --- */
+        .features-section { padding: 8rem 5%; background: var(--bg-color); }
+        .section-header { text-align: center; margin-bottom: 4rem; max-width: 800px; margin-inline: auto;}
+        .section-tag { color: var(--action-orange); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem; display: block; font-size: 0.9rem;}
+        .section-header h2 { font-size: clamp(2rem, 4vw, 3rem); color: var(--primary-blue); margin-bottom: 1rem; letter-spacing: -1px; font-weight: 900;}
+        .section-header p { font-size: 1.1rem; color: var(--text-muted); line-height: 1.8;}
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; max-width: 1300px; margin: 0 auto;}
+        .feature-card { background: var(--surface-color); border: 1px solid var(--border-color); padding: 3rem 2rem; border-radius: 24px; transition: var(--transition-smooth); box-shadow: var(--card-shadow); text-align: center;}
+        .feature-card:hover { transform: translateY(-10px); border-color: var(--primary-blue); box-shadow: var(--hover-shadow);}
+        
+        .feature-icon { width: 80px; height: 80px; background: rgba(10, 37, 64, 0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 2rem; color: var(--primary-blue); transition: 0.3s;}
+        .feature-card:hover .feature-icon { background: var(--primary-blue); color: white; transform: scale(1.1);}
+        
+        .feature-card h3 { font-size: 1.4rem; color: var(--primary-blue); margin-bottom: 1rem; font-weight: 800;}
+        .feature-card p { color: var(--text-muted); line-height: 1.6; font-size: 1rem;}
+
+        /* --- 🟢 UNOPTIMIZED VS OPTIMIZED VISUAL 🟢 --- */
+        .comparison-section { padding: 6rem 5%; background: var(--primary-blue); color: white; }
+        .comparison-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 1200px; margin: 0 auto; align-items: center;}
+        
+        .comp-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 3rem; border-radius: 24px; backdrop-filter: blur(10px);}
+        .comp-card.bad { border-top: 4px solid var(--danger-red); }
+        .comp-card.good { border-top: 4px solid var(--success-green); background: rgba(255,255,255,0.1);}
+        
+        .comp-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 800;}
+        .comp-card.bad .comp-header i { color: var(--danger-red); }
+        .comp-card.good .comp-header i { color: var(--success-green); }
+        
+        .comp-list { list-style: none; }
+        .comp-list li { margin-bottom: 1.2rem; display: flex; gap: 1rem; align-items: flex-start; font-size: 1.05rem; color: #CBD5E0;}
+        .comp-card.bad .comp-list i { color: var(--danger-red); margin-top: 5px;}
+        .comp-card.good .comp-list i { color: var(--success-green); margin-top: 5px;}
+
+        /* --- 🟢 INTERACTIVE ROUTE EFFICIENCY CALCULATOR 🟢 --- */
+        .roi-calculator-section { padding: 8rem 5%; background: var(--surface-color); }
+        .calculator-card { background: var(--bg-color); max-width: 1100px; margin: 0 auto; border-radius: 30px; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); padding: 4rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4rem; align-items: center;}
+        
+        .calc-inputs label { font-weight: 700; color: var(--primary-blue); display: block; margin-bottom: 1rem; font-size: 1.1rem;}
+        .slider-wrapper { margin-bottom: 2.5rem; }
+        .slider-val { font-size: 1.5rem; font-weight: 900; color: var(--action-orange); float: right; margin-top: -2.5rem; font-variant-numeric: tabular-nums; min-width: 70px; text-align: right;}
+        
+        /* Custom Range Slider Fixes */
+        input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; margin: 10px 0; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: var(--border-color); border-radius: 5px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--action-orange); cursor: pointer; margin-top: -9px; box-shadow: 0 4px 10px rgba(255, 107, 53, 0.4); border: 3px solid white;}
+        input[type=range]::-moz-range-track { width: 100%; height: 6px; cursor: pointer; background: var(--border-color); border-radius: 5px; }
+        input[type=range]::-moz-range-thumb { height: 18px; width: 18px; border-radius: 50%; background: var(--action-orange); cursor: pointer; border: 3px solid white; box-shadow: 0 4px 10px rgba(255, 107, 53, 0.4); }
+
+        .calc-results { background: white; padding: 3rem; border-radius: 20px; text-align: center; box-shadow: 0 20px 40px rgba(10,37,64,0.08); width: 100%; height: 100%; min-height: 280px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid var(--success-green);}
+        .calc-results p { color: var(--text-muted); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 1rem;}
+        .calc-results .savings-output { font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 900; color: var(--success-green); line-height: 1; margin-bottom: 1.5rem; font-variant-numeric: tabular-nums; letter-spacing: -1px; white-space: nowrap;}
+        
+        /* --- FOOTER --- */
+        .main-footer { background: #05111f; color: #A0AEC0; padding: 6rem 5% 2rem; position: relative; z-index: 2;}
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; max-width: 1400px; margin-inline: auto;}
+        .footer-col h4 { color: white; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 700;}
+        .footer-col p { margin-bottom: 1.5rem; line-height: 1.8;}
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 1rem; }
+        .footer-links a { color: #A0AEC0; transition: var(--transition-fast); font-weight: 500; display: inline-flex; align-items: center; gap: 5px;}
+        .footer-links a i.fa-chevron-right { font-size: 0.7rem; opacity: 0; transform: translateX(-10px); transition: 0.3s; color: var(--action-orange);}
+        .footer-links a:hover { color: var(--action-orange); transform: translateX(5px); }
+        .footer-links a:hover i.fa-chevron-right { opacity: 1; transform: translateX(0); }
+
+        @media (max-width: 1024px) { 
+            .public-nav { grid-template-columns: auto 1fr auto; }
+            .comparison-container, .calculator-card { grid-template-columns: 1fr; gap: 2rem;}
+            .calculator-card { padding: 3rem;}
+        }
+        @media (max-width: 900px) {
+            .nav-links, .btn-login, .btn-cta { display: none; }
+            .mobile-menu-btn { display: block; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem;}
+            .public-nav { grid-template-columns: 1fr auto; }
+        }
+        @media (max-width: 600px) {
+            .features-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .service-hero h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="public-nav" id="navbar">
+        <a href="../landing.html" class="logo">
+            <i class="fa-solid fa-earth-americas"></i> Trans Global
+        </a>
+        
+        <div class="nav-links">
+            <a href="../landing.html#services">Services</a>
+            <a href="../landing.html#platform">Platform</a>
+            <a href="industries.html">Industries</a>
+            <a href="consulting.html">Consulting</a>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../tamplate/login.html" class="btn-login"><i class="fa-solid fa-lock"></i> Client Login</a>
+            <a href="../tamplate/booking.html" class="btn-cta">Book Consultation <i class="fa-solid fa-arrow-right"></i></a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <div class="mobile-menu-overlay" id="mobileMenu">
+        <button class="close-mobile-menu" onclick="toggleMobileMenu()">&times;</button>
+        <a href="../landing.html#services" onclick="toggleMobileMenu()">Services</a>
+        <a href="../landing.html#platform" onclick="toggleMobileMenu()">Platform</a>
+        <a href="industries.html" onclick="toggleMobileMenu()">Industries</a>
+        <a href="consulting.html" onclick="toggleMobileMenu()">Consulting</a>
+        <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+            <a href="../tamplate/login.html" class="btn-login" style="font-size: 1.1rem; border-color: white;"><i class="fa-solid fa-lock"></i> Client Login</a>
+            <a href="../tamplate/booking.html" class="btn-cta" style="font-size: 1.1rem;">Book Consultation <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <header class="service-hero">
+        <div class="breadcrumb reveal">
+            <a href="../landing.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem;"></i> 
+            <a href="consulting.html">Consulting</a> <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem;"></i> 
+            <span>Network Optimization</span>
+        </div>
+        
+        <h1 class="reveal reveal-delay-1">Stop Paying for Empty Miles.</h1>
+        <p class="reveal reveal-delay-2">We engineer high-efficiency, multi-modal routing networks that consolidate freight, bypass congestion, and drastically lower your cost-per-mile.</p>
+        
+        <a href="#calculator" class="btn-cta reveal reveal-delay-2" style="padding: 1.2rem 3rem; font-size: 1.1rem; margin-top: 1rem;">
+            Calculate Your Savings <i class="fa-solid fa-calculator"></i>
+        </a>
+    </header>
+
+    <section class="problem-section reveal">
+        <p class="problem-text">Unoptimized supply chains result in fragmented carriers, LTL (Less Than Truckload) penalties, and millions of dollars wasted on <span>fuel and delays.</span> We fix the architecture.</p>
+    </section>
+
+    <section class="features-section">
+        <div class="section-header reveal">
+            <span class="section-tag">Methodology</span>
+            <h2>The 4 Pillars of Optimization</h2>
+            <p>Our logistics architects utilize AI-driven data modeling to completely restructure how your goods move from factory floor to final destination.</p>
+        </div>
+
+        <div class="features-grid">
+            
+            <div class="feature-card reveal">
+                <div class="feature-icon"><i class="fa-solid fa-microchip"></i></div>
+                <h3>Algorithmic Pathfinding</h3>
+                <p>We input your shipping volume into our SecureLogix AI to map out the mathematically fastest, cheapest routes, bypassing historical congestion zones.</p>
+            </div>
+
+            <div class="feature-card reveal reveal-delay-1">
+                <div class="feature-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <h3>Freight Consolidation</h3>
+                <p>We convert expensive, fragmented LTL (Less Than Truckload) shipments into efficient FTL (Full Truckload) movements via strategically placed geographic hubs.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon"><i class="fa-solid fa-train-tram"></i></div>
+                <h3>Multi-Modal Synchronization</h3>
+                <p>Optimizing handoffs between ocean freighters, regional rail lines, and last-mile trucks to eliminate days of dwell time at ports and railheads.</p>
+            </div>
+
+            <div class="feature-card reveal reveal-delay-1">
+                <div class="feature-icon"><i class="fa-solid fa-leaf"></i></div>
+                <h3>Carbon Footprint Reduction</h3>
+                <p>Shorter routes and consolidated loads mean significantly less fuel burned. We help enterprise clients hit strict ESG (Environmental, Social, and Governance) targets.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="comparison-section">
+        <div class="section-header reveal" style="margin-bottom: 3rem;">
+            <h2 style="color: white;">The Anatomy of Efficiency</h2>
+            <p style="color: #CBD5E0;">See the difference between a fragmented network and a Trans Global Engineered Network.</p>
+        </div>
+
+        <div class="comparison-container reveal">
+            <div class="comp-card bad">
+                <div class="comp-header"><i class="fa-solid fa-circle-xmark"></i> Point-to-Point (Unoptimized)</div>
+                <ul class="comp-list">
+                    <li><i class="fa-solid fa-xmark"></i> Multiple half-empty trucks dispatched daily.</li>
+                    <li><i class="fa-solid fa-xmark"></i> High exposure to localized weather/traffic delays.</li>
+                    <li><i class="fa-solid fa-xmark"></i> Paying premium LTL rates to dozens of disjointed carriers.</li>
+                    <li><i class="fa-solid fa-xmark"></i> Zero leverage in rate negotiations.</li>
+                </ul>
+            </div>
+
+            <div class="comp-card good">
+                <div class="comp-header"><i class="fa-solid fa-circle-check"></i> Hub & Spoke (Optimized)</div>
+                <ul class="comp-list">
+                    <li><i class="fa-solid fa-check"></i> Freight is pooled at regional aggregation hubs.</li>
+                    <li><i class="fa-solid fa-check"></i> Predictable, scheduled FTL (Full Truckload) linehauls.</li>
+                    <li><i class="fa-solid fa-check"></i> Massive volume discounts secured through Trans Global.</li>
+                    <li><i class="fa-solid fa-check"></i> Up to 25% reduction in total transit mileage.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="roi-calculator-section" id="calculator">
+        <div class="section-header reveal">
+            <span class="section-tag">ROI Tool</span>
+            <h2>Route Efficiency Calculator</h2>
+            <p>Enter your baseline shipping metrics below to estimate the capital you can reclaim by eliminating empty miles and consolidating loads.</p>
+        </div>
+
+        <div class="calculator-card reveal">
+            <div class="calc-inputs">
+                <div class="slider-wrapper">
+                    <label>Current Annual Shipments</label>
+                    <span class="slider-val"><span id="shipmentOutput">12,000</span></span>
+                    <input type="range" id="shipmentRange" min="1000" max="50000" step="500" value="12000" oninput="updateNetCalc()">
+                </div>
+                
+                <div class="slider-wrapper">
+                    <label>Avg. Miles Per Shipment</label>
+                    <span class="slider-val"><span id="mileOutput">850</span> mi</span>
+                    <input type="range" id="mileRange" min="100" max="3000" step="50" value="850" oninput="updateNetCalc()">
+                </div>
+
+                <div class="slider-wrapper" style="margin-bottom: 0;">
+                    <label>Current Cost Per Mile</label>
+                    <span class="slider-val">$<span id="costOutput">2.45</span></span>
+                    <input type="range" id="costRange" min="1.00" max="5.00" step="0.05" value="2.45" oninput="updateNetCalc()">
+                </div>
+            </div>
+            
+            <div class="calc-results">
+                <p>Estimated Annual Savings</p>
+                <div class="savings-output" id="netSavingsTotal">$4,498,200</div>
+                <p style="font-size: 0.85rem; text-transform: none; font-weight: 500; margin-bottom: 2rem;">Based on an average 18% reduction in total mileage via consolidation.</p>
+                <a href="../tamplate/booking.html" class="btn-cta" style="width: 100%; justify-content: center;">Audit My Network <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 style="color: var(--action-orange); font-size: 1.8rem; font-weight: 900; letter-spacing:-0.5px;">Trans Global</h4>
+                <p>Next-generation logistics and supply chain management for enterprise teams worldwide.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Solutions</h4>
+                <ul class="footer-links">
+                    <li><a href="network-optimization.html"><i class="fa-solid fa-chevron-right"></i> Network Optimization</a></li>
+                    <li><a href="automated-customs.html"><i class="fa-solid fa-chevron-right"></i> Customs Brokerage</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Secure Platform</h4>
+                <ul class="footer-links">
+                    <li><a href="../tamplate/login.html"><i class="fa-solid fa-chevron-right"></i> Client Login</a></li>
+                    <li><a href="../tamplate/booking.html"><i class="fa-solid fa-chevron-right"></i> Book Freight</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul class="footer-links">
+                    <li><a href="mailto:support@transglobal.com"><i class="fa-solid fa-envelope" style="margin-right: 8px;"></i> support@transglobal.com</a></li>
+                    <li><a href="#"><i class="fa-solid fa-phone" style="margin-right: 8px;"></i> +1 (800) 555-0199</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Trans Global Logistics. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sticky Navigation
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) { nav.classList.add('scrolled'); } 
+            else { nav.classList.remove('scrolled'); }
+        });
+
+        // Mobile Menu Logic
+        function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('active'); }
+
+        // --- 🟢 NETWORK ROI CALCULATOR LOGIC 🟢 ---
+        function updateNetCalc() {
+            const shipments = document.getElementById('shipmentRange').value;
+            const miles = document.getElementById('mileRange').value;
+            const costPerMile = document.getElementById('costRange').value;
+            
+            // Update the display text for the sliders
+            document.getElementById('shipmentOutput').innerText = parseInt(shipments).toLocaleString();
+            document.getElementById('mileOutput').innerText = parseInt(miles).toLocaleString();
+            document.getElementById('costOutput').innerText = parseFloat(costPerMile).toFixed(2);
+            
+            // Formula: Total Cost = (Shipments * Miles * CostPerMile)
+            // Savings = Total Cost * 0.18 (assuming 18% savings from route optimization)
+            const totalCurrentCost = shipments * miles * costPerMile;
+            const rawSavings = totalCurrentCost * 0.18;
+            
+            // Format to currency
+            const formattedSavings = "$" + rawSavings.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('netSavingsTotal').innerText = formattedSavings;
+        }
+
+        // --- SCROLL REVEAL ANIMATIONS ---
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) { reveals[i].classList.add("active"); }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger on load
+    </script>
+</body>
+</html>
