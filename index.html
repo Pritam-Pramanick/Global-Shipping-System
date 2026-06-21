@@ -137,37 +137,66 @@
         .header-avatar { width: 42px; height: 42px; background-color: var(--primary-blue); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; background-size: cover; background-position: center; transition: 0.3s; border: 2px solid transparent; }
         .header-avatar:hover { transform: translateY(-2px); border-color: var(--action-orange); box-shadow: 0 5px 15px rgba(10,37,64,0.2);}
 
-        /* --- 🟢 CINEMATIC VIDEO HERO 🟢 --- */
-        .pull-sequence-section { position: relative; width: 100%; height: 550px; background-color: var(--primary-blue); overflow: hidden; display: flex; margin-bottom: 2rem !important; border-radius: 24px; }
-        .pull-sequence-section::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,37,64,0.3) 0%, rgba(10,37,64,0.8) 100%); z-index: 2;}
-        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; animation-duration: 40s; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
-        .slide video { width: 100%; height: 100%; object-fit: cover; }
+        /* --- 🟢 NEW: INTERACTIVE VIDEO SHOWCASE HERO 🟢 --- */
+        .interactive-hero {
+            background: var(--surface-color); border-radius: 24px; padding: 2rem;
+            box-shadow: var(--card-shadow); margin-bottom: 2rem;
+            display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: center;
+        }
+
+        /* Left: Video Player */
+        .video-player-container {
+            width: 100%; height: 500px; border-radius: 20px; overflow: hidden;
+            position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .video-player-container video {
+            width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;
+            opacity: 0; transition: opacity 0.8s ease-in-out;
+        }
+        .video-player-container video.active { opacity: 1; z-index: 2; }
         
-        .slide-text-content { text-align: center; padding: 40px; z-index: 3; position: relative; color: white;}
-        .slide-text-content h1 { font-size: clamp(3rem, 5vw, 4.5rem); font-weight: 900; margin-bottom: 1rem; letter-spacing: -1px; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .slide-text-content p { font-size: clamp(1.2rem, 2vw, 1.5rem); color: #E2E8F0; font-weight: 400; max-width: 700px; margin: 0 auto; text-shadow: 0 4px 10px rgba(0,0,0,0.5);}
+        /* Video Overlay Gradient */
+        .video-player-container::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(10,37,64,0.6) 0%, transparent 50%); z-index: 3; pointer-events: none;
+        }
+        .video-badge {
+            position: absolute; bottom: 20px; left: 20px; z-index: 4;
+            background: rgba(255,255,255,0.95); padding: 0.5rem 1rem; border-radius: 50px;
+            font-weight: 700; color: var(--primary-blue); font-size: 0.85rem; backdrop-filter: blur(10px);
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .video-badge i { color: var(--success-green); }
 
-        #slide-v1 { animation-name: fadeVideo-1; } #slide-t1 { animation-name: fadeScale-1; }
-        #slide-v2 { animation-name: fadeVideo-2; } #slide-t2 { animation-name: fadeScale-2; }
-        #slide-v3 { animation-name: fadeVideo-3; } #slide-t3 { animation-name: fadeScale-3; }
-        #slide-v4 { animation-name: fadeVideo-4; } #slide-t4 { animation-name: fadeScale-4; }
+        /* Right: Interactive Tabs */
+        .hero-tabs-content h1 { font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 900; color: var(--primary-blue); margin-bottom: 1rem; letter-spacing: -1px; line-height: 1.1;}
+        .hero-tabs-content p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; max-width: 500px;}
 
-        /* Smoother Video Fade Transitions */
-        @keyframes fadeVideo-1 { 0%, 25% { opacity: 1; } 28%, 97% { opacity: 0; } 100% { opacity: 1; } }
-        @keyframes fadeVideo-2 { 0%, 22% { opacity: 0; } 25%, 50% { opacity: 1; } 53%, 100% { opacity: 0; } }
-        @keyframes fadeVideo-3 { 0%, 47% { opacity: 0; } 50%, 75% { opacity: 1; } 78%, 100% { opacity: 0; } }
-        @keyframes fadeVideo-4 { 0%, 72% { opacity: 0; } 75%, 100% { opacity: 1; } }
+        .tabs-list { display: flex; flex-direction: column; gap: 1rem; }
+        
+        .tab-item {
+            background: var(--bg-color); border: 2px solid transparent; padding: 1.5rem; border-radius: 16px;
+            cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; display: flex; flex-direction: column;
+        }
+        .tab-item:hover { background: white; border-color: var(--border-color); transform: translateX(5px);}
+        .tab-item.active { background: white; border-color: var(--action-orange); box-shadow: 0 10px 20px rgba(255,107,53,0.1); transform: translateX(10px);}
+        
+        .tab-title { font-weight: 800; font-size: 1.1rem; color: var(--primary-blue); margin-bottom: 0.3rem; display: flex; align-items: center; justify-content: space-between;}
+        .tab-title i { color: var(--text-muted); transition: 0.3s;}
+        .tab-item.active .tab-title i { color: var(--action-orange); }
+        .tab-desc { font-size: 0.95rem; color: var(--text-muted); max-height: 0; opacity: 0; transition: 0.4s ease; overflow: hidden;}
+        .tab-item.active .tab-desc { max-height: 60px; opacity: 1; margin-top: 0.5rem;}
 
-        /* Smoother Text Scale & Fade Transitions */
-        @keyframes fadeScale-1 { 0%, 5% { opacity: 0; transform: scale(0.95); } 8%, 22% { opacity: 1; transform: scale(1); } 25%, 100% { opacity: 0; transform: scale(1.05); } }
-        @keyframes fadeScale-2 { 0%, 22% { opacity: 0; transform: scale(0.95); } 25%, 47% { opacity: 1; transform: scale(1); } 50%, 100% { opacity: 0; transform: scale(1.05); } }
-        @keyframes fadeScale-3 { 0%, 47% { opacity: 0; transform: scale(0.95); } 50%, 72% { opacity: 1; transform: scale(1); } 75%, 100% { opacity: 0; transform: scale(1.05); } }
-        @keyframes fadeScale-4 { 0%, 72% { opacity: 0; transform: scale(0.95); } 75%, 97% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.05); } }
+        /* Animated Progress Bar inside active tab */
+        .tab-progress { position: absolute; bottom: 0; left: 0; height: 4px; background: var(--action-orange); width: 0%; border-radius: 0 4px 4px 0;}
+        .tab-item.active .tab-progress { animation: fillProgress 8s linear forwards; }
+        @keyframes fillProgress { from { width: 0%; } to { width: 100%; } }
 
-        /* --- 🟢 TRACKING BOX SECTION 🟢 --- */
-        .hero-tracking-section { background: var(--surface-color); border-radius: 24px; padding: 4rem 2rem; text-align: center; position: relative; box-shadow: var(--card-shadow); margin-bottom: 4rem;}
+
+        /* --- 🟢 FLOATING TRACKING BOX 🟢 --- */
+        .hero-tracking-section { background: var(--surface-color); border-radius: 24px; padding: 3rem 2rem; text-align: center; position: relative; box-shadow: var(--card-shadow); margin-bottom: 4rem; z-index: 10;}
         .tracking-box { display: flex; background: white; padding: 0.6rem; border-radius: 50px; max-width: 700px; margin: 0 auto 2rem auto; border: 1px solid var(--border-color); position: relative; z-index: 10; box-shadow: 0 15px 30px rgba(0,0,0,0.05); transition: var(--transition-smooth);}
-        .tracking-box:focus-within { border-color: var(--primary-blue); box-shadow: 0 20px 40px rgba(10,37,64,0.1); transform: translateY(-2px);}
+        .tracking-box:focus-within { border-color: var(--primary-blue); box-shadow: 0 20px 40px rgba(10,37,64,0.15); transform: translateY(-2px);}
         .tracking-box input { flex: 1; border: none; padding: 1rem 1.5rem; font-size: 1.1rem; outline: none; color: var(--text-dark); background: transparent; font-weight: 500;}
         .tracking-box input::placeholder { color: #A0AEC0; font-weight: 400;}
         .tracking-box button { background: linear-gradient(135deg, var(--action-orange) 0%, #ff8e63 100%); color: white; border: none; padding: 0 2.5rem; font-size: 1.1rem; font-weight: 700; border-radius: 50px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 0.5rem;}
@@ -294,15 +323,16 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        @media (max-width: 1100px) { nav { display: none; } .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem;} }
+        @media (max-width: 1100px) { nav { display: none; } .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem;} .interactive-hero { grid-template-columns: 1fr; padding: 3rem; } .video-player-container { height: 400px; order: 2; } .hero-tabs-content { order: 1; text-align: center; } .hero-tabs-content p { margin: 0 auto 2rem;} }
         @media (max-width: 768px) { 
             body { padding: 0.5rem; } 
-            header.lay { padding: 1rem 1.5rem; } 
+            header.lay { padding: 1rem 1.5rem; width: 100%; margin: 0 auto 1rem;} 
+            .interactive-hero { padding: 1.5rem; gap: 2rem;}
+            .video-player-container { height: 300px; }
             .tracking-box { flex-direction: column; border-radius: 20px;}
             .tracking-box button { padding: 1.2rem; border-radius: 12px; justify-content: center;}
             .booking-form { padding: 2rem; }
             .footer-grid { grid-template-columns: 1fr; }
-            .slide-text-content h1 { font-size: 2.5rem; }
             .stats-grid-horizontal { grid-template-columns: 1fr 1fr; gap: 2rem;}
         }
     </style>
@@ -401,51 +431,57 @@
     </header>
 
     <main>
-        <section class="layout-card pull-sequence-section">
-            <div class="slide" id="slide-v1">
-                <video autoplay muted loop playsinline>
+        <section class="interactive-hero">
+            
+            <div class="video-player-container">
+                <div class="video-badge"><i class="fa-solid fa-circle-check"></i> Live Operations Network</div>
+                <video id="vid-0" class="active" autoplay muted loop playsinline>
                     <source src="assets/video/video1.mp4" type="video/mp4">
                 </video>
-            </div>
-            <div class="slide" id="slide-t1">
-                <div class="slide-text-content">
-                    <h1>Global Shipping</h1>
-                    <p>Reliable cargo transport across the ocean.</p>
-                </div>
-            </div>
-            <div class="slide" id="slide-v2">
-                <video autoplay muted loop playsinline>
+                <video id="vid-1" autoplay muted loop playsinline>
                     <source src="assets/video/video2.mp4" type="video/mp4">
                 </video>
-            </div>
-            <div class="slide" id="slide-t2">
-                <div class="slide-text-content">
-                    <h1>Secure Warehousing</h1>
-                    <p>State-of-the-art facilities for your goods.</p>
-                </div>
-            </div>
-            <div class="slide" id="slide-v3">
-                <video autoplay muted loop playsinline>
+                <video id="vid-2" autoplay muted loop playsinline>
                     <source src="assets/video/video3.mp4" type="video/mp4">
                 </video>
-            </div>
-            <div class="slide" id="slide-t3">
-                <div class="slide-text-content">
-                    <h1>Live Tracking</h1>
-                    <p>Monitor your shipments in real-time 24/7.</p>
-                </div>
-            </div>
-            <div class="slide" id="slide-v4">
-                <video autoplay muted loop playsinline>
+                <video id="vid-3" autoplay muted loop playsinline>
                     <source src="assets/video/video4.mp4" type="video/mp4">
                 </video>
             </div>
-            <div class="slide" id="slide-t4">
-                <div class="slide-text-content">
-                    <h1>Last Mile Delivery</h1>
-                    <p>Delivering straight to your customer's door.</p>
+
+            <div class="hero-tabs-content">
+                <h1>Global Logistics,<br>Elevated.</h1>
+                <p>Manage your entire supply chain matrix from a single, centralized dashboard built for modern enterprises.</p>
+                
+                <div class="tabs-list">
+                    
+                    <div class="tab-item active" onclick="switchHeroTab(0)">
+                        <div class="tab-title">Global Ocean & Air Freight <i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="tab-desc">Reliable, scalable cargo transport across the world's most vital trade lanes.</div>
+                        <div class="tab-progress"></div>
+                    </div>
+
+                    <div class="tab-item" onclick="switchHeroTab(1)">
+                        <div class="tab-title">Secure Enterprise Warehousing <i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="tab-desc">State-of-the-art facilities equipped with cold-chain and robotic fulfillment capabilities.</div>
+                        <div class="tab-progress"></div>
+                    </div>
+
+                    <div class="tab-item" onclick="switchHeroTab(2)">
+                        <div class="tab-title">Live GPS Tracking System <i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="tab-desc">Monitor your shipments via satellite with real-time temperature and security alerts.</div>
+                        <div class="tab-progress"></div>
+                    </div>
+
+                    <div class="tab-item" onclick="switchHeroTab(3)">
+                        <div class="tab-title">Final Mile Delivery <i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="tab-desc">Ensuring your cargo reaches its ultimate destination safely and on schedule.</div>
+                        <div class="tab-progress"></div>
+                    </div>
+
                 </div>
             </div>
+            
         </section>
 
         <section class="layout-card hero-tracking-section reveal">
@@ -893,6 +929,40 @@
             }, 8000);
         }
 
+        // --- 🟢 NEW: INTERACTIVE HERO TABS LOGIC 🟢 ---
+        let currentHeroTab = 0;
+        let heroInterval;
+
+        function switchHeroTab(index) {
+            clearInterval(heroInterval); // Stop auto-play when user clicks manually
+
+            // Update Tabs
+            const tabs = document.querySelectorAll('.tab-item');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            tabs[index].classList.add('active');
+
+            // Update Videos
+            const videos = document.querySelectorAll('.video-player-container video');
+            videos.forEach(vid => {
+                vid.classList.remove('active');
+                vid.pause();
+                vid.currentTime = 0;
+            });
+            
+            videos[index].classList.add('active');
+            videos[index].play();
+
+            currentHeroTab = index;
+            startHeroAutoPlay(); // Restart auto-play
+        }
+
+        function startHeroAutoPlay() {
+            heroInterval = setInterval(() => {
+                let nextTab = (currentHeroTab + 1) % 4; // 4 is the total number of tabs
+                switchHeroTab(nextTab);
+            }, 8000); // 8 seconds per tab
+        }
+
         // --- 🟢 SCROLL REVEAL ANIMATION 🟢 ---
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
@@ -911,6 +981,7 @@
         loadUserProfile();
         loadSystemNotices();
         fetchLiveNewsFromInternet();
+        startHeroAutoPlay(); // Start hero video loop
         reveal(); // Trigger initial reveal
 
     </script>
