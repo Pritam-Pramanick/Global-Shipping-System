@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,6 +59,12 @@
         .reveal.active { opacity: 1; transform: translateY(0); }
         .reveal-delay-1 { transition-delay: 0.1s; }
         .reveal-delay-2 { transition-delay: 0.2s; }
+
+        /* 🟢 ADDED: Missing CSS Keyframes for the Filter Animation 🟢 */
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .layout-card {
             background-color: var(--surface-color); border-radius: 24px; box-shadow: var(--card-shadow);
@@ -463,7 +468,8 @@
         </div>
 
         <section class="case-grid">
-            <article class="case-card reveal reveal-delay-1" data-category="heavy">
+            
+            <article class="case-card reveal" data-category="heavy">
                 <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=600" alt="Aerospace Logistics" class="case-card-img">
                 <div class="case-card-content">
                     <span class="tag tag-blue" style="font-size: 0.75rem;"><i class="fa-solid fa-plane"></i> Aerospace</span>
@@ -473,7 +479,7 @@
                 </div>
             </article>
 
-            <article class="case-card reveal reveal-delay-2" data-category="heavy">
+            <article class="case-card reveal reveal-delay-1" data-category="heavy">
                 <img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=600" alt="Wind Turbines" class="case-card-img">
                 <div class="case-card-content">
                     <span class="tag tag-green" style="font-size: 0.75rem;"><i class="fa-solid fa-leaf"></i> Energy</span>
@@ -483,7 +489,7 @@
                 </div>
             </article>
 
-            <article class="case-card reveal" data-category="auto">
+            <article class="case-card reveal reveal-delay-2" data-category="auto">
                 <img src="https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&q=80&w=600" alt="Tires" class="case-card-img">
                 <div class="case-card-content">
                     <span class="tag tag-blue" style="font-size: 0.75rem;"><i class="fa-solid fa-car"></i> Automotive</span>
@@ -492,6 +498,27 @@
                     <a href="#" class="read-more">View Details <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </article>
+
+            <article class="case-card reveal" data-category="retail">
+                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=600" alt="Retail Fashion Logistics" class="case-card-img">
+                <div class="case-card-content">
+                    <span class="tag tag-orange" style="font-size: 0.75rem;"><i class="fa-solid fa-cart-shopping"></i> Retail & E-Com</span>
+                    <h3>Omnichannel Fulfillment</h3>
+                    <p>Restructured the warehousing architecture for a major clothing brand. We enabled 2-day delivery guarantees across North America while reducing total inventory holding costs by 22%.</p>
+                    <a href="#" class="read-more">View Details <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="case-card reveal reveal-delay-1" data-category="retail">
+                <img src="https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?auto=format&fit=crop&q=80&w=600" alt="E-Commerce Warehouse" class="case-card-img">
+                <div class="case-card-content">
+                    <span class="tag tag-orange" style="font-size: 0.75rem;"><i class="fa-solid fa-cart-shopping"></i> Retail & E-Com</span>
+                    <h3>Reverse Logistics Automation</h3>
+                    <p>Developed an automated returns processing center for an online electronics retailer, cutting customer refund times from 14 days down to 48 hours.</p>
+                    <a href="#" class="read-more">View Details <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </article>
+
         </section>
 
         <section class="testimonials-section reveal" id="testimonials">
@@ -661,19 +688,25 @@
             }
         }
 
-        /* --- Filter Logic --- */
+        /* --- 🟢 JS LOGIC FOR FILTERS AND ANIMATIONS 🟢 --- */
         function filterCases(category, btnElement) {
+            // Update Active Button
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
 
+            // Filter Cards
             const cards = document.querySelectorAll('.case-card');
             cards.forEach(card => {
                 if (category === 'all' || card.getAttribute('data-category') === category) {
                     card.style.display = 'flex';
+                    
+                    // Reset animation so it runs again
                     card.style.animation = 'none';
-                    void card.offsetWidth; 
-                    card.style.animation = 'slideUpFade 0.6s forwards'; 
+                    void card.offsetWidth; // trigger reflow
+                    
+                    // Apply animation class from CSS
+                    card.style.animation = 'slideUpFade 0.6s ease forwards'; 
                 } else {
                     card.style.display = 'none';
                 }
@@ -702,7 +735,7 @@
             }
         });
 
-        /* --- 🟢 NEW: SCROLL REVEAL ANIMATION & COUNTERS 🟢 --- */
+        /* --- SCROLL REVEAL ANIMATION & COUNTERS --- */
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
             for (var i = 0; i < reveals.length; i++) {
@@ -717,7 +750,7 @@
         window.addEventListener("scroll", reveal);
         reveal(); // Trigger on load
 
-        // Animated Number Counters (Triggers when the stats section comes into view)
+        // Animated Number Counters
         const counters = document.querySelectorAll('.counter');
         const speed = 200; 
         let countersAnimated = false;
@@ -741,7 +774,7 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting && !countersAnimated) {
                     animateCounters();
-                    countersAnimated = true; // Only animate once
+                    countersAnimated = true;
                 }
             });
         }, { threshold: 0.5 });
