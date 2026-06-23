@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trade & Tariff Strategy | Trans Global Logistics</title>
-
+    
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
         :root {
             --primary-blue: #0A2540;
@@ -31,750 +29,150 @@
             --hover-shadow: 0 30px 60px -15px rgba(10, 37, 64, 0.15);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            scroll-padding-top: 100px;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        a {
-            text-decoration: none;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        a { text-decoration: none; }
 
         /* Scroll Reveal */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .reveal-delay-1 {
-            transition-delay: 0.1s;
-        }
-
-        .reveal-delay-2 {
-            transition-delay: 0.2s;
-        }
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
 
         /* --- 🟢 NAVBAR 🟢 --- */
-        .public-nav {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            padding: 1.5rem 5%;
-            background: transparent;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            z-index: 1000;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        .public-nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 1.5rem 5%; background: transparent; position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 1000; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .public-nav.scrolled { padding: 1rem 5%; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(16px); box-shadow: 0 10px 30px -10px rgba(10, 37, 64, 0.15); border-bottom: 1px solid rgba(226, 232, 240, 0.8); }
+        .public-nav .logo { justify-self: start; font-size: 1.6rem; font-weight: 900; color: white; letter-spacing: -0.5px; display: flex; align-items: center; gap: 0.6rem; transition: var(--transition-smooth); }
+        .public-nav .logo i { color: var(--action-orange); font-size: 1.8rem; }
+        .public-nav.scrolled .logo { color: var(--primary-blue); }
+        
+        .nav-links { justify-self: center; display: flex; gap: 0.5rem; align-items: center; background: rgba(255, 255, 255, 0.1); padding: 0.4rem; border-radius: 50px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.4s ease; }
+        .public-nav.scrolled .nav-links { background: rgba(244, 247, 250, 0.8); border-color: rgba(226, 232, 240, 0.8); }
+        .nav-links a { color: rgba(255, 255, 255, 0.9); font-weight: 600; font-size: 0.95rem; padding: 0.6rem 1.2rem; border-radius: 50px; transition: all 0.3s ease; }
+        .public-nav.scrolled .nav-links a { color: var(--text-muted); }
+        .nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.2); }
+        .public-nav.scrolled .nav-links a:hover { color: var(--primary-blue); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-        .public-nav.scrolled {
-            padding: 1rem 5%;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(16px);
-            box-shadow: 0 10px 30px -10px rgba(10, 37, 64, 0.15);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        .public-nav .logo {
-            justify-self: start;
-            font-size: 1.6rem;
-            font-weight: 900;
-            color: white;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            transition: var(--transition-smooth);
-        }
-
-        .public-nav .logo i {
-            color: var(--action-orange);
-            font-size: 1.8rem;
-        }
-
-        .public-nav.scrolled .logo {
-            color: var(--primary-blue);
-        }
-
-        .nav-links {
-            justify-self: center;
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.4rem;
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.4s ease;
-        }
-
-        .public-nav.scrolled .nav-links {
-            background: rgba(244, 247, 250, 0.8);
-            border-color: rgba(226, 232, 240, 0.8);
-        }
-
-        .nav-links a {
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-        }
-
-        .public-nav.scrolled .nav-links a {
-            color: var(--text-muted);
-        }
-
-        .nav-links a:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .public-nav.scrolled .nav-links a:hover {
-            color: var(--primary-blue);
-            background: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .nav-buttons {
-            justify-self: end;
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .btn-login {
-            color: white;
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: 0.3s ease;
-        }
-
-        .public-nav.scrolled .btn-login {
-            color: var(--primary-blue);
-        }
-
-        .btn-login:hover {
-            color: var(--action-orange);
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .btn-cta {
-            background: linear-gradient(135deg, var(--action-orange) 0%, #ff8e63 100%);
-            color: white !important;
-            padding: 0.7rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: var(--transition-smooth);
-            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-            border: none;
-        }
-
-        .btn-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            justify-self: end;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.6rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .public-nav.scrolled .mobile-menu-btn {
-            color: var(--primary-blue);
-        }
+        .nav-buttons { justify-self: end; display: flex; gap: 1.5rem; align-items: center; }
+        .btn-login { color: white; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s ease; }
+        .public-nav.scrolled .btn-login { color: var(--primary-blue); }
+        .btn-login:hover { color: var(--action-orange); opacity: 0.9; transform: translateY(-1px);}
+        .btn-cta { background: linear-gradient(135deg, var(--action-orange) 0%, #ff8e63 100%); color: white !important; padding: 0.7rem 1.5rem; border-radius: 50px; font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: var(--transition-smooth); box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3); border: none; }
+        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5); }
+        
+        .mobile-menu-btn { display: none; justify-self: end; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; transition: 0.3s;}
+        .public-nav.scrolled .mobile-menu-btn { color: var(--primary-blue); }
 
         /* Mobile Menu */
-        .mobile-menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 37, 64, 0.98);
-            backdrop-filter: blur(15px);
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition-smooth);
-        }
-
-        .mobile-menu-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .close-mobile-menu {
-            position: absolute;
-            top: 1.5rem;
-            right: 2rem;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 3rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .close-mobile-menu:hover {
-            color: var(--action-orange);
-            transform: rotate(90deg);
-        }
-
-        .mobile-menu-overlay a {
-            color: white;
-            font-size: 2rem;
-            font-weight: 700;
-            transition: 0.2s;
-        }
-
-        .mobile-menu-overlay a:hover {
-            color: var(--action-orange);
-            transform: scale(1.1);
-        }
+        .mobile-menu-overlay { position: fixed; inset: 0; background: rgba(10, 37, 64, 0.98); backdrop-filter: blur(15px); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem; opacity: 0; visibility: hidden; transition: var(--transition-smooth); }
+        .mobile-menu-overlay.active { opacity: 1; visibility: visible; }
+        .close-mobile-menu { position: absolute; top: 1.5rem; right: 2rem; background: none; border: none; color: white; font-size: 3rem; cursor: pointer; transition: 0.2s;}
+        .close-mobile-menu:hover { color: var(--action-orange); transform: rotate(90deg);}
+        .mobile-menu-overlay a { color: white; font-size: 2rem; font-weight: 700; transition: 0.2s; }
+        .mobile-menu-overlay a:hover { color: var(--action-orange); transform: scale(1.1); }
 
         /* --- 🟢 HERO SECTION 🟢 --- */
         .service-hero {
-            position: relative;
-            padding: 12rem 5% 8rem;
-            min-height: 65vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            position: relative; padding: 12rem 5% 8rem; min-height: 65vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
             background: linear-gradient(rgba(10, 37, 64, 0.95), rgba(10, 37, 64, 0.8)), url('https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?auto=format&fit=crop&q=80&w=2000') center/cover;
-            background-attachment: fixed;
-            color: white;
+            background-attachment: fixed; color: white;
         }
-
-        .breadcrumb {
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--action-orange);
-            margin-bottom: 1rem;
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .breadcrumb a {
-            color: #CBD5E0;
-            transition: 0.2s;
-        }
-
-        .breadcrumb a:hover {
-            color: white;
-        }
-
-        .service-hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4.5rem);
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            font-weight: 900;
-            letter-spacing: -1px;
-            max-width: 900px;
-        }
-
-        .service-hero p {
-            font-size: 1.2rem;
-            color: #CBD5E0;
-            margin-bottom: 2.5rem;
-            font-weight: 400;
-            max-width: 800px;
-            line-height: 1.8;
-        }
+        .breadcrumb { font-size: 0.9rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--action-orange); margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: center;}
+        .breadcrumb a { color: #CBD5E0; transition: 0.2s; }
+        .breadcrumb a:hover { color: white; }
+        
+        .service-hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; margin-bottom: 1.5rem; font-weight: 900; letter-spacing: -1px; max-width: 900px;}
+        .service-hero p { font-size: 1.2rem; color: #CBD5E0; margin-bottom: 2.5rem; font-weight: 400; max-width: 800px; line-height: 1.8;}
 
         /* --- 🟢 THE PROBLEM (AGITATION) 🟢 --- */
-        .problem-section {
-            padding: 5rem 5%;
-            background: var(--surface-color);
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .problem-text {
-            font-size: 1.5rem;
-            max-width: 1000px;
-            margin: 0 auto;
-            font-weight: 600;
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        .problem-text span {
-            color: var(--action-orange);
-            font-weight: 800;
-            background: rgba(255, 107, 53, 0.1);
-            padding: 0 0.5rem;
-            border-radius: 4px;
-        }
+        .problem-section { padding: 5rem 5%; background: var(--surface-color); text-align: center; border-bottom: 1px solid var(--border-color);}
+        .problem-text { font-size: 1.5rem; max-width: 1000px; margin: 0 auto; font-weight: 600; color: var(--text-dark); line-height: 1.6;}
+        .problem-text span { color: var(--action-orange); font-weight: 800; background: rgba(255, 107, 53, 0.1); padding: 0 0.5rem; border-radius: 4px;}
 
         /* --- 🟢 KEY POINTS (4 PILLARS) 🟢 --- */
-        .features-section {
-            padding: 8rem 5%;
-            background: var(--bg-color);
-        }
+        .features-section { padding: 8rem 5%; background: var(--bg-color); }
+        .section-header { text-align: center; margin-bottom: 4rem; max-width: 800px; margin-inline: auto;}
+        .section-tag { color: var(--action-orange); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem; display: block; font-size: 0.9rem;}
+        .section-header h2 { font-size: clamp(2rem, 4vw, 3rem); color: var(--primary-blue); margin-bottom: 1rem; letter-spacing: -1px; font-weight: 900;}
+        .section-header p { font-size: 1.1rem; color: var(--text-muted); line-height: 1.8;}
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-            max-width: 800px;
-            margin-inline: auto;
-        }
-
-        .section-tag {
-            color: var(--action-orange);
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 1rem;
-            display: block;
-            font-size: 0.9rem;
-        }
-
-        .section-header h2 {
-            font-size: clamp(2rem, 4vw, 3rem);
-            color: var(--primary-blue);
-            margin-bottom: 1rem;
-            letter-spacing: -1px;
-            font-weight: 900;
-        }
-
-        .section-header p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            line-height: 1.8;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2.5rem;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        .feature-card {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            padding: 3rem 2rem;
-            border-radius: 24px;
-            transition: var(--transition-smooth);
-            box-shadow: var(--card-shadow);
-            text-align: center;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary-blue);
-            box-shadow: var(--hover-shadow);
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: rgba(10, 37, 64, 0.05);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 2rem;
-            font-size: 2rem;
-            color: var(--primary-blue);
-            transition: 0.3s;
-        }
-
-        .feature-card:hover .feature-icon {
-            background: var(--primary-blue);
-            color: white;
-            transform: rotate(-10deg) scale(1.1);
-        }
-
-        .feature-card h3 {
-            font-size: 1.4rem;
-            color: var(--primary-blue);
-            margin-bottom: 1rem;
-            font-weight: 800;
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-            line-height: 1.6;
-            font-size: 1rem;
-        }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; max-width: 1300px; margin: 0 auto;}
+        .feature-card { background: var(--surface-color); border: 1px solid var(--border-color); padding: 3rem 2rem; border-radius: 24px; transition: var(--transition-smooth); box-shadow: var(--card-shadow); text-align: center;}
+        .feature-card:hover { transform: translateY(-10px); border-color: var(--primary-blue); box-shadow: var(--hover-shadow);}
+        
+        .feature-icon { width: 80px; height: 80px; background: rgba(10, 37, 64, 0.05); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 2rem; color: var(--primary-blue); transition: 0.3s;}
+        .feature-card:hover .feature-icon { background: var(--primary-blue); color: white; transform: rotate(-10deg) scale(1.1);}
+        
+        .feature-card h3 { font-size: 1.4rem; color: var(--primary-blue); margin-bottom: 1rem; font-weight: 800;}
+        .feature-card p { color: var(--text-muted); line-height: 1.6; font-size: 1rem;}
 
         /* --- 🟢 PROCESS VISUALIZATION 🟢 --- */
-        .process-visual-section {
-            padding: 6rem 5%;
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .process-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .process-content h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 900;
-            line-height: 1.2;
-        }
-
-        .process-content p {
-            color: #CBD5E0;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 2rem;
-        }
-
-        .process-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .step-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1.5rem 2rem;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-            backdrop-filter: blur(10px);
-            transition: 0.3s;
-        }
-
-        .step-card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--action-orange);
-            transform: translateX(10px);
-        }
-
-        .step-num {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--action-orange);
-            width: 40px;
-        }
-
-        .step-text h4 {
-            font-size: 1.2rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .step-text p {
-            color: #A0AEC0;
-            font-size: 0.95rem;
-            margin: 0;
-            line-height: 1.5;
-        }
+        .process-visual-section { padding: 6rem 5%; background: var(--primary-blue); color: white; }
+        .process-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; align-items: center;}
+        
+        .process-content h2 { font-size: 2.5rem; margin-bottom: 1.5rem; font-weight: 900; line-height: 1.2;}
+        .process-content p { color: #CBD5E0; font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;}
+        
+        .process-steps { display: flex; flex-direction: column; gap: 1.5rem; }
+        .step-card { background: rgba(255,255,255,0.05); padding: 1.5rem 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); display: flex; gap: 1.5rem; align-items: center; backdrop-filter: blur(10px); transition: 0.3s;}
+        .step-card:hover { background: rgba(255,255,255,0.1); border-color: var(--action-orange); transform: translateX(10px);}
+        .step-num { font-size: 2rem; font-weight: 900; color: var(--action-orange); width: 40px; }
+        .step-text h4 { font-size: 1.2rem; margin-bottom: 0.3rem;}
+        .step-text p { color: #A0AEC0; font-size: 0.95rem; margin: 0; line-height: 1.5;}
 
         /* --- 🟢 INTERACTIVE DUTY CALCULATOR 🟢 --- */
-        .roi-calculator-section {
-            padding: 8rem 5%;
-            background: var(--surface-color);
-        }
-
-        .calculator-card {
-            background: var(--bg-color);
-            max-width: 1100px;
-            margin: 0 auto;
-            border-radius: 30px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
-            padding: 4rem;
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .calc-inputs label {
-            font-weight: 700;
-            color: var(--primary-blue);
-            display: block;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .slider-wrapper {
-            margin-bottom: 2.5rem;
-        }
-
-        .slider-val {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--action-orange);
-            float: right;
-            margin-top: -2.5rem;
-            font-variant-numeric: tabular-nums;
-            min-width: 70px;
-            text-align: right;
-        }
-
+        .roi-calculator-section { padding: 8rem 5%; background: var(--surface-color); }
+        .calculator-card { background: var(--bg-color); max-width: 1100px; margin: 0 auto; border-radius: 30px; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); padding: 4rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4rem; align-items: center;}
+        
+        .calc-inputs label { font-weight: 700; color: var(--primary-blue); display: block; margin-bottom: 1rem; font-size: 1.1rem;}
+        .slider-wrapper { margin-bottom: 2.5rem; }
+        .slider-val { font-size: 1.5rem; font-weight: 900; color: var(--action-orange); float: right; margin-top: -2.5rem; font-variant-numeric: tabular-nums; min-width: 70px; text-align: right;}
+        
         /* Custom Range Slider Fixes */
-        input[type=range] {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            background: transparent;
-            margin: 10px 0;
-        }
+        input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; margin: 10px 0; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: var(--border-color); border-radius: 5px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--action-orange); cursor: pointer; margin-top: -9px; box-shadow: 0 4px 10px rgba(255, 107, 53, 0.4); border: 3px solid white;}
+        input[type=range]::-moz-range-track { width: 100%; height: 6px; cursor: pointer; background: var(--border-color); border-radius: 5px; }
+        input[type=range]::-moz-range-thumb { height: 18px; width: 18px; border-radius: 50%; background: var(--action-orange); cursor: pointer; border: 3px solid white; box-shadow: 0 4px 10px rgba(255, 107, 53, 0.4); }
 
-        input[type=range]:focus {
-            outline: none;
-        }
-
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            cursor: pointer;
-            background: var(--border-color);
-            border-radius: 5px;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 24px;
-            width: 24px;
-            border-radius: 50%;
-            background: var(--action-orange);
-            cursor: pointer;
-            margin-top: -9px;
-            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.4);
-            border: 3px solid white;
-        }
-
-        input[type=range]::-moz-range-track {
-            width: 100%;
-            height: 6px;
-            cursor: pointer;
-            background: var(--border-color);
-            border-radius: 5px;
-        }
-
-        input[type=range]::-moz-range-thumb {
-            height: 18px;
-            width: 18px;
-            border-radius: 50%;
-            background: var(--action-orange);
-            cursor: pointer;
-            border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.4);
-        }
-
-        .calc-results {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(10, 37, 64, 0.08);
-            width: 100%;
-            height: 100%;
-            min-height: 280px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid var(--success-green);
-        }
-
-        .calc-results p {
-            color: var(--text-muted);
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .calc-results .savings-output {
-            font-size: clamp(2rem, 3.5vw, 3.5rem);
-            font-weight: 900;
-            color: var(--success-green);
-            line-height: 1;
-            margin-bottom: 1.5rem;
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -1px;
-            white-space: nowrap;
-        }
-
+        .calc-results { background: white; padding: 3rem; border-radius: 20px; text-align: center; box-shadow: 0 20px 40px rgba(10,37,64,0.08); width: 100%; height: 100%; min-height: 280px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid var(--success-green);}
+        .calc-results p { color: var(--text-muted); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 1rem;}
+        .calc-results .savings-output { font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 900; color: var(--success-green); line-height: 1; margin-bottom: 1.5rem; font-variant-numeric: tabular-nums; letter-spacing: -1px; white-space: nowrap;}
+        
         /* --- FOOTER --- */
-        .main-footer {
-            background: #05111f;
-            color: #A0AEC0;
-            padding: 6rem 5% 2rem;
-            position: relative;
-            z-index: 2;
+        .main-footer { background: #05111f; color: #A0AEC0; padding: 6rem 5% 2rem; position: relative; z-index: 2;}
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; max-width: 1400px; margin-inline: auto;}
+        .footer-col h4 { color: white; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 700;}
+        .footer-col p { margin-bottom: 1.5rem; line-height: 1.8;}
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 1rem; }
+        .footer-links a { color: #A0AEC0; transition: var(--transition-fast); font-weight: 500; display: inline-flex; align-items: center; gap: 5px;}
+        .footer-links a i.fa-chevron-right { font-size: 0.7rem; opacity: 0; transform: translateX(-10px); transition: 0.3s; color: var(--action-orange);}
+        .footer-links a:hover { color: var(--action-orange); transform: translateX(5px); }
+        .footer-links a:hover i.fa-chevron-right { opacity: 1; transform: translateX(0); }
+
+        @media (max-width: 1024px) { 
+            .public-nav { grid-template-columns: auto 1fr auto; }
+            .process-container, .calculator-card { grid-template-columns: 1fr; gap: 3rem;}
+            .calculator-card { padding: 3rem;}
         }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 4rem;
-            margin-bottom: 4rem;
-            max-width: 1400px;
-            margin-inline: auto;
-        }
-
-        .footer-col h4 {
-            color: white;
-            margin-bottom: 1.5rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .footer-col p {
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 1rem;
-        }
-
-        .footer-links a {
-            color: #A0AEC0;
-            transition: var(--transition-fast);
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .footer-links a i.fa-chevron-right {
-            font-size: 0.7rem;
-            opacity: 0;
-            transform: translateX(-10px);
-            transition: 0.3s;
-            color: var(--action-orange);
-        }
-
-        .footer-links a:hover {
-            color: var(--action-orange);
-            transform: translateX(5px);
-        }
-
-        .footer-links a:hover i.fa-chevron-right {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        @media (max-width: 1024px) {
-            .public-nav {
-                grid-template-columns: auto 1fr auto;
-            }
-
-            .process-container,
-            .calculator-card {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-
-            .calculator-card {
-                padding: 3rem;
-            }
-        }
-
         @media (max-width: 900px) {
-
-            .nav-links,
-            .btn-login,
-            .btn-cta {
-                display: none;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 3rem;
-            }
-
-            .public-nav {
-                grid-template-columns: 1fr auto;
-            }
+            .nav-links, .btn-login, .btn-cta { display: none; }
+            .mobile-menu-btn { display: block; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem;}
+            .public-nav { grid-template-columns: 1fr auto; }
         }
-
         @media (max-width: 600px) {
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .service-hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .step-card {
-                flex-direction: column;
-                text-align: center;
-                gap: 0.5rem;
-            }
+            .features-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .service-hero h1 { font-size: 2.5rem; }
+            .step-card { flex-direction: column; text-align: center; gap: 0.5rem;}
         }
     </style>
 </head>
-
 <body>
 
     <!-- 🟢 DYNAMIC NAVIGATION 🟢 -->
@@ -782,7 +180,7 @@
         <a href="../landing.html" class="logo">
             <i class="fa-solid fa-earth-americas"></i> Trans Global
         </a>
-
+        
         <div class="nav-links">
             <a href="../landing.html#services">Services</a>
             <a href="../landing.html#platform">Platform</a>
@@ -792,8 +190,7 @@
 
         <div class="nav-buttons">
             <a href="../tamplate/login.html" class="btn-login"><i class="fa-solid fa-lock"></i> Client Login</a>
-            <a href="../tamplate/booking.html" class="btn-cta">Book Consultation <i
-                    class="fa-solid fa-arrow-right"></i></a>
+            <a href="../tamplate/booking.html" class="btn-cta">Book Consultation <i class="fa-solid fa-arrow-right"></i></a>
             <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
         </div>
     </nav>
@@ -806,37 +203,30 @@
         <a href="industries.html" onclick="toggleMobileMenu()">Industries</a>
         <a href="consulting.html" onclick="toggleMobileMenu()">Consulting</a>
         <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; align-items: center;">
-            <a href="../tamplate/login.html" class="btn-login" style="font-size: 1.1rem; border-color: white;"><i
-                    class="fa-solid fa-lock"></i> Client Login</a>
-            <a href="../tamplate/booking.html" class="btn-cta" style="font-size: 1.1rem;">Book Consultation <i
-                    class="fa-solid fa-arrow-right"></i></a>
+            <a href="../tamplate/login.html" class="btn-login" style="font-size: 1.1rem; border-color: white;"><i class="fa-solid fa-lock"></i> Client Login</a>
+            <a href="../tamplate/booking.html" class="btn-cta" style="font-size: 1.1rem;">Book Consultation <i class="fa-solid fa-arrow-right"></i></a>
         </div>
     </div>
 
     <!-- 🟢 HERO SECTION 🟢 -->
     <header class="service-hero">
         <div class="breadcrumb reveal">
-            <a href="../landing.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem;"></i>
-            <a href="consulting.html">Consulting</a> <i class="fa-solid fa-chevron-right"
-                style="font-size: 0.6rem;"></i>
+            <a href="../landing.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem;"></i> 
+            <a href="consulting.html">Consulting</a> <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem;"></i> 
             <span>Trade & Tariff Strategy</span>
         </div>
-
+        
         <h1 class="reveal reveal-delay-1">Master the Border.<br>Reclaim Your Capital.</h1>
-        <p class="reveal reveal-delay-2">Global trade regulations change daily. Our licensed customs brokers and trade
-            attorneys map your product classifications against international free trade agreements to legally minimize
-            duty exposure and secure massive tariff refunds.</p>
-
-        <a href="#calculator" class="btn-cta reveal reveal-delay-3"
-            style="padding: 1.2rem 3rem; font-size: 1.1rem; margin-top: 1rem;">
+        <p class="reveal reveal-delay-2">Global trade regulations change daily. Our licensed customs brokers and trade attorneys map your product classifications against international free trade agreements to legally minimize duty exposure and secure massive tariff refunds.</p>
+        
+        <a href="#calculator" class="btn-cta reveal reveal-delay-3" style="padding: 1.2rem 3rem; font-size: 1.1rem; margin-top: 1rem;">
             Calculate Duty Recovery <i class="fa-solid fa-hand-holding-dollar"></i>
         </a>
     </header>
 
     <!-- 🟢 PAIN POINT SECTION 🟢 -->
     <section class="problem-section reveal">
-        <p class="problem-text">Incorrect HS code classifications and missed Free Trade Agreements result in enterprise
-            businesses <span>overpaying millions in unnecessary government tariffs</span> every single fiscal year.</p>
+        <p class="problem-text">Incorrect HS code classifications and missed Free Trade Agreements result in enterprise businesses <span>overpaying millions in unnecessary government tariffs</span> every single fiscal year.</p>
     </section>
 
     <!-- 🟢 4 PILLARS OF COMPLIANCE 🟢 -->
@@ -844,38 +234,33 @@
         <div class="section-header reveal">
             <span class="section-tag">Our Legal Edge</span>
             <h2>Complete Tariff Mitigation</h2>
-            <p>We deploy cross-functional teams of legal and logistics experts to ensure you never pay a dollar more
-                than legally required at any border crossing.</p>
+            <p>We deploy cross-functional teams of legal and logistics experts to ensure you never pay a dollar more than legally required at any border crossing.</p>
         </div>
 
         <div class="features-grid">
-
+            
             <div class="feature-card reveal">
                 <div class="feature-icon"><i class="fa-solid fa-barcode"></i></div>
                 <h3>HS Classification Audits</h3>
-                <p>We perform deep-dive reviews of your entire product catalog, legally challenging and re-classifying
-                    Harmonized System (HS) codes to push goods into lower duty brackets.</p>
+                <p>We perform deep-dive reviews of your entire product catalog, legally challenging and re-classifying Harmonized System (HS) codes to push goods into lower duty brackets.</p>
             </div>
 
             <div class="feature-card reveal reveal-delay-1">
                 <div class="feature-icon"><i class="fa-solid fa-earth-americas"></i></div>
                 <h3>FTA Maximization</h3>
-                <p>We trace your supply chain to certify Country of Origin, allowing you to leverage agreements like
-                    USMCA, CPTPP, and ASEAN to legally zero-out import tariffs.</p>
+                <p>We trace your supply chain to certify Country of Origin, allowing you to leverage agreements like USMCA, CPTPP, and ASEAN to legally zero-out import tariffs.</p>
             </div>
 
             <div class="feature-card reveal">
                 <div class="feature-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
                 <h3>Duty Drawback Programs</h3>
-                <p>If you import parts and export finished goods, you are entitled to a refund. We handle the complex
-                    government filings to recover up to 99% of duties previously paid.</p>
+                <p>If you import parts and export finished goods, you are entitled to a refund. We handle the complex government filings to recover up to 99% of duties previously paid.</p>
             </div>
 
             <div class="feature-card reveal reveal-delay-1">
                 <div class="feature-icon"><i class="fa-solid fa-scale-balanced"></i></div>
                 <h3>Customs Audit Defense</h3>
-                <p>If Customs and Border Protection (CBP) flags your shipments, our trade attorneys step in. We defend
-                    your classifications and prevent your cargo from being seized.</p>
+                <p>If Customs and Border Protection (CBP) flags your shipments, our trade attorneys step in. We defend your classifications and prevent your cargo from being seized.</p>
             </div>
 
         </div>
@@ -886,44 +271,37 @@
         <div class="process-container">
             <div class="process-content reveal">
                 <h2>The Revenue Recovery Lifecycle</h2>
-                <p>Our consulting process doesn't just lower future costs; we actively hunt down historical overpayments
-                    and force the government to issue refund checks to your business.</p>
-                <a href="../tamplate/booking.html" class="btn-cta"
-                    style="background: white; color: var(--primary-blue) !important; padding: 1rem 2rem; margin-top: 1rem;">Initiate
-                    an Audit</a>
+                <p>Our consulting process doesn't just lower future costs; we actively hunt down historical overpayments and force the government to issue refund checks to your business.</p>
+                <a href="../tamplate/booking.html" class="btn-cta" style="background: white; color: var(--primary-blue) !important; padding: 1rem 2rem; margin-top: 1rem;">Initiate an Audit</a>
             </div>
-
+            
             <div class="process-steps">
                 <div class="step-card reveal reveal-delay-1">
                     <div class="step-num">01</div>
                     <div class="step-text">
                         <h4>Data Ingestion</h4>
-                        <p>We securely connect to your ERP and download your last 5 years of commercial invoices and
-                            customs declarations.</p>
+                        <p>We securely connect to your ERP and download your last 5 years of commercial invoices and customs declarations.</p>
                     </div>
                 </div>
                 <div class="step-card reveal reveal-delay-2">
                     <div class="step-num">02</div>
                     <div class="step-text">
                         <h4>AI & Legal Review</h4>
-                        <p>Our SecureLogix algorithms cross-reference millions of line items against global tariff
-                            schedules to flag overpayments.</p>
+                        <p>Our SecureLogix algorithms cross-reference millions of line items against global tariff schedules to flag overpayments.</p>
                     </div>
                 </div>
                 <div class="step-card reveal reveal-delay-3">
                     <div class="step-num">03</div>
                     <div class="step-text">
                         <h4>Petition Filing</h4>
-                        <p>Our attorneys submit Post Summary Corrections (PSCs) and protests directly to global customs
-                            authorities on your behalf.</p>
+                        <p>Our attorneys submit Post Summary Corrections (PSCs) and protests directly to global customs authorities on your behalf.</p>
                     </div>
                 </div>
                 <div class="step-card reveal reveal-delay-3">
                     <div class="step-num">04</div>
                     <div class="step-text">
                         <h4>Capital Injection</h4>
-                        <p>Refunds are deposited directly into your corporate accounts, turning your supply chain
-                            department into a profit center.</p>
+                        <p>Refunds are deposited directly into your corporate accounts, turning your supply chain department into a profit center.</p>
                     </div>
                 </div>
             </div>
@@ -935,8 +313,7 @@
         <div class="section-header reveal">
             <span class="section-tag">Financial Assessment</span>
             <h2>Estimate Your Duty Recovery</h2>
-            <p>Use the sliders to input your current annual import volume. See how much capital our trade strategy team
-                can typically reclaim for a company of your size.</p>
+            <p>Use the sliders to input your current annual import volume. See how much capital our trade strategy team can typically reclaim for a company of your size.</p>
         </div>
 
         <div class="calculator-card reveal">
@@ -944,25 +321,21 @@
                 <div class="slider-wrapper">
                     <label>Annual Import Value (Millions)</label>
                     <span class="slider-val">$<span id="importOutput">100</span>M</span>
-                    <input type="range" id="importRange" min="10" max="500" step="5" value="100"
-                        oninput="updateTariffCalc()">
+                    <input type="range" id="importRange" min="10" max="500" step="5" value="100" oninput="updateTariffCalc()">
                 </div>
-
+                
                 <div class="slider-wrapper" style="margin-bottom: 0;">
                     <label>Current Average Duty Rate</label>
                     <span class="slider-val"><span id="rateOutput">8.5</span>%</span>
-                    <input type="range" id="rateRange" min="2.0" max="25.0" step="0.5" value="8.5"
-                        oninput="updateTariffCalc()">
+                    <input type="range" id="rateRange" min="2.0" max="25.0" step="0.5" value="8.5" oninput="updateTariffCalc()">
                 </div>
             </div>
-
+            
             <div class="calc-results">
                 <p>Est. Recoverable Capital</p>
                 <div class="savings-output" id="tariffSavingsTotal">$1,275,000</div>
-                <p style="font-size: 0.85rem; text-transform: none; font-weight: 500; margin-bottom: 2rem;">Based on an
-                    average 15% reduction/recovery via re-classification and FTA utilization.</p>
-                <a href="../tamplate/booking.html" class="btn-cta" style="width: 100%; justify-content: center;">Reclaim
-                    This Capital <i class="fa-solid fa-arrow-right"></i></a>
+                <p style="font-size: 0.85rem; text-transform: none; font-weight: 500; margin-bottom: 2rem;">Based on an average 15% reduction/recovery via re-classification and FTA utilization.</p>
+                <a href="../tamplate/booking.html" class="btn-cta" style="width: 100%; justify-content: center;">Reclaim This Capital <i class="fa-solid fa-arrow-right"></i></a>
             </div>
         </div>
     </section>
@@ -971,36 +344,29 @@
     <footer class="main-footer">
         <div class="footer-grid">
             <div class="footer-col">
-                <h4 style="color: var(--action-orange); font-size: 1.8rem; font-weight: 900; letter-spacing:-0.5px;">
-                    Trans Global</h4>
+                <h4 style="color: var(--action-orange); font-size: 1.8rem; font-weight: 900; letter-spacing:-0.5px;">Trans Global</h4>
                 <p>Next-generation logistics and supply chain management for enterprise teams worldwide.</p>
             </div>
             <div class="footer-col">
                 <h4>Solutions</h4>
                 <ul class="footer-links">
-                    <li><a href="network-optimization.html"><i class="fa-solid fa-chevron-right"></i> Network
-                            Optimization</a></li>
-                    <li><a href="trade-tariff-strategy.html"><i class="fa-solid fa-chevron-right"></i> Trade & Tariff
-                            Strategy</a></li>
-                    <li><a href="automated-customs.html"><i class="fa-solid fa-chevron-right"></i> Customs Brokerage</a>
-                    </li>
+                    <li><a href="network-optimization.html"><i class="fa-solid fa-chevron-right"></i> Network Optimization</a></li>
+                    <li><a href="trade-tariff-strategy.html"><i class="fa-solid fa-chevron-right"></i> Trade & Tariff Strategy</a></li>
+                    <li><a href="automated-customs.html"><i class="fa-solid fa-chevron-right"></i> Customs Brokerage</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Secure Platform</h4>
                 <ul class="footer-links">
                     <li><a href="../tamplate/login.html"><i class="fa-solid fa-chevron-right"></i> Client Login</a></li>
-                    <li><a href="../tamplate/booking.html"><i class="fa-solid fa-chevron-right"></i> Book Freight</a>
-                    </li>
+                    <li><a href="../tamplate/booking.html"><i class="fa-solid fa-chevron-right"></i> Book Freight</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Support</h4>
                 <ul class="footer-links">
-                    <li><a href="mailto:support@transglobal.com"><i class="fa-solid fa-envelope"
-                                style="margin-right: 8px;"></i> support@transglobal.com</a></li>
-                    <li><a href="#"><i class="fa-solid fa-phone" style="margin-right: 8px;"></i> +1 (800) 555-0199</a>
-                    </li>
+                    <li><a href="mailto:support@transglobal.com"><i class="fa-solid fa-envelope" style="margin-right: 8px;"></i> support@transglobal.com</a></li>
+                    <li><a href="#"><i class="fa-solid fa-phone" style="margin-right: 8px;"></i> +1 (800) 555-0199</a></li>
                 </ul>
             </div>
         </div>
@@ -1013,7 +379,7 @@
         // Sticky Navigation
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) { nav.classList.add('scrolled'); }
+            if (window.scrollY > 50) { nav.classList.add('scrolled'); } 
             else { nav.classList.remove('scrolled'); }
         });
 
@@ -1024,18 +390,18 @@
         function updateTariffCalc() {
             const importValue = document.getElementById('importRange').value;
             const dutyRate = document.getElementById('rateRange').value;
-
+            
             // Update display text
             document.getElementById('importOutput').innerText = parseInt(importValue).toLocaleString();
             document.getElementById('rateOutput').innerText = parseFloat(dutyRate).toFixed(1);
-
+            
             // Formula: Total Duty Paid = (Import Value in Millions) * (Duty Rate %)
             // Recoverable = Total Duty Paid * 0.15 (Assuming a conservative 15% recovery rate)
             const totalDutyPaid = (importValue * 1000000) * (dutyRate / 100);
             const recoverableSavings = totalDutyPaid * 0.15;
-
+            
             // Format to currency
-            const formattedSavings = "$" + recoverableSavings.toLocaleString(undefined, { maximumFractionDigits: 0 });
+            const formattedSavings = "$" + recoverableSavings.toLocaleString(undefined, {maximumFractionDigits: 0});
             document.getElementById('tariffSavingsTotal').innerText = formattedSavings;
         }
 
@@ -1052,5 +418,4 @@
         reveal(); // Trigger on load
     </script>
 </body>
-
 </html>
