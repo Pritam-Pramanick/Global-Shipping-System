@@ -137,58 +137,76 @@
         .header-avatar { width: 42px; height: 42px; background-color: var(--primary-blue); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; background-size: cover; background-position: center; transition: 0.3s; border: 2px solid transparent; }
         .header-avatar:hover { transform: translateY(-2px); border-color: var(--action-orange); box-shadow: 0 5px 15px rgba(10,37,64,0.2);}
 
-        /* --- 🟢 NEW: INTERACTIVE VIDEO SHOWCASE HERO 🟢 --- */
-        .interactive-hero {
-            background: var(--surface-color); border-radius: 24px; padding: 2rem;
-            box-shadow: var(--card-shadow); margin-bottom: 2rem;
-            display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: center;
+        /* --- 🟢 NEW: GAMING STOREFRONT CAROUSEL 🟢 --- */
+        .gaming-carousel {
+            display: grid;
+            grid-template-columns: 2.8fr 1fr;
+            gap: 1.5rem;
+            background: var(--primary-blue);
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 4rem;
         }
 
-        /* Left: Video Player */
-        .video-player-container {
-            width: 100%; height: 500px; border-radius: 20px; overflow: hidden;
-            position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        .carousel-main {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            height: 550px;
+            background: black;
         }
-        .video-player-container video {
-            width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;
-            opacity: 0; transition: opacity 0.8s ease-in-out;
+
+        .carousel-main video {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.6s ease;
         }
-        .video-player-container video.active { opacity: 1; z-index: 2; }
+        .carousel-main video.active { opacity: 1; z-index: 1; }
+
+        .carousel-gradient {
+            position: absolute; inset: 0;
+            background: linear-gradient(to right, rgba(10,37,64, 0.95) 0%, rgba(10,37,64, 0.6) 40%, transparent 100%),
+                        linear-gradient(to top, rgba(10,37,64, 0.8) 0%, transparent 30%);
+            z-index: 2; pointer-events: none;
+        }
+
+        /* Information Overlay (Left Side) */
+        .carousel-info {
+            position: absolute; bottom: 50px; left: 50px; right: 20%;
+            z-index: 3; opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .carousel-info.active { opacity: 1; transform: translateX(0); pointer-events: auto; transition-delay: 0.1s;}
+
+        .carousel-tags { display: flex; gap: 0.6rem; margin-bottom: 1.2rem; }
+        .c-tag { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(5px);}
+        .c-tag.highlight { background: var(--success-green); border-color: var(--success-green); color: white; }
+
+        .carousel-info h1 { font-size: clamp(2.5rem, 4vw, 4.5rem); color: white; font-weight: 900; margin-bottom: 1rem; line-height: 1.1; letter-spacing: -1px; text-shadow: 0 4px 20px rgba(0,0,0,0.5);}
+        .carousel-info p { color: #E2E8F0; font-size: 1.1rem; line-height: 1.6; margin-bottom: 2.5rem; max-width: 550px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
+
+        .carousel-actions { display: flex; align-items: center; gap: 2rem; }
+        .btn-download { background: var(--success-green); color: white; padding: 1rem 2rem; border-radius: 8px; font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s; box-shadow: 0 10px 20px rgba(56, 161, 105, 0.3); border: none; cursor: pointer;}
+        .btn-download:hover { background: #2f855a; transform: translateY(-2px); box-shadow: 0 15px 25px rgba(56, 161, 105, 0.4);}
+        .btn-details { color: white; font-weight: 700; font-size: 1.1rem; transition: 0.3s; display: flex; align-items: center; gap: 0.5rem;}
+        .btn-details:hover { color: var(--success-green); gap: 0.8rem;}
+
+        /* Vertical Tabs (Right Side) */
+        .carousel-tabs { display: flex; flex-direction: column; gap: 0.5rem; padding-right: 0.5rem; justify-content: space-between;}
+        .tab-item { display: flex; align-items: center; gap: 1rem; padding: 12px; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; background: transparent; border: 1px solid transparent;}
+        .tab-item:hover { background: rgba(255,255,255,0.05); }
+        .tab-item.active { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); box-shadow: 0 10px 20px rgba(0,0,0,0.2);}
         
-        /* Video Overlay Gradient */
-        .video-player-container::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to top, rgba(10,37,64,0.6) 0%, transparent 50%); z-index: 3; pointer-events: none;
-        }
-        .video-badge {
-            position: absolute; bottom: 20px; left: 20px; z-index: 4;
-            background: rgba(255,255,255,0.95); padding: 0.5rem 1rem; border-radius: 50px;
-            font-weight: 700; color: var(--primary-blue); font-size: 0.85rem; backdrop-filter: blur(10px);
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .video-badge i { color: var(--success-green); }
-
-        /* Right: Interactive Tabs */
-        .hero-tabs-content h1 { font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 900; color: var(--primary-blue); margin-bottom: 1rem; letter-spacing: -1px; line-height: 1.1;}
-        .hero-tabs-content p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; max-width: 500px;}
-
-        .tabs-list { display: flex; flex-direction: column; gap: 1rem; }
+        .tab-thumb { width: 75px; height: 95px; border-radius: 10px; background-size: cover; background-position: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);}
+        .tab-text { color: #A0AEC0; font-weight: 700; font-size: 1.1rem; line-height: 1.3; transition: 0.3s;}
+        .tab-item.active .tab-text { color: white; }
         
-        .tab-item {
-            background: var(--bg-color); border: 2px solid transparent; padding: 1.5rem; border-radius: 16px;
-            cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; display: flex; flex-direction: column;
-        }
-        .tab-item:hover { background: white; border-color: var(--border-color); transform: translateX(5px);}
-        .tab-item.active { background: white; border-color: var(--action-orange); box-shadow: 0 10px 20px rgba(255,107,53,0.1); transform: translateX(10px);}
-        
-        .tab-title { font-weight: 800; font-size: 1.1rem; color: var(--primary-blue); margin-bottom: 0.3rem; display: flex; align-items: center; justify-content: space-between;}
-        .tab-title i { color: var(--text-muted); transition: 0.3s;}
-        .tab-item.active .tab-title i { color: var(--action-orange); }
-        .tab-desc { font-size: 0.95rem; color: var(--text-muted); max-height: 0; opacity: 0; transition: 0.4s ease; overflow: hidden;}
-        .tab-item.active .tab-desc { max-height: 60px; opacity: 1; margin-top: 0.5rem;}
-
-        /* Animated Progress Bar inside active tab */
-        .tab-progress { position: absolute; bottom: 0; left: 0; height: 4px; background: var(--action-orange); width: 0%; border-radius: 0 4px 4px 0;}
+        .tab-progress { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--success-green); width: 0%; border-radius: 0 4px 4px 0;}
         .tab-item.active .tab-progress { animation: fillProgress 8s linear forwards; }
         @keyframes fillProgress { from { width: 0%; } to { width: 100%; } }
 
@@ -215,7 +233,6 @@
 
         /* --- 🟢 DATA DASHBOARD GRID (News & Customs) 🟢 --- */
         .dashboard-data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 4rem; width: 100%; }
-        @media (max-width: 1000px) { .dashboard-data-grid { grid-template-columns: 1fr; } }
         
         .data-card { padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border-color); background: var(--surface-color); box-shadow: var(--card-shadow);}
         .data-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 1rem; }
@@ -225,7 +242,6 @@
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(229, 62, 62, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); } }
         @keyframes fadeInSlide { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* News Styles */
         .data-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem;}
         .data-item { padding: 1.2rem; border-radius: 12px; background: var(--bg-color); border: 1px solid transparent; animation: fadeInSlide 0.5s ease-out; transition: 0.2s;}
         .data-item:hover { background: white; border-color: var(--primary-blue); box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
@@ -236,7 +252,6 @@
         .news-title a { color: inherit; text-decoration: none; }
         .news-title a:hover { color: var(--action-orange); }
 
-        /* Customs Tracker Styles */
         .customs-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
         .port-code { font-family: monospace; font-size: 1.1rem; font-weight: 800; color: var(--primary-blue); background: white; padding: 0.3rem 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         .shipment-ref { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
@@ -277,7 +292,7 @@
         .stat-item .stat-num span { color: var(--action-orange); }
         .stat-item .stat-label { font-size: 1rem; color: #CBD5E0; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
 
-        /* --- 🟢 PORTFOLIO CARDS (WITH REAL IMAGES) 🟢 --- */
+        /* --- 🟢 PORTFOLIO CARDS 🟢 --- */
         .section-header { text-align: center; max-width: 800px; margin: 0 auto 2rem; padding: 0 1rem; }
         .section-header h2 { font-size: 2.2rem; color: var(--primary-blue); margin-bottom: 0.5rem; letter-spacing: -0.5px; font-weight: 800;}
         .section-header p { color: var(--text-muted); font-size: 1.1rem; }
@@ -323,16 +338,23 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        @media (max-width: 1100px) { nav { display: none; } .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem;} .interactive-hero { grid-template-columns: 1fr; padding: 3rem; } .video-player-container { height: 400px; order: 2; } .hero-tabs-content { order: 1; text-align: center; } .hero-tabs-content p { margin: 0 auto 2rem;} }
+        @media (max-width: 1024px) { 
+            nav { display: none; } 
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem;} 
+            .gaming-carousel { grid-template-columns: 1fr; }
+            .carousel-main { height: 450px; }
+            .carousel-tabs { flex-direction: row; overflow-x: auto; padding-bottom: 0.5rem; scroll-snap-type: x mandatory;}
+            .tab-item { min-width: 280px; scroll-snap-align: start; }
+            .carousel-info { left: 30px; right: 30px; bottom: 30px; }
+        }
         @media (max-width: 768px) { 
             body { padding: 0.5rem; } 
             header.lay { padding: 1rem 1.5rem; width: 100%; margin: 0 auto 1rem;} 
-            .interactive-hero { padding: 1.5rem; gap: 2rem;}
-            .video-player-container { height: 300px; }
             .tracking-box { flex-direction: column; border-radius: 20px;}
             .tracking-box button { padding: 1.2rem; border-radius: 12px; justify-content: center;}
             .booking-form { padding: 2rem; }
             .footer-grid { grid-template-columns: 1fr; }
+            .dashboard-data-grid { grid-template-columns: 1fr; }
             .stats-grid-horizontal { grid-template-columns: 1fr 1fr; gap: 2rem;}
         }
     </style>
@@ -431,10 +453,9 @@
     </header>
 
     <main>
-        <section class="interactive-hero">
+        <section class="gaming-carousel reveal">
             
-            <div class="video-player-container">
-                <div class="video-badge"><i class="fa-solid fa-circle-check"></i> Live Operations Network</div>
+            <div class="carousel-main">
                 <video id="vid-0" class="active" autoplay muted loop playsinline>
                     <source src="assets/video/video1.mp4" type="video/mp4">
                 </video>
@@ -447,41 +468,86 @@
                 <video id="vid-3" autoplay muted loop playsinline>
                     <source src="assets/video/video4.mp4" type="video/mp4">
                 </video>
-            </div>
 
-            <div class="hero-tabs-content">
-                <h1>Global Logistics,<br>Elevated.</h1>
-                <p>Manage your entire supply chain matrix from a single, centralized dashboard built for modern enterprises.</p>
-                
-                <div class="tabs-list">
-                    
-                    <div class="tab-item active" onclick="switchHeroTab(0)">
-                        <div class="tab-title">Global Ocean & Air Freight <i class="fa-solid fa-arrow-right"></i></div>
-                        <div class="tab-desc">Reliable, scalable cargo transport across the world's most vital trade lanes.</div>
-                        <div class="tab-progress"></div>
+                <div class="carousel-gradient"></div>
+
+                <div class="carousel-info active" id="info-0">
+                    <div class="carousel-tags">
+                        <span class="c-tag highlight">NEW</span>
+                        <span class="c-tag">Ocean & Air</span>
+                        <span class="c-tag">Enterprise</span>
                     </div>
-
-                    <div class="tab-item" onclick="switchHeroTab(1)">
-                        <div class="tab-title">Secure Enterprise Warehousing <i class="fa-solid fa-arrow-right"></i></div>
-                        <div class="tab-desc">State-of-the-art facilities equipped with cold-chain and robotic fulfillment capabilities.</div>
-                        <div class="tab-progress"></div>
+                    <h1>Global Shipping Network</h1>
+                    <p>Experience reliable, scalable cargo transport across the world's most vital trade lanes. Manage massive multi-modal volumes effortlessly.</p>
+                    <div class="carousel-actions">
+                        <button class="btn-download" onclick="window.location.href='tamplate/booking.html'"><i class="fa-solid fa-ship"></i> Book Freight</button>
+                        <a href="landing_pages/global-network.html" class="btn-details">Details <i class="fa-solid fa-chevron-right"></i></a>
                     </div>
+                </div>
 
-                    <div class="tab-item" onclick="switchHeroTab(2)">
-                        <div class="tab-title">Live GPS Tracking System <i class="fa-solid fa-arrow-right"></i></div>
-                        <div class="tab-desc">Monitor your shipments via satellite with real-time temperature and security alerts.</div>
-                        <div class="tab-progress"></div>
+                <div class="carousel-info" id="info-1">
+                    <div class="carousel-tags">
+                        <span class="c-tag highlight">24/7 SECURE</span>
+                        <span class="c-tag">Cold-Chain</span>
                     </div>
-
-                    <div class="tab-item" onclick="switchHeroTab(3)">
-                        <div class="tab-title">Final Mile Delivery <i class="fa-solid fa-arrow-right"></i></div>
-                        <div class="tab-desc">Ensuring your cargo reaches its ultimate destination safely and on schedule.</div>
-                        <div class="tab-progress"></div>
+                    <h1>Secure Warehousing</h1>
+                    <p>State-of-the-art facilities equipped with robotics and cold-chain compliance. Keep your inventory safe, regulated, and ready for dispatch.</p>
+                    <div class="carousel-actions">
+                        <button class="btn-download" onclick="window.location.href='tamplate/booking.html'"><i class="fa-solid fa-warehouse"></i> Find Space</button>
+                        <a href="landing_pages/industries.html" class="btn-details">Details <i class="fa-solid fa-chevron-right"></i></a>
                     </div>
+                </div>
 
+                <div class="carousel-info" id="info-2">
+                    <div class="carousel-tags">
+                        <span class="c-tag highlight">GPS</span>
+                        <span class="c-tag">Blockchain</span>
+                        <span class="c-tag">AI</span>
+                    </div>
+                    <h1>Live Satellite Tracking</h1>
+                    <p>Monitor your shipments in real-time 24/7. Predictive AI algorithms constantly check weather and port congestion to re-route on the fly.</p>
+                    <div class="carousel-actions">
+                        <button class="btn-download" onclick="document.getElementById('trackInput').focus()"><i class="fa-solid fa-location-crosshairs"></i> Track Now</button>
+                        <a href="landing_pages/consulting.html" class="btn-details">Details <i class="fa-solid fa-chevron-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="carousel-info" id="info-3">
+                    <div class="carousel-tags">
+                        <span class="c-tag highlight">B2B / B2C</span>
+                        <span class="c-tag">Expedited</span>
+                    </div>
+                    <h1>Final Mile Delivery</h1>
+                    <p>Delivering straight to your customer's door. Integrated route optimization ensures the fastest, most cost-effective local delivery.</p>
+                    <div class="carousel-actions">
+                        <button class="btn-download" onclick="window.location.href='tamplate/booking.html'"><i class="fa-solid fa-truck-fast"></i> Ship Local</button>
+                        <a href="landing_pages/global-network.html" class="btn-details">Details <i class="fa-solid fa-chevron-right"></i></a>
+                    </div>
                 </div>
             </div>
-            
+
+            <div class="carousel-tabs">
+                <div class="tab-item active" onclick="switchHeroTab(0)">
+                    <div class="tab-thumb" style="background-image: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=150&q=80')"></div>
+                    <div class="tab-text">Global Shipping Network</div>
+                    <div class="tab-progress"></div>
+                </div>
+                <div class="tab-item" onclick="switchHeroTab(1)">
+                    <div class="tab-thumb" style="background-image: url('https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=150&q=80')"></div>
+                    <div class="tab-text">Secure Warehousing</div>
+                    <div class="tab-progress"></div>
+                </div>
+                <div class="tab-item" onclick="switchHeroTab(2)">
+                    <div class="tab-thumb" style="background-image: url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80')"></div>
+                    <div class="tab-text">Live Satellite Tracking</div>
+                    <div class="tab-progress"></div>
+                </div>
+                <div class="tab-item" onclick="switchHeroTab(3)">
+                    <div class="tab-thumb" style="background-image: url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=150&q=80')"></div>
+                    <div class="tab-text">Final Mile Delivery</div>
+                    <div class="tab-progress"></div>
+                </div>
+            </div>
         </section>
 
         <section class="layout-card hero-tracking-section reveal">
@@ -929,12 +995,12 @@
             }, 8000);
         }
 
-        // --- 🟢 NEW: INTERACTIVE HERO TABS LOGIC 🟢 ---
+        // --- 🟢 NEW: GAMING STOREFRONT CAROUSEL LOGIC 🟢 ---
         let currentHeroTab = 0;
         let heroInterval;
 
         function switchHeroTab(index) {
-            clearInterval(heroInterval); // Stop auto-play when user clicks manually
+            clearInterval(heroInterval); 
 
             // Update Tabs
             const tabs = document.querySelectorAll('.tab-item');
@@ -942,23 +1008,27 @@
             tabs[index].classList.add('active');
 
             // Update Videos
-            const videos = document.querySelectorAll('.video-player-container video');
+            const videos = document.querySelectorAll('.carousel-main video');
             videos.forEach(vid => {
                 vid.classList.remove('active');
                 vid.pause();
                 vid.currentTime = 0;
             });
-            
             videos[index].classList.add('active');
-            videos[index].play();
+            videos[index].play().catch(e => console.log("Autoplay blocked:", e));
+
+            // Update Info Overlays
+            const infos = document.querySelectorAll('.carousel-info');
+            infos.forEach(info => info.classList.remove('active'));
+            infos[index].classList.add('active');
 
             currentHeroTab = index;
-            startHeroAutoPlay(); // Restart auto-play
+            startHeroAutoPlay(); 
         }
 
         function startHeroAutoPlay() {
             heroInterval = setInterval(() => {
-                let nextTab = (currentHeroTab + 1) % 4; // 4 is the total number of tabs
+                let nextTab = (currentHeroTab + 1) % 4;
                 switchHeroTab(nextTab);
             }, 8000); // 8 seconds per tab
         }
@@ -981,8 +1051,8 @@
         loadUserProfile();
         loadSystemNotices();
         fetchLiveNewsFromInternet();
-        startHeroAutoPlay(); // Start hero video loop
-        reveal(); // Trigger initial reveal
+        startHeroAutoPlay(); 
+        reveal(); 
 
     </script>
 </body>
