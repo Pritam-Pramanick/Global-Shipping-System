@@ -7,12 +7,175 @@
     <title>Trans Global | Secure Booking</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/booking.css">
+    <style>
+                /* --- COLOR THEORY & VARIABLES --- */
+        :root {
+            --primary-blue: #0A2540;
+            --primary-blue-hover: #061a2e;
+            --action-orange: #FF6B35;
+            --action-orange-hover: #e55a2b;
+            --success-green: #38A169;
+            --danger-red: #E53E3E;
+            --bg-color: #EDF2F7;
+            --surface-color: #FFFFFF;
+            --text-dark: #2D3748;
+            --text-muted: #718096;
+            --border-color: #E2E8F0;
+            --sidebar-overlay: rgba(10, 37, 64, 0.6);
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --sidebar-width: 300px;
+            --transition-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color); color: var(--text-dark);
+            font-family: 'Inter', sans-serif; line-height: 1.6;
+            display: flex; flex-direction: column; min-height: 100vh; padding: 1rem;
+        }
+
+        a, button { text-decoration: none; font-family: inherit; }
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--action-orange); outline-offset: 2px; border-radius: 4px; }
+
+        /* --- GLOBAL CARD STYLING --- */
+        .layout-card {
+            background-color: var(--surface-color); border-radius: 20px; box-shadow: var(--card-shadow);
+            max-width: 1000px; margin: 0 auto 2rem auto; width: 100%; overflow: hidden;
+            opacity: 0; animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        header.layout-card { max-width: 1400px; animation-delay: 0.1s; }
+        .booking-container { animation-delay: 0.2s; }
+        footer.layout-card { max-width: 1400px; animation-delay: 0.3s; }
+
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- SIDEBAR & NAVIGATION --- */
+        .sidebar-overlay { position: fixed; inset: 0; background: var(--sidebar-overlay); backdrop-filter: blur(4px); z-index: 999; opacity: 0; visibility: hidden; transition: var(--transition-smooth); }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        .sidebar { position: fixed; top: 0; bottom: 0; left: calc(-1 * var(--sidebar-width)); width: var(--sidebar-width); background-color: var(--primary-blue); color: var(--surface-color); z-index: 1000; display: flex; flex-direction: column; transition: left var(--transition-smooth); box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2); }
+        .sidebar.active { left: 0; }
+        .sidebar-header { padding: 2rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .close-sidebar-btn { background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; }
+        .sidebar-content { flex: 1; padding: 1.5rem 0; overflow-y: auto; }
+        .sidebar-item { display: block; width: 100%; padding: 1rem 1.5rem; color: #CBD5E0; font-weight: 500; text-align: left; background: transparent; border: none; border-left: 3px solid transparent; cursor: pointer; transition: 0.2s; }
+        .sidebar-item:hover, .sidebar-item.active-menu { background: rgba(255, 255, 255, 0.05); color: #fff; border-left-color: var(--action-orange); }
+
+        .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.2); }
+        .profile-widget { display: flex; align-items: center; gap: 1rem; width: 100%; padding: 1.5rem; border: none; background: transparent; cursor: pointer; transition: 0.2s;}
+        .profile-widget:hover { background: rgba(255, 255, 255, 0.05); }
+        .profile-avatar { width: 40px; height: 40px; background: var(--action-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; background-size: cover; background-position: center; }
+        .profile-name { color: #fff; font-weight: 600; text-align: left; }
+        
+        header.layout-card { padding: 1.2rem 3rem; display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 1.5rem; }
+        .menu-toggle-btn { background: none; border: none; font-size: 1.5rem; color: var(--primary-blue); cursor: pointer; }
+        .logo { font-size: 1.6rem; font-weight: 700; color: var(--primary-blue); letter-spacing: -0.5px; }
+        nav { display: flex; gap: 2.5rem; align-items: center; }
+        nav a { color: var(--text-muted); font-weight: 500; transition: 0.2s; }
+        nav a:hover { color: var(--primary-blue); }
+        
+        .header-profile-link { display: flex; align-items: center; margin-left: 0.5rem; }
+        .header-avatar { width: 42px; height: 42px; background-color: var(--action-orange); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; background-size: cover; background-position: center; transition: 0.2s; border: 2px solid transparent; }
+        .header-avatar:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3); border-color: var(--action-orange); }
+
+        /* --- BOOKING LAYOUT & STEPPER --- */
+        .booking-container { padding: 3rem 2rem; }
+        .page-header { text-align: center; margin-bottom: 2.5rem; }
+        .page-header h1 { color: var(--primary-blue); font-size: 2.5rem; letter-spacing: -0.5px; margin-bottom: 0.5rem; }
+        .page-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        .stepper { display: flex; align-items: center; justify-content: center; margin-bottom: 3rem; gap: 0.5rem; }
+        .step-indicator { display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-weight: 600; transition: 0.4s; }
+        .step-indicator.active { color: var(--primary-blue); }
+        .step-indicator.completed { color: var(--success-green); }
+        
+        .step-number { width: 30px; height: 30px; border-radius: 50%; background: var(--bg-color); display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid var(--border-color); transition: 0.4s; font-size: 0.9rem; }
+        .step-indicator.active .step-number { background: var(--primary-blue); border-color: var(--primary-blue); color: #fff; transform: scale(1.15); }
+        .step-indicator.completed .step-number { background: var(--success-green); border-color: var(--success-green); color: #fff; }
+        
+        .step-line { height: 3px; width: 50px; background: var(--border-color); border-radius: 3px; position: relative; overflow: hidden; }
+        .step-line::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--success-green); transition: left 0.4s ease; }
+        .step-line.completed::after { left: 0; }
+
+        /* --- FORM STYLES --- */
+        .step-section { display: none; }
+        .step-section.active { display: block; animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+        h3.section-title { color: var(--primary-blue); font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--bg-color); }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group.third-width { grid-column: span 1; }
+
+        /* LWH Grid */
+        .lwh-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        
+        .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase; transition: 0.3s; }
+        .form-group input, .form-group select { padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 1rem; color: var(--text-dark); background: var(--bg-color); outline: none; transition: 0.3s; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.1); background: #fff; }
+
+        /* Transport Selectors */
+        .transport-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .transport-card { border: 2px solid var(--border-color); border-radius: 12px; padding: 2rem 1rem; text-align: center; cursor: pointer; transition: 0.3s; background: var(--surface-color); }
+        .transport-card:hover { border-color: var(--primary-blue); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .transport-card.active { border-color: var(--action-orange); background-color: rgba(255, 107, 53, 0.05); transform: scale(0.98); box-shadow: none; }
+        .transport-card .icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; transition: 0.3s; color: var(--primary-blue);}
+        .transport-card.active .icon { color: var(--action-orange); }
+        .transport-card:hover .icon { transform: scale(1.1); }
+        .transport-card .label { font-weight: 700; font-size: 1.1rem; color: var(--primary-blue); }
+
+        /* --- DOCUMENT VERIFICATION --- */
+        .doc-verification-zone { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+        .upload-box { border: 2px dashed var(--border-color); border-radius: 12px; padding: 2rem 1.5rem; text-align: center; background: var(--bg-color); transition: 0.3s; position: relative; cursor: pointer; height: 100%; }
+        .upload-box:hover { border-color: var(--primary-blue); background: #e2e8f0; transform: translateY(-2px); }
+        .upload-box.verified { border-color: var(--success-green); background: rgba(56, 161, 105, 0.05); border-style: solid; transform: translateY(0); }
+        
+        @keyframes pulseScan { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        .upload-box.scanning .upload-icon { animation: pulseScan 1s infinite; color: var(--action-orange); }
+        
+        .upload-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; transition: 0.3s; color: var(--primary-blue);}
+        .upload-box.verified .upload-icon { color: var(--success-green); transform: scale(1.2); }
+        .upload-title { font-weight: 700; color: var(--primary-blue); margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .upload-box.verified .upload-title { color: var(--success-green); }
+        .upload-desc { font-size: 0.85rem; color: var(--text-muted); }
+        .upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+        /* --- PAYMENT INFO & WALLET --- */
+        .payment-info-box { background: rgba(10, 37, 64, 0.05); border-left: 4px solid var(--primary-blue); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;}
+        .payment-amount { font-size: 2.5rem; font-weight: 800; color: var(--action-orange); }
+
+        .payment-methods { display: flex; gap: 1.5rem; margin-bottom: 2rem; }
+        .pay-method-card { flex: 1; border: 2px solid var(--border-color); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 1rem;}
+        .pay-method-card:hover { border-color: var(--primary-blue); }
+        .pay-method-card.active { border-color: var(--success-green); background: rgba(56, 161, 105, 0.05); }
+        .pay-method-card input[type="radio"] { cursor: pointer; transform: scale(1.2); accent-color: var(--success-green);}
+        
+        .wallet-balance-badge { background: var(--primary-blue); color: white; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-left: auto;}
+
+        /* --- BUTTON CONTROLS --- */
+        .step-actions { margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--bg-color); display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 1rem 2.5rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; border: none; }
+        .btn-secondary { background: var(--bg-color); color: var(--text-dark); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: #e2e8f0; transform: translateX(-3px); }
+        .btn-primary { background: var(--action-orange); color: white; margin-left: auto; }
+        .btn-primary:hover { background: var(--action-orange-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3); }
+
+        .security-badge { display: flex; align-items: center; gap: 0.5rem; color: var(--success-green); font-size: 0.9rem; font-weight: 600; }
+
+        footer.layout-card { background: var(--primary-blue); color: #E2E8F0; padding: 2rem; margin-top: auto; margin-bottom: 0; text-align: center; font-size: 0.9rem; }
+
+        @media (max-width: 900px) { nav { display: none; } .payment-info-box { flex-direction: column; align-items: flex-start; gap: 1rem;} .payment-methods { flex-direction: column; } }
+        @media (max-width: 600px) { .step-indicator span { display: none; } .step-line { width: 30px; } .form-grid { grid-template-columns: 1fr; } .lwh-grid { grid-template-columns: 1fr; } .step-actions { flex-direction: column-reverse; gap: 1rem; } .btn { width: 100%; text-align: center; } .security-badge { display: none; } }
+
+    </style>
     <!-- 🟢 UPGRADED SECURITY CHECK 🟢 -->
     <script>
         const sessionToken = sessionStorage.getItem('secureLogix_session_token');
         if (!sessionToken || sessionToken.split('.').length !== 3) {
-            // Comment this out if you are testing locally without a login page!
             window.location.replace('login.html');
         }
     </script>
@@ -286,8 +449,217 @@
         &copy; 2026 Trans Global Logistics. All documents and payments are securely processed and encrypted.
     </footer>
 
-    <script src="../Javascript/booking.js">
+    <script src="#">
+        // --- 1. Sidebar & Sync Logic ---
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        document.getElementById('openSidebar').onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); };
+        document.getElementById('closeSidebar').onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); };
+        overlay.onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); };
 
+        function loadUserProfile() {
+            const userEmail = localStorage.getItem('secureLogix_user');
+            if (userEmail) {
+                const namePart = userEmail.split('@')[0];
+                const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+                const customName = localStorage.getItem('secureLogix_displayName') || formattedName;
+                const initials = customName.substring(0, 2).toUpperCase();
+                const customAvatar = localStorage.getItem('secureLogix_avatar');
+
+                document.getElementById('userNameDisplay').textContent = customName;
+
+                [document.getElementById('userAvatar'), document.getElementById('headerAvatar')].forEach(avatar => {
+                    if (avatar) {
+                        if (customAvatar) {
+                            avatar.style.backgroundImage = `url(${customAvatar})`;
+                            avatar.textContent = ""; 
+                        } else {
+                            avatar.style.backgroundImage = "none";
+                            avatar.textContent = initials;
+                        }
+                    }
+                });
+            }
+
+            // Sync Digital Wallet Balance for UI
+            const bal = parseFloat(localStorage.getItem('secureLogix_walletBalance') || 25000);
+            document.getElementById('displayWalletBal').textContent = '₹' + bal.toLocaleString('en-IN');
+        }
+
+        // --- 2. Auto-Fill Form from URL Parameters ---
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile(); // Sync profile details
+
+            const params = new URLSearchParams(window.location.search);
+            if(params.has('origin')) document.getElementById('origin').value = params.get('origin');
+            if(params.has('destination')) document.getElementById('destination').value = params.get('destination');
+            if(params.has('date')) document.getElementById('date').value = params.get('date');
+            if(params.has('weight')) document.getElementById('weight').value = params.get('weight');
+            
+            if(params.has('mode')) {
+                const targetCard = document.querySelector(`.transport-card[data-value="${params.get('mode')}"]`);
+                if(targetCard) selectTransport(targetCard);
+            }
+        });
+
+        // --- 3. UI Interactions ---
+        function selectTransport(clickedElement) {
+            document.querySelectorAll('.transport-card').forEach(card => card.classList.remove('active'));
+            clickedElement.classList.add('active');
+            document.getElementById('transportMode').value = clickedElement.getAttribute('data-value');
+        }
+
+        function selectPayMethod(method) {
+            document.querySelectorAll('.pay-method-card').forEach(card => card.classList.remove('active'));
+            document.getElementById('method-' + method).classList.add('active');
+            
+            const cardBlock = document.getElementById('cardDetailsBlock');
+            const cardInputs = cardBlock.querySelectorAll('input');
+
+            if (method === 'card') {
+                cardBlock.style.display = 'grid';
+                cardInputs.forEach(input => input.required = true);
+            } else {
+                cardBlock.style.display = 'none';
+                cardInputs.forEach(input => input.required = false);
+            }
+        }
+
+        // --- 4. Step Navigation Validation ---
+        function goToStep(targetStep) {
+            if (targetStep === 2 || targetStep === 3) {
+                const step1Inputs = document.querySelectorAll('#step-1 input[required], #step-1 select[required]');
+                let s1Valid = true;
+                step1Inputs.forEach(input => { if (!input.checkValidity()) { input.reportValidity(); s1Valid = false; } });
+                if (!s1Valid) return; 
+            }
+
+            if (targetStep === 3) {
+                const step2Inputs = document.querySelectorAll('#step-2 input[required]');
+                let s2Valid = true;
+                step2Inputs.forEach(input => {
+                    if (!input.files || input.files.length === 0) {
+                        alert("Please upload all required documents before proceeding to payment.");
+                        s2Valid = false;
+                    }
+                });
+                if (!s2Valid) return;
+            }
+
+            document.querySelectorAll('.step-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('step-' + targetStep).classList.add('active');
+
+            const ind1 = document.getElementById('ind-step-1'), ind2 = document.getElementById('ind-step-2'), ind3 = document.getElementById('ind-step-3');
+            const line1 = document.getElementById('ind-line-1'), line2 = document.getElementById('ind-line-2');
+
+            [ind1, ind2, ind3].forEach(el => el.classList.remove('active', 'completed'));
+            [line1, line2].forEach(el => el.classList.remove('completed'));
+
+            if (targetStep === 1) { ind1.classList.add('active'); } 
+            else if (targetStep === 2) { ind1.classList.add('completed'); line1.classList.add('completed'); ind2.classList.add('active'); } 
+            else if (targetStep === 3) { ind1.classList.add('completed'); line1.classList.add('completed'); ind2.classList.add('completed'); line2.classList.add('completed'); ind3.classList.add('active'); }
+            
+            document.querySelector('.booking-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- 5. Document Upload Animation (Fixed FontAwesome Icons) ---
+        function handleFileUpload(inputElement, boxId, docName, originalIconClass) {
+            const file = inputElement.files[0];
+            if (!file) return;
+
+            const box = document.getElementById(boxId);
+            const icon = document.getElementById(boxId.replace('box-', 'icon-'));
+            const title = document.getElementById(boxId.replace('box-', 'title-'));
+            const desc = document.getElementById(boxId.replace('box-', 'desc-'));
+
+            box.classList.add('scanning');
+            icon.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+            title.innerText = "Scanning Document...";
+            desc.innerText = file.name;
+            box.style.borderColor = "var(--action-orange)";
+
+            setTimeout(() => {
+                box.classList.remove('scanning'); 
+                box.classList.add('verified'); 
+                box.style.borderColor = ""; 
+                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+                title.innerText = docName + " (Verified)";
+                desc.innerText = "File securely attached: " + file.name;
+            }, 1500);
+        }
+
+        // --- 6. Booking & Wallet Deduction Logic ---
+        function processBooking(event) {
+            event.preventDefault(); 
+            
+            const btn = document.getElementById('finalSubmitBtn');
+            const originalHTML = btn.innerHTML;
+            const payMethod = document.querySelector('input[name="payMethod"]:checked').value;
+            
+            // Check Wallet Balance if selected
+            if (payMethod === 'wallet') {
+                const currentBal = parseFloat(localStorage.getItem('secureLogix_walletBalance') || 25000);
+                const depositCostINR = 4150; // Approx $50 USD
+                
+                if (currentBal < depositCostINR) {
+                    alert("Insufficient Digital Wallet balance. Please top up your wallet or use a Credit Card.");
+                    return;
+                }
+            }
+            
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+            btn.disabled = true; 
+            
+            setTimeout(() => {
+                const randomID = "TXG-" + Math.floor(100000 + Math.random() * 900000);
+                
+                // Deduct from Wallet and Log Transaction
+                if (payMethod === 'wallet') {
+                    const currentBal = parseFloat(localStorage.getItem('secureLogix_walletBalance') || 25000);
+                    const depositCostINR = 4150; 
+                    
+                    localStorage.setItem('secureLogix_walletBalance', currentBal - depositCostINR);
+                    
+                    let transactions = JSON.parse(localStorage.getItem('secureLogix_transactions') || "[]");
+                    transactions.push({
+                        id: randomID,
+                        type: "out",
+                        title: `Deposit: ${document.getElementById('origin').value} to ${document.getElementById('destination').value}`,
+                        date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                        amount: depositCostINR
+                    });
+                    localStorage.setItem('secureLogix_transactions', JSON.stringify(transactions));
+                }
+
+                alert(`Payment Successful!\n\nYour official Shipping ID is: ${randomID}\n\nDocuments have been transmitted to customs. Your full tracking dashboard will be emailed to you shortly.`);
+                
+                // Reset form
+                document.getElementById('secureBookingForm').reset();
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                
+                // Reset visual uploads with correct FontAwesome icons
+                document.getElementById('box-invoice').classList.remove('verified');
+                document.getElementById('icon-invoice').innerHTML = '<i class="fa-solid fa-file-invoice-dollar"></i>';
+                document.getElementById('title-invoice').innerText = "Commercial Invoice";
+                document.getElementById('desc-invoice').innerText = "Click or drag file to upload";
+
+                document.getElementById('box-packing').classList.remove('verified');
+                document.getElementById('icon-packing').innerHTML = '<i class="fa-solid fa-clipboard-list"></i>';
+                document.getElementById('title-packing').innerText = "Packing List";
+                document.getElementById('desc-packing').innerText = "Click or drag file to upload";
+
+                document.getElementById('box-id').classList.remove('verified');
+                document.getElementById('icon-id').innerHTML = '<i class="fa-solid fa-id-card"></i>';
+                document.getElementById('title-id').innerText = "Sender Customs ID";
+                document.getElementById('desc-id').innerText = "Click or drag file to upload";
+
+                loadUserProfile(); // Refresh wallet UI
+                goToStep(1);
+                
+            }, 2500);
+        }
     </script>
 </body>
 
