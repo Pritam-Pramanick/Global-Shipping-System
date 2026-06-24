@@ -1,646 +1,503 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trans Global | Secure Booking</title>
+    <title>Trans Global | Workspace Booking</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 🟢 BOOTSTRAP 5.3 CSS 🟢 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <script>
-        const sessionToken = sessionStorage.getItem('secureLogix_session_token');
-        if (!sessionToken || sessionToken.split('.').length !== 3) {
-            // Comment this out if you are testing locally without a login page!
-            // window.location.replace('login.html');
-        }
-    </script>
 
     <style>
-        /* --- 🟢 PREMIUM COLOR THEORY & VARIABLES 🟢 --- */
+        /* --- 🟢 BRAND VARIABLES 🟢 --- */
         :root {
             --primary-blue: #0A2540;
             --primary-blue-hover: #061a2e;
             --action-orange: #FF6B35;
             --action-orange-hover: #e55a2b;
             --success-green: #38A169;
-            --warning-yellow: #D69E2E;
-            --danger-red: #E53E3E;
-            --bg-color: #F4F7FA;
-            --surface-color: #FFFFFF;
+            --bg-dark: #030b14;
+            --surface-light: #F8FAFC;
+            --surface-white: #FFFFFF;
             --text-dark: #1A202C;
-            --text-muted: #4A5568;
+            --text-muted: #64748B;
             --border-color: #E2E8F0;
-            --card-shadow: 0 15px 35px -5px rgba(10, 37, 64, 0.05);
-            --hover-shadow: 0 25px 50px -10px rgba(10, 37, 64, 0.12);
-            --sidebar-width: 280px;
-            --transition-fast: 0.2s ease;
-            --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --app-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --transition-smooth: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-color); color: var(--text-dark);
-            font-family: 'Inter', sans-serif; line-height: 1.6;
-            overflow-x: hidden;
-            background-image: radial-gradient(rgba(10, 37, 64, 0.04) 1px, transparent 1px);
-            background-size: 24px 24px;
+            /* The whole background is dark to make the app window pop */
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--bg-dark) 100%);
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Locks the background */
         }
 
-        a, button { text-decoration: none; transition: var(--transition-fast); }
-        
-        /* Layout Cards */
-        .layout-card {
-            background-color: var(--surface-color); border-radius: 24px;
-            box-shadow: var(--card-shadow); border: 1px solid rgba(0, 0, 0, 0.03);
+        a, button { text-decoration: none; font-family: inherit; border: none; cursor: pointer; transition: 0.2s;}
+
+        /* --- 🟢 TOP NAVIGATION 🟢 --- */
+        .app-header {
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: white; letter-spacing: -0.5px; display: flex; align-items: center; gap: 0.5rem;}
+        .logo i { color: var(--action-orange); }
+        .nav-actions { display: flex; align-items: center; gap: 2rem; }
+        .nav-actions a { color: #CBD5E0; font-weight: 500; font-size: 0.95rem; }
+        .nav-actions a:hover { color: white; }
+        .header-avatar { width: 38px; height: 38px; background: var(--action-orange); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.2);}
+
+        /* --- 🟢 MAIN APP WINDOW 🟢 --- */
+        .app-container {
+            flex: 1;
+            max-width: 1400px;
+            width: 95%;
+            margin: 0 auto 2rem;
+            background: var(--surface-white);
+            border-radius: 20px;
+            box-shadow: var(--app-shadow);
+            display: grid;
+            grid-template-columns: 320px 1fr; /* Strict Sidebar / Content Split */
+            overflow: hidden;
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* --- 🟢 UPGRADED SIDEBAR 🟢 --- */
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(10, 37, 64, 0.6); backdrop-filter: blur(5px); z-index: 999; opacity: 0; visibility: hidden; transition: var(--transition-smooth); }
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
-        .sidebar { position: fixed; top: 0; bottom: 0; left: calc(-1 * var(--sidebar-width)); width: var(--sidebar-width); background-color: rgba(10, 37, 64, 0.98); backdrop-filter: blur(20px); color: #fff; z-index: 1000; display: flex; flex-direction: column; transition: left var(--transition-smooth); box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2); }
-        .sidebar.active { left: 0; }
-        .sidebar-header { padding: 2rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        .sidebar-header h2 { font-size: 1.5rem; letter-spacing: -0.5px; color: white; font-weight: 800; margin:0;}
-        .close-sidebar-btn { background: none; border: none; color: #CBD5E0; font-size: 2rem; cursor: pointer; transition: 0.2s; }
-        .close-sidebar-btn:hover { color: var(--action-orange); transform: rotate(90deg);}
-        .sidebar-content { flex: 1; padding: 1.5rem 0; overflow-y: auto; scrollbar-width: none; }
-        .sidebar-content::-webkit-scrollbar { display: none; }
-        .sidebar-item { display: flex; align-items: center; gap: 1rem; width: 100%; padding: 1rem 1.5rem; color: #A0AEC0; font-weight: 600; text-align: left; background: transparent; border: none; border-left: 3px solid transparent; cursor: pointer; transition: 0.2s;}
-        .sidebar-item i { width: 20px; text-align: center; font-size: 1.1rem;}
-        .sidebar-item:hover, .sidebar-item.active-menu { background: rgba(255, 255, 255, 0.05); color: #fff; border-left-color: var(--action-orange); padding-left: 2rem;}
-        
-        .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); background-color: rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; }
-        .profile-widget { display: flex; align-items: center; gap: 1rem; cursor: pointer; padding: 1.5rem; transition: 0.2s; border: none; background: transparent; width: 100%; text-align: left; position: relative; }
-        .profile-widget:hover { background-color: rgba(255, 255, 255, 0.05); }
-        .profile-avatar { width: 45px; height: 45px; background-color: var(--action-orange); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; flex-shrink: 0; background-size: cover; background-position: center; }
-        .profile-details { display: flex; flex-direction: column; }
-        .profile-name { color: #fff; font-weight: 600; font-size: 0.95rem; line-height:1.2;}
-        .profile-role { color: #A0AEC0; font-size: 0.8rem; }
-        .sidebar-profile-menu { max-height: 0; overflow: hidden; background-color: rgba(0, 0, 0, 0.2); transition: max-height 0.3s ease; }
-        .sidebar-profile-menu a, .sidebar-profile-menu button { display: block; width: 100%; text-align: left; padding: 1rem 1.5rem; color: #A0AEC0; font-size: 0.95rem; font-weight: 500; border: none; background: transparent; cursor: pointer; transition: 0.2s; }
-        .sidebar-profile-menu a:hover, .sidebar-profile-menu button:hover { color: white; background-color: rgba(255, 255, 255, 0.05); padding-left: 2rem;}
-        .sidebar-profile-menu .sign-out { color: #FC8181; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        /* --- 🟢 TOP NAVIGATION HEADER 🟢 --- */
-        .glass-nav { 
-            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            border-radius: 50px; padding: 0.8rem 1.5rem; position: sticky; top: 1.5rem; z-index: 900;
+        /* --- 🟢 APP SIDEBAR (LEFT) 🟢 --- */
+        .app-sidebar {
+            background: #0f2c4a;
+            color: white;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.1);
         }
-        .menu-toggle-btn { background: none; border: none; font-size: 1.4rem; color: var(--primary-blue); cursor: pointer; transition: 0.2s; padding: 0; }
-        .menu-toggle-btn:hover { color: var(--action-orange); transform: scale(1.1); }
-        .logo { font-size: 1.4rem; font-weight: 900; color: var(--primary-blue); letter-spacing: -0.5px; }
-        .desktop-nav { display: flex; gap: 2rem; align-items: center; }
-        .desktop-nav a.nav-link-custom { color: var(--text-muted); font-weight: 600; font-size: 0.95rem; position: relative; padding: 0.5rem 0;}
-        .desktop-nav a.nav-link-custom:hover { color: var(--primary-blue); }
+
+        .sidebar-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 2.5rem; color: white; letter-spacing: -0.5px;}
+
+        /* Vertical Stepper */
+        .vertical-stepper { display: flex; flex-direction: column; gap: 2rem; position: relative; margin-bottom: auto;}
+        .vertical-stepper::before { content: ''; position: absolute; left: 15px; top: 10px; bottom: 10px; width: 2px; background: rgba(255,255,255,0.1); z-index: 1;}
         
-        .header-avatar { width: 40px; height: 40px; background-color: var(--primary-blue); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; transition: 0.3s; border: 2px solid transparent; cursor: pointer;}
-        .header-avatar:hover { transform: scale(1.05); border-color: var(--action-orange); box-shadow: 0 5px 15px rgba(10,37,64,0.2);}
-
-        /* --- 🟢 BOOKING UI SPECIFICS 🟢 --- */
+        .step-item { display: flex; align-items: flex-start; gap: 1rem; position: relative; z-index: 2; transition: 0.3s; opacity: 0.6;}
+        .step-item.active { opacity: 1; }
+        .step-item.completed { opacity: 1; }
         
-        /* Stepper */
-        .stepper { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3rem; position: relative; z-index: 1;}
-        .step-indicator { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--text-muted); font-weight: 700; transition: 0.4s; position: relative; z-index: 2; width: 33%;}
-        .step-indicator.active { color: var(--primary-blue); }
-        .step-indicator.completed { color: var(--success-green); }
+        .step-circle { width: 32px; height: 32px; border-radius: 50%; background: #0f2c4a; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; transition: 0.4s;}
+        .step-item.active .step-circle { background: var(--action-orange); border-color: var(--action-orange); box-shadow: 0 0 0 4px rgba(255,107,53,0.2);}
+        .step-item.completed .step-circle { background: var(--success-green); border-color: var(--success-green); color: white; }
         
-        .step-number { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-color); display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid var(--border-color); transition: 0.4s; font-size: 1rem; box-shadow: 0 0 0 5px var(--surface-color);}
-        .step-indicator.active .step-number { background: var(--primary-blue); border-color: var(--primary-blue); color: #fff; box-shadow: 0 0 0 6px rgba(10,37,64,0.1); }
-        .step-indicator.completed .step-number { background: var(--success-green); border-color: var(--success-green); color: #fff; }
+        .step-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; color: white;}
+        .step-text p { font-size: 0.8rem; color: #94a3b8;}
+
+        /* Live Summary Widget */
+        .live-summary { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.05);}
+        .live-summary h5 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; margin-bottom: 1rem;}
+        .sum-row { display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-size: 0.9rem;}
+        .sum-row span:first-child { color: #94a3b8; }
+        .sum-row span:last-child { font-weight: 600; text-align: right; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .sum-total { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 1rem; font-size: 1.5rem; font-weight: 800; color: var(--action-orange); text-align: right;}
+
+        /* --- 🟢 APP CONTENT (RIGHT) 🟢 --- */
+        .app-content {
+            background: var(--surface-light);
+            position: relative;
+            overflow-y: auto; /* Only this side scrolls */
+            scroll-behavior: smooth;
+        }
+
+        .step-panel {
+            padding: 3rem 4rem;
+            display: none;
+            animation: panelSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .step-panel.active { display: block; }
+        @keyframes panelSlide { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+        .panel-header { margin-bottom: 3rem; }
+        .panel-header h2 { font-size: 2rem; color: var(--primary-blue); font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem;}
+        .panel-header p { color: var(--text-muted); font-size: 1.05rem; }
+
+        /* Forms & Grids */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;}
+        .form-group.full { grid-column: 1 / -1; }
+        .form-label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
         
-        .step-line-container { position: absolute; top: 20px; left: 16%; right: 16%; height: 3px; background: var(--border-color); z-index: 0; }
-        .step-line-progress { height: 100%; background: var(--success-green); width: 0%; transition: width 0.5s ease; }
+        .input-wrapper { position: relative; display: flex; align-items: center; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: 12px; transition: 0.3s; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .input-wrapper:focus-within { border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(10,37,64,0.1); }
+        .input-wrapper i { width: 45px; text-align: center; color: #94a3b8; font-size: 1.1rem; transition: 0.3s;}
+        .input-wrapper:focus-within i { color: var(--primary-blue); }
+        .input-wrapper input, .input-wrapper select { flex: 1; border: none; padding: 1rem 1rem 1rem 0; font-size: 1rem; font-weight: 500; color: var(--text-dark); background: transparent; outline: none; }
+        
+        /* Transport Selector Grid */
+        .transport-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+        .transport-card { background: var(--surface-white); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.5rem 0.5rem; text-align: center; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);}
+        .transport-card:hover { border-color: var(--primary-blue); transform: translateY(-3px);}
+        .transport-card.active { border-color: var(--action-orange); background: rgba(255, 107, 53, 0.05); }
+        .transport-card i { font-size: 1.8rem; color: #94a3b8; margin-bottom: 0.5rem; display: block; transition: 0.3s;}
+        .transport-card.active i { color: var(--action-orange); }
+        .transport-card span { font-weight: 700; font-size: 0.95rem; color: var(--primary-blue); }
 
-        .step-section { display: none; animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .step-section.active { display: block; }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        /* Multiple Inputs (Dimensions) */
+        .multi-input { display: grid; grid-template-columns: 1fr 1fr 1fr; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .multi-input:focus-within { border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(10,37,64,0.1); }
+        .multi-input input { border: none; padding: 1rem; text-align: center; font-size: 1rem; font-weight: 500; outline: none; border-right: 1px solid var(--border-color);}
+        .multi-input input:last-child { border-right: none; }
 
-        /* Form Controls */
-        .form-label { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-group-text { background: transparent; border-right: none; border-color: var(--border-color); color: var(--primary-blue); padding-left: 1.2rem;}
-        .form-control-custom { padding: 1rem 1.2rem; border: 1px solid var(--border-color); border-radius: 10px; font-size: 1rem; background: var(--bg-color); font-weight: 500; transition: 0.3s; border-left: none;}
-        select.form-control-custom { border-left: 1px solid var(--border-color); }
-        .form-control-custom:focus { background: white; box-shadow: none; border-color: var(--border-color);}
-        .input-group:focus-within { box-shadow: 0 0 0 4px rgba(10,37,64,0.1); border-radius: 10px; }
-        .input-group:focus-within .input-group-text, .input-group:focus-within .form-control-custom { border-color: var(--primary-blue); background: white;}
-
-        /* Transport Cards */
-        .transport-card { border: 2px solid var(--border-color); border-radius: 16px; padding: 1.5rem 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease; background: var(--surface-color); height: 100%;}
-        .transport-card:hover { border-color: var(--primary-blue); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
-        .transport-card.active { border-color: var(--action-orange); background-color: rgba(255, 107, 53, 0.05); transform: scale(1.02); box-shadow: 0 10px 20px rgba(255,107,53,0.15);}
-        .transport-card .icon { font-size: 2rem; display: block; color: var(--text-muted); transition: 0.3s; margin-bottom: 0.5rem;}
-        .transport-card.active .icon { color: var(--action-orange); }
-        .transport-card .label { font-weight: 800; font-size: 1rem; color: var(--primary-blue); }
-
-        /* Document Uploads */
-        .upload-box { border: 2px dashed var(--border-color); border-radius: 16px; padding: 2.5rem 1.5rem; text-align: center; background: var(--bg-color); transition: 0.3s; position: relative; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;}
-        .upload-box:hover { border-color: var(--primary-blue); background: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
-        .upload-box.verified { border-color: var(--success-green); background: rgba(56, 161, 105, 0.05); border-style: solid; transform: translateY(0); }
+        /* Document Upload Zone */
+        .upload-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .upload-box { background: var(--surface-white); border: 2px dashed var(--border-color); border-radius: 16px; padding: 2.5rem 1rem; text-align: center; transition: 0.3s; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .upload-box:hover { border-color: var(--primary-blue); }
+        .upload-box.verified { border-color: var(--success-green); background: rgba(56, 161, 105, 0.05); border-style: solid; }
+        .upload-icon { font-size: 2rem; color: var(--primary-blue); margin-bottom: 1rem; transition: 0.3s;}
+        .upload-box.verified .upload-icon { color: var(--success-green); transform: scale(1.2); }
+        .upload-title { font-weight: 700; color: var(--primary-blue); margin-bottom: 0.3rem; font-size: 0.95rem; }
+        .upload-desc { font-size: 0.8rem; color: var(--text-muted); }
+        .upload-box input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;}
+        
         @keyframes pulseScan { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
         .upload-box.scanning .upload-icon { animation: pulseScan 1s infinite; color: var(--action-orange); }
-        .upload-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; transition: 0.3s; color: var(--primary-blue);}
-        .upload-box.verified .upload-icon { color: var(--success-green); transform: scale(1.2); }
-        .upload-title { font-weight: 800; color: var(--primary-blue); margin-bottom: 0.5rem; font-size: 1.1rem; }
-        .upload-box.verified .upload-title { color: var(--success-green); }
-        .upload-desc { font-size: 0.85rem; color: var(--text-muted); font-weight: 500;}
-        .upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-        /* Payment Section */
-        .pay-method-card { border: 2px solid var(--border-color); border-radius: 16px; padding: 1.5rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 1rem; background: var(--surface-color);}
-        .pay-method-card:hover { border-color: var(--primary-blue); box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
+        /* Payment Cards */
+        .pay-method-card { background: var(--surface-white); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem; transition: 0.3s; margin-bottom: 1rem;}
+        .pay-method-card:hover { border-color: var(--primary-blue); }
         .pay-method-card.active { border-color: var(--success-green); background: rgba(56, 161, 105, 0.05); }
-        .pay-method-card input[type="radio"] { cursor: pointer; transform: scale(1.2); accent-color: var(--success-green);}
-        
-        .wallet-balance-badge { background: var(--primary-blue); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-left: auto;}
+        .pay-method-card input[type="radio"] { transform: scale(1.3); accent-color: var(--success-green); cursor: pointer;}
+        .wallet-badge { background: var(--primary-blue); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-left: auto;}
 
-        /* Live Summary Panel */
-        .summary-card { background: var(--primary-blue); color: white; border-radius: 24px; padding: 2rem; position: sticky; top: 100px; box-shadow: var(--hover-shadow);}
-        .summary-row { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .summary-row:last-child { border-bottom: none; }
-        .summary-label { color: #A0AEC0; font-size: 0.9rem; font-weight: 600; text-transform: uppercase;}
-        .summary-value { font-weight: 700; text-align: right; max-width: 150px; word-wrap: break-word;}
-        .total-cost { font-size: 2.5rem; font-weight: 900; color: var(--action-orange); margin-top: 1rem; line-height: 1;}
+        /* Controls */
+        .app-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color); }
+        .btn { padding: 1rem 2rem; font-size: 1rem; font-weight: 700; border-radius: 10px; display: inline-flex; align-items: center; gap: 0.5rem; transition: 0.3s; }
+        .btn-primary { background: var(--action-orange); color: white; margin-left: auto; box-shadow: 0 4px 15px rgba(255,107,53,0.3);}
+        .btn-primary:hover { background: var(--action-orange-hover); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,107,53,0.4);}
+        .btn-secondary { background: var(--surface-white); color: var(--primary-blue); border: 1px solid var(--border-color);}
+        .btn-secondary:hover { background: var(--border-color); }
 
-        /* Buttons */
-        .btn-custom { padding: 1rem 2rem; font-weight: 800; border-radius: 12px; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border: none;}
-        .btn-primary-custom { background: var(--action-orange); color: white; box-shadow: 0 10px 20px rgba(255,107,53,0.2); }
-        .btn-primary-custom:hover { background: var(--action-orange-hover); transform: translateY(-2px); box-shadow: 0 15px 25px rgba(255,107,53,0.4); color: white;}
-        .btn-secondary-custom { background: var(--bg-color); color: var(--primary-blue); border: 1px solid var(--border-color); }
-        .btn-secondary-custom:hover { background: #e2e8f0; transform: translateY(-2px); color: var(--primary-blue);}
+        /* Custom Checkbox */
+        .custom-check { display: flex; align-items: center; gap: 0.8rem; cursor: pointer; }
+        .custom-check input { width: 1.2rem; height: 1.2rem; accent-color: var(--action-orange); cursor: pointer;}
+        .custom-check span { font-weight: 600; font-size: 0.95rem; color: var(--primary-blue);}
 
-        /* Custom Toggle Switch */
-        .form-check-input:checked { background-color: var(--success-green); border-color: var(--success-green); }
-        .form-check-input { width: 3em !important; height: 1.5em; cursor: pointer; }
-
-        /* Footer */
-        .main-footer { background-color: #05111f; color: #E2E8F0; border-radius: 30px 30px 0 0; border: none;}
-        .footer-col ul li a { color: #A0AEC0; transition: 0.3s; }
-        .footer-col ul li a:hover { color: var(--action-orange); padding-left: 8px;}
-
-        @media (max-width: 991px) { .desktop-nav { display: none !important; } .summary-card { position: static; margin-top: 2rem; } }
-        @media (max-width: 576px) { .step-indicator span { display: none; } .main-footer { border-radius: 0; } }
-
+        /* --- 🟢 RESPONSIVE 🟢 --- */
+        @media (max-width: 1024px) {
+            .app-container { grid-template-columns: 280px 1fr; width: 98%; }
+            .step-panel { padding: 2.5rem 2rem; }
+        }
+        @media (max-width: 800px) {
+            body { overflow: auto; background: var(--surface-light); }
+            .app-header { background: var(--primary-blue); padding: 1rem 1.5rem; }
+            .nav-actions { display: none; }
+            .app-container { grid-template-columns: 1fr; display: flex; flex-direction: column; box-shadow: none; border-radius: 0; margin: 0; width: 100%; height: auto;}
+            .app-sidebar { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.5rem;}
+            .vertical-stepper { flex-direction: row; gap: 1rem; overflow-x: auto; padding-bottom: 1rem;}
+            .vertical-stepper::before { display: none; }
+            .step-text { display: none; }
+            .app-content { overflow-y: visible; }
+            .step-panel { padding: 2rem 1.5rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .transport-selector { grid-template-columns: 1fr 1fr; }
+            .upload-grid { grid-template-columns: 1fr; }
+            .app-controls { flex-direction: column-reverse; gap: 1rem; }
+            .btn { width: 100%; justify-content: center; }
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>Menu</h2>
-            <button class="close-sidebar-btn" id="closeSidebar">&times;</button>
-        </div>
-
-       <div class="sidebar-content">
-            <div class="px-4 pb-2 text-uppercase fw-bold text-muted small mt-3" style="letter-spacing: 1px;">Main</div>
-            <a href="../index.html" class="sidebar-item">
-                <i class="fa-solid fa-house"></i> Dashboard
-            </a>
-            <a href="profile.html" class="sidebar-item">
-                <i class="fa-solid fa-user"></i> My Profile
-            </a>
-
-            <div class="px-4 pb-2 text-uppercase fw-bold text-muted small mt-4" style="letter-spacing: 1px;">Operations</div>
-            <a href="booking.html" class="sidebar-item active-menu">
-                <i class="fa-solid fa-ship"></i> Book New Shipment
-            </a>
-            <a href="#" class="sidebar-item">
-                <i class="fa-solid fa-box-open"></i> Active Shipments
-            </a>
-            <a href="#" class="sidebar-item">
-                <i class="fa-solid fa-file-contract"></i> Document Center
-            </a>
-
-            <div class="px-4 pb-2 text-uppercase fw-bold text-muted small mt-4" style="letter-spacing: 1px;">Finance & Support</div>
-            <a href="wallet.html" class="sidebar-item">
-                <i class="fa-solid fa-wallet"></i> Wallet & Billing
-            </a>
-            <a href="support.html" class="sidebar-item">
-                <i class="fa-solid fa-headset"></i> Support Tickets
-            </a>
-        </div>
-
-        <div class="sidebar-footer mt-auto">
-            <button class="profile-widget" onclick="window.location.href='profile.html'">
-                <div class="profile-avatar" id="userAvatar">JD</div>
-                <div class="profile-details">
-                    <span class="profile-name" id="userNameDisplay">John Doe</span>
-                    <span class="profile-role" id="userRoleDisplay">Supply Chain Mgr</span>
-                </div>
-            </button>
-        </div>
-    </aside>
-
     <!-- 🟢 TOP NAVIGATION 🟢 -->
-    <div class="container-xl px-3 mt-4 mb-4">
-        <header class="glass-nav d-flex justify-content-between align-items-center">
-            <div class="header-left d-flex align-items-center gap-3">
-                <button class="menu-toggle-btn" id="openSidebar" title="Open Menu">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <a href="../index.html" class="logo">Trans Global</a>
-            </div>
-            <nav class="desktop-nav">
-                <a href="../index.html" class="nav-link-custom">Dashboard</a>
-                <a href="about.html" class="nav-link-custom">About Us</a>
-                <a href="services.html" class="nav-link-custom">Services</a>
-                <a href="support.html" class="nav-link-custom">Support</a>
-                
-                <a href="profile.html" class="header-profile-link ms-2" title="My Profile">
-                    <div class="header-avatar" id="headerAvatar">JD</div>
-                </a>
-            </nav>
-        </header>
-    </div>
+    <header class="app-header">
+        <a href="../index.html" class="logo"><i class="fa-solid fa-earth-americas"></i> Trans Global</a>
+        <nav class="nav-actions">
+            <a href="../index.html">Dashboard</a>
+            <a href="support.html">Support</a>
+            <a href="profile.html" title="My Profile">
+                <div class="header-avatar" id="headerAvatar">JD</div>
+            </a>
+        </nav>
+    </header>
 
-    <main class="container-xl mb-5">
-        <div class="row g-4">
+    <!-- 🟢 WORKSPACE APP 🟢 -->
+    <main class="app-container">
+        
+        <!-- LEFT PANEL: Command Center -->
+        <aside class="app-sidebar">
+            <div class="sidebar-title">Booking Workflow</div>
             
-            <!-- LEFT COLUMN: FORM & STEPPER -->
-            <div class="col-lg-8">
-                <div class="layout-card p-4 p-md-5">
-                    
-                    <div class="text-center mb-5">
-                        <h1 class="fw-bolder" style="color: var(--primary-blue); letter-spacing: -1px;">Secure Booking</h1>
-                        <p class="text-muted">Follow the steps below to initialize your enterprise shipment.</p>
+            <div class="vertical-stepper">
+                <div class="step-item active" id="ind-step-1">
+                    <div class="step-circle">1</div>
+                    <div class="step-text">
+                        <h4>Parameters</h4>
+                        <p>Route & cargo details</p>
                     </div>
-
-                    <!-- STEPPER -->
-                    <div class="stepper mb-5">
-                        <div class="step-line-container">
-                            <div class="step-line-progress" id="stepProgressLine"></div>
-                        </div>
-                        <div class="step-indicator active" id="ind-step-1">
-                            <div class="step-number">1</div>
-                            <span>Details</span>
-                        </div>
-                        <div class="step-indicator" id="ind-step-2">
-                            <div class="step-number">2</div>
-                            <span>Documents</span>
-                        </div>
-                        <div class="step-indicator" id="ind-step-3">
-                            <div class="step-number">3</div>
-                            <span>Payment</span>
-                        </div>
-                    </div>
-
-                    <form id="secureBookingForm">
-                        
-                        <!-- STEP 1: LOGISTICS DETAILS -->
-                        <div class="step-section active" id="step-1">
-                            <h3 class="fw-bold mb-4" style="color: var(--primary-blue); border-bottom: 2px solid var(--bg-color); padding-bottom: 10px;">Logistics Parameters</h3>
-                            
-                            <label class="form-label">Mode of Transport</label>
-                            <input type="hidden" id="transportMode" value="ocean" required>
-                            <div class="row g-3 mb-4">
-                                <div class="col-6 col-md-3">
-                                    <div class="transport-card active" data-value="ocean" onclick="selectTransport(this)">
-                                        <span class="icon"><i class="fa-solid fa-ship"></i></span>
-                                        <span class="label">Ocean</span>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="transport-card" data-value="air" onclick="selectTransport(this)">
-                                        <span class="icon"><i class="fa-solid fa-plane-up"></i></span>
-                                        <span class="label">Air</span>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="transport-card" data-value="ground" onclick="selectTransport(this)">
-                                        <span class="icon"><i class="fa-solid fa-truck-fast"></i></span>
-                                        <span class="label">Ground</span>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="transport-card" data-value="rail" onclick="selectTransport(this)">
-                                        <span class="icon"><i class="fa-solid fa-train"></i></span>
-                                        <span class="label">Rail</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row g-4">
-                                <div class="col-md-6">
-                                    <label class="form-label">Origin Location</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fa-solid fa-location-dot"></i></span>
-                                        <input type="text" class="form-control form-control-custom" id="origin" placeholder="City or Port Code" required oninput="updateSummary()">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Destination Location</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fa-solid fa-flag-checkered"></i></span>
-                                        <input type="text" class="form-control form-control-custom" id="destination" placeholder="City or Port Code" required oninput="updateSummary()">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Total Weight (kg)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fa-solid fa-weight-scale"></i></span>
-                                        <input type="number" class="form-control form-control-custom" id="weight" placeholder="e.g. 1500" required oninput="updateSummary()">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Ready Date</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
-                                        <input type="date" class="form-control form-control-custom" id="date" required oninput="updateSummary()">
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <label class="form-label">Cargo Dimensions (L x W x H in cm)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fa-solid fa-box"></i></span>
-                                        <input type="number" class="form-control form-control-custom" id="dimL" placeholder="Length" required>
-                                        <input type="number" class="form-control form-control-custom border-start border-end" id="dimW" placeholder="Width" required>
-                                        <input type="number" class="form-control form-control-custom" id="dimH" placeholder="Height" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Incoterms</label>
-                                    <select class="form-select form-control-custom rounded" id="incoterm" required onchange="updateSummary()">
-                                        <option value="" disabled selected>Select Terms...</option>
-                                        <option value="FOB">FOB (Free on Board)</option>
-                                        <option value="EXW">EXW (Ex Works)</option>
-                                        <option value="CIF">CIF (Cost, Ins, Freight)</option>
-                                        <option value="DDP">DDP (Delivered Duty Paid)</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="col-md-6 d-flex align-items-center mt-md-4 pt-md-3">
-                                    <div class="form-check form-switch ms-2">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="insuranceToggle" onchange="updateSummary()">
-                                        <label class="form-check-label fw-bold ms-2 text-dark" for="insuranceToggle">Add Comprehensive Cargo Insurance</label>
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <label class="form-label">Commodity Description</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fa-solid fa-tags"></i></span>
-                                        <input type="text" class="form-control form-control-custom" id="cargoDesc" placeholder="e.g., Electronics components, non-hazardous" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-end mt-5 pt-3 border-top">
-                                <button type="button" class="btn-custom btn-primary-custom" onclick="validateAndGo(1, 2)">Continue <i class="fa-solid fa-arrow-right ms-1"></i></button>
-                            </div>
-                        </div>
-
-                        <!-- STEP 2: DOCUMENTS -->
-                        <div class="step-section" id="step-2">
-                            <h3 class="fw-bold mb-4" style="color: var(--primary-blue); border-bottom: 2px solid var(--bg-color); padding-bottom: 10px;">Customs Documentation</h3>
-                            <p class="text-muted mb-4">To ensure customs compliance and avoid demurrage, upload clear PDF or JPG copies of the required manifests.</p>
-
-                            <div class="row g-4 mb-5">
-                                <div class="col-md-4">
-                                    <div class="upload-box" id="box-invoice">
-                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'box-invoice', 'Commercial Invoice', 'fa-file-invoice-dollar')" required>
-                                        <span class="upload-icon" id="icon-invoice"><i class="fa-solid fa-file-invoice-dollar"></i></span>
-                                        <div class="upload-title" id="title-invoice">Commercial Invoice</div>
-                                        <div class="upload-desc" id="desc-invoice">Tap to upload</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="upload-box" id="box-packing">
-                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'box-packing', 'Packing List', 'fa-clipboard-list')" required>
-                                        <span class="upload-icon" id="icon-packing"><i class="fa-solid fa-clipboard-list"></i></span>
-                                        <div class="upload-title" id="title-packing">Packing List</div>
-                                        <div class="upload-desc" id="desc-packing">Tap to upload</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="upload-box" id="box-id">
-                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'box-id', 'Customs ID', 'fa-id-card')" required>
-                                        <span class="upload-icon" id="icon-id"><i class="fa-solid fa-id-card"></i></span>
-                                        <div class="upload-title" id="title-id">Importer ID</div>
-                                        <div class="upload-desc" id="desc-id">Tap to upload</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-5 pt-3 border-top">
-                                <button type="button" class="btn-custom btn-secondary-custom" onclick="goToStep(1)"><i class="fa-solid fa-arrow-left me-1"></i> Back</button>
-                                <button type="button" class="btn-custom btn-primary-custom" onclick="validateAndGo(2, 3)">Continue <i class="fa-solid fa-arrow-right ms-1"></i></button>
-                            </div>
-                        </div>
-
-                        <!-- STEP 3: PAYMENT -->
-                        <div class="step-section" id="step-3">
-                            <h3 class="fw-bold mb-4" style="color: var(--primary-blue); border-bottom: 2px solid var(--bg-color); padding-bottom: 10px;">Token Deposit</h3>
-                            
-                            <div class="p-4 mb-4 rounded-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center" style="background: rgba(10,37,64,0.03); border-left: 4px solid var(--primary-blue);">
-                                <div>
-                                    <h5 class="fw-bold mb-1 text-dark">Secure Capacity Token</h5>
-                                    <p class="text-muted small mb-0">A refundable token deposit is required to generate your tracking ID and secure carrier capacity. Final balance will be invoiced.</p>
-                                </div>
-                                <div class="mt-3 mt-md-0 fs-1 fw-black text-end" style="color: var(--action-orange); font-weight: 900;">$50<span class="fs-5">.00</span></div>
-                            </div>
-
-                            <h5 class="fw-bold mb-3">Select Payment Method</h5>
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <label class="pay-method-card active w-100" id="method-wallet" onclick="selectPayMethod('wallet')">
-                                        <input type="radio" name="payMethod" value="wallet" checked>
-                                        <i class="fa-solid fa-wallet fa-2x mx-2" style="color: var(--primary-blue);"></i>
-                                        <div>
-                                            <strong class="d-block" style="color: var(--primary-blue);">Digital Wallet</strong>
-                                            <span class="text-muted small">Deduct approx ₹4,150</span>
-                                        </div>
-                                        <span class="wallet-balance-badge" id="displayWalletBal">₹0</span>
-                                    </label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="pay-method-card w-100" id="method-card" onclick="selectPayMethod('card')">
-                                        <input type="radio" name="payMethod" value="card">
-                                        <i class="fa-regular fa-credit-card fa-2x mx-2" style="color: var(--primary-blue);"></i>
-                                        <div>
-                                            <strong class="d-block" style="color: var(--primary-blue);">Credit Card</strong>
-                                            <span class="text-muted small">Standard Gateway</span>
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="row g-3" id="cardDetailsBlock" style="display: none; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-                                <div class="col-12">
-                                    <label class="form-label">Cardholder Name</label>
-                                    <input type="text" id="cardName" class="form-control form-control-custom rounded" placeholder="Name on card">
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Card Number</label>
-                                    <input type="text" id="cardNumber" class="form-control form-control-custom rounded" placeholder="0000 0000 0000 0000" maxlength="19">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Expiry</label>
-                                    <input type="text" id="cardExp" class="form-control form-control-custom rounded" placeholder="MM/YY" maxlength="5">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">CVC</label>
-                                    <input type="password" id="cardCvc" class="form-control form-control-custom rounded" placeholder="123" maxlength="4">
-                                </div>
-                            </div>
-
-                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-5 pt-3 border-top gap-3">
-                                <button type="button" class="btn-custom btn-secondary-custom align-self-start" onclick="goToStep(2)"><i class="fa-solid fa-arrow-left me-1"></i> Back</button>
-                                
-                                <div class="text-success fw-bold small d-none d-md-block">
-                                    <i class="fa-solid fa-shield-check"></i> AES-256 Encrypted
-                                </div>
-
-                                <button type="submit" class="btn-custom btn-primary-custom align-self-end w-100 w-md-auto" id="finalSubmitBtn" onclick="processBooking(event)"><i class="fa-solid fa-lock me-2"></i> Pay $50 & Book</button>
-                            </div>
-                        </div>
-
-                    </form>
                 </div>
-            </div>
-
-            <!-- RIGHT COLUMN: LIVE SUMMARY -->
-            <div class="col-lg-4">
-                <div class="summary-card">
-                    <h4 class="fw-bolder mb-4">Live Summary</h4>
-                    
-                    <div class="summary-row">
-                        <span class="summary-label">Route</span>
-                        <div class="summary-value text-end">
-                            <div id="sum-origin" class="text-truncate">Origin</div>
-                            <i class="fa-solid fa-arrow-down fa-sm text-muted my-1"></i>
-                            <div id="sum-dest" class="text-truncate">Destination</div>
-                        </div>
+                <div class="step-item" id="ind-step-2">
+                    <div class="step-circle">2</div>
+                    <div class="step-text">
+                        <h4>Compliance</h4>
+                        <p>Upload documents</p>
                     </div>
-                    
-                    <div class="summary-row">
-                        <span class="summary-label">Transport</span>
-                        <span class="summary-value text-capitalize" id="sum-mode">Ocean Freight</span>
-                    </div>
-
-                    <div class="summary-row">
-                        <span class="summary-label">Terms</span>
-                        <span class="summary-value" id="sum-terms">Pending</span>
-                    </div>
-                    
-                    <div class="summary-row">
-                        <span class="summary-label">Weight</span>
-                        <span class="summary-value"><span id="sum-weight">0</span> kg</span>
-                    </div>
-
-                    <div class="summary-row" id="sum-insurance-row" style="display: none;">
-                        <span class="summary-label">Insurance</span>
-                        <span class="summary-value text-success"><i class="fa-solid fa-shield-halved"></i> Included</span>
-                    </div>
-
-                    <div class="mt-4 pt-3 border-top border-secondary">
-                        <span class="summary-label text-white">Estimated Subtotal</span>
-                        <div class="total-cost" id="sum-cost">$0</div>
-                        <p class="small text-secondary mt-2 lh-sm">Excludes port taxes, duties, and final mile surcharges. Official invoice will be generated upon dispatch.</p>
+                </div>
+                <div class="step-item" id="ind-step-3">
+                    <div class="step-circle">3</div>
+                    <div class="step-text">
+                        <h4>Execution</h4>
+                        <p>Token deposit & ID</p>
                     </div>
                 </div>
             </div>
 
-        </div>
+            <div class="live-summary">
+                <h5>Live Configuration</h5>
+                <div class="sum-row"><span>Mode</span><span id="sum-mode">Ocean Freight</span></div>
+                <div class="sum-row"><span>From</span><span id="sum-origin">Pending</span></div>
+                <div class="sum-row"><span>To</span><span id="sum-dest">Pending</span></div>
+                <div class="sum-row"><span>Weight</span><span id="sum-weight">0 kg</span></div>
+                <div class="sum-row" id="sum-ins-row" style="display: none; color: var(--success-green);"><span>Insurance</span><span>Included</span></div>
+                
+                <div class="sum-total" id="sum-cost">$0</div>
+            </div>
+        </aside>
+
+        <!-- RIGHT PANEL: Forms -->
+        <section class="app-content">
+            <form id="secureBookingForm">
+                
+                <!-- STEP 1: PARAMETERS -->
+                <div class="step-panel active" id="step-1">
+                    <div class="panel-header">
+                        <h2>Logistics Parameters</h2>
+                        <p>Define the physical and geographic attributes of your shipment.</p>
+                    </div>
+
+                    <label class="form-label">Transport Medium</label>
+                    <input type="hidden" id="transportMode" value="ocean">
+                    <div class="transport-selector">
+                        <div class="transport-card active" data-value="ocean" onclick="selectTransport(this)">
+                            <i class="fa-solid fa-ship icon"></i><span>Ocean</span>
+                        </div>
+                        <div class="transport-card" data-value="air" onclick="selectTransport(this)">
+                            <i class="fa-solid fa-plane-up icon"></i><span>Air</span>
+                        </div>
+                        <div class="transport-card" data-value="ground" onclick="selectTransport(this)">
+                            <i class="fa-solid fa-truck-fast icon"></i><span>Ground</span>
+                        </div>
+                        <div class="transport-card" data-value="rail" onclick="selectTransport(this)">
+                            <i class="fa-solid fa-train icon"></i><span>Rail</span>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Origin Code / City</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <input type="text" id="origin" placeholder="e.g., INBOM" required oninput="updateSummary()">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Destination Code / City</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-flag-checkered"></i>
+                                <input type="text" id="destination" placeholder="e.g., USLAX" required oninput="updateSummary()">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Gross Weight (kg)</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-weight-scale"></i>
+                                <input type="number" id="weight" placeholder="1500" required oninput="updateSummary()">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ready Date</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-calendar-day"></i>
+                                <input type="date" id="date" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group full">
+                            <label class="form-label">Dimensions (Length x Width x Height in cm)</label>
+                            <div class="multi-input">
+                                <input type="number" id="dimL" placeholder="L" required>
+                                <input type="number" id="dimW" placeholder="W" required>
+                                <input type="number" id="dimH" placeholder="H" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Trade Incoterms</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-file-signature"></i>
+                                <select id="incoterm" required>
+                                    <option value="" disabled selected>Select Rule...</option>
+                                    <option value="FOB">FOB (Free on Board)</option>
+                                    <option value="EXW">EXW (Ex Works)</option>
+                                    <option value="DDP">DDP (Delivered Duty Paid)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="justify-content: center;">
+                            <label class="custom-check">
+                                <input type="checkbox" id="insuranceToggle" onchange="updateSummary()">
+                                <span>Require Comprehensive Cargo Insurance</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="app-controls">
+                        <div></div> <!-- Empty div to push button to right -->
+                        <button type="button" class="btn btn-primary" onclick="validateAndGo(1, 2)">Proceed to Documents <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: DOCUMENTS -->
+                <div class="step-panel" id="step-2">
+                    <div class="panel-header">
+                        <h2>Compliance Uploads</h2>
+                        <p>Attach required regulatory documents to prevent border demurrage.</p>
+                    </div>
+
+                    <div class="upload-grid">
+                        <div class="upload-box" id="box-invoice">
+                            <input type="file" accept=".pdf,.jpg,.png" onchange="handleFileUpload(this, 'box-invoice', 'Commercial Invoice')" required>
+                            <i class="fa-solid fa-file-invoice-dollar upload-icon" id="icon-invoice"></i>
+                            <div class="upload-title" id="title-invoice">Commercial Invoice</div>
+                            <div class="upload-desc" id="desc-invoice">Select file</div>
+                        </div>
+                        <div class="upload-box" id="box-packing">
+                            <input type="file" accept=".pdf,.jpg,.png" onchange="handleFileUpload(this, 'box-packing', 'Packing List')" required>
+                            <i class="fa-solid fa-clipboard-list upload-icon" id="icon-packing"></i>
+                            <div class="upload-title" id="title-packing">Packing List</div>
+                            <div class="upload-desc" id="desc-packing">Select file</div>
+                        </div>
+                        <div class="upload-box" id="box-id">
+                            <input type="file" accept=".pdf,.jpg,.png" onchange="handleFileUpload(this, 'box-id', 'Importer ID')" required>
+                            <i class="fa-solid fa-id-card upload-icon" id="icon-id"></i>
+                            <div class="upload-title" id="title-id">Importer ID</div>
+                            <div class="upload-desc" id="desc-id">Select file</div>
+                        </div>
+                    </div>
+
+                    <div class="app-controls">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <button type="button" class="btn btn-primary" onclick="validateAndGo(2, 3)">Proceed to Deposit <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: PAYMENT -->
+                <div class="step-panel" id="step-3">
+                    <div class="panel-header">
+                        <h2>Capacity Token</h2>
+                        <p>A $50.00 refundable deposit is required to generate your routing ID.</p>
+                    </div>
+
+                    <label class="pay-method-card active" id="method-wallet" onclick="selectPayMethod('wallet')">
+                        <input type="radio" name="payMethod" value="wallet" checked>
+                        <i class="fa-solid fa-wallet fa-2x" style="color: var(--primary-blue);"></i>
+                        <div>
+                            <strong style="display:block; font-size:1.1rem; color: var(--primary-blue);">Digital Wallet</strong>
+                            <span style="font-size:0.9rem; color: var(--text-muted);">Deduct approx ₹4,150</span>
+                        </div>
+                        <span class="wallet-badge" id="displayWalletBal">₹0</span>
+                    </label>
+
+                    <label class="pay-method-card" id="method-card" onclick="selectPayMethod('card')">
+                        <input type="radio" name="payMethod" value="card">
+                        <i class="fa-regular fa-credit-card fa-2x" style="color: var(--primary-blue);"></i>
+                        <div>
+                            <strong style="display:block; font-size:1.1rem; color: var(--primary-blue);">Credit Card</strong>
+                            <span style="font-size:0.9rem; color: var(--text-muted);">Standard Secure Gateway</span>
+                        </div>
+                    </label>
+
+                    <div id="cardDetailsBlock" style="display: none; margin-top: 2rem;">
+                        <div class="form-grid">
+                            <div class="form-group full">
+                                <label class="form-label">Cardholder Name</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-user"></i>
+                                    <input type="text" id="cardName" placeholder="Name on card">
+                                </div>
+                            </div>
+                            <div class="form-group full">
+                                <label class="form-label">Card Number</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-regular fa-credit-card"></i>
+                                    <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Expiry</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <input type="text" id="cardExp" placeholder="MM/YY" maxlength="5">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">CVC</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-lock"></i>
+                                    <input type="password" id="cardCvc" placeholder="123" maxlength="4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="app-controls">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <span style="color: var(--success-green); font-weight: 700; font-size: 0.9rem;"><i class="fa-solid fa-shield-check"></i> AES-256 Encrypted</span>
+                        <button type="submit" class="btn btn-primary" id="finalSubmitBtn" onclick="processBooking(event)"><i class="fa-solid fa-lock"></i> Authorize $50.00</button>
+                    </div>
+                </div>
+
+            </form>
+        </section>
     </main>
 
-    <!-- 🟢 FOOTER 🟢 -->
-    <div class="container-xl px-0 mt-5">
-        <footer class="main-footer p-4 p-md-5">
-            <div class="row g-5 border-bottom border-secondary pb-5 mb-4 mx-2">
-                <div class="col-lg-4 footer-col pe-lg-5">
-                    <h4 style="color: var(--action-orange); font-size: 1.5rem; letter-spacing: -0.5px; font-weight:900;">Trans Global</h4>
-                    <p class="mb-0 text-secondary mt-3">Delivering clarity and speed to the global supply chain since 2011. Your freight, handled with absolute precision.</p>
-                </div>
-                <div class="col-lg-2 col-md-4 footer-col">
-                    <h4 class="fw-bold">Services</h4>
-                    <ul class="ps-0 mb-0 mt-3">
-                        <li><a href="services.html">Ocean Freight</a></li>
-                        <li><a href="services.html">Air Cargo</a></li>
-                        <li><a href="services.html">Ground Transport</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-4 footer-col">
-                    <h4 class="fw-bold">Company</h4>
-                    <ul class="ps-0 mb-0 mt-3">
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="our-work.html">Our Work</a></li>
-                        <li><a href="../landing_pages/consulting.html">Consulting</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-4 footer-col">
-                    <h4 class="fw-bold">Support</h4>
-                    <ul class="ps-0 mb-0 mt-3">
-                        <li><a href="support.html">Help Center</a></li>
-                        <li><a href="booking.html">Book Freight</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 px-4">
-                <div class="footer-copyright mb-3 mb-md-0 text-secondary">&copy; 2026 Trans Global Logistics. All rights reserved.</div>
-                <div class="footer-legal">
-                    <a href="#" class="me-4 text-secondary hover-white">Privacy Policy</a>
-                    <a href="#" class="text-secondary hover-white">Terms of Service</a>
-                </div>
-            </div>
-        </footer>
-    </div>
-
     <script>
-        // --- 1. Sidebar & Sync Logic ---
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        document.getElementById('openSidebar').onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); };
-        document.getElementById('closeSidebar').onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); };
-        overlay.onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); };
-
-        function loadUserProfile() {
+        // --- Setup & Profile ---
+        window.addEventListener('DOMContentLoaded', () => {
             const userEmail = localStorage.getItem('secureLogix_user');
             if (userEmail) {
                 const namePart = userEmail.split('@')[0];
-                const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-                const customName = localStorage.getItem('secureLogix_displayName') || formattedName;
-                const initials = customName.substring(0, 2).toUpperCase();
+                const customName = localStorage.getItem('secureLogix_displayName') || (namePart.charAt(0).toUpperCase() + namePart.slice(1));
                 const customAvatar = localStorage.getItem('secureLogix_avatar');
-
-                document.getElementById('userNameDisplay').textContent = customName;
-
-                [document.getElementById('userAvatar'), document.getElementById('headerAvatar')].forEach(avatar => {
-                    if (avatar) {
-                        if (customAvatar) {
-                            avatar.style.backgroundImage = `url(${customAvatar})`;
-                            avatar.textContent = ""; 
-                        } else {
-                            avatar.style.backgroundImage = "none";
-                            avatar.textContent = initials;
-                        }
+                
+                if(document.getElementById('headerAvatar')) {
+                    if (customAvatar) {
+                        document.getElementById('headerAvatar').style.backgroundImage = `url(${customAvatar})`;
+                        document.getElementById('headerAvatar').textContent = "";
+                    } else {
+                        document.getElementById('headerAvatar').textContent = customName.substring(0, 2).toUpperCase();
                     }
-                });
+                }
             }
 
-            // Sync Digital Wallet Balance
             const bal = parseFloat(localStorage.getItem('secureLogix_walletBalance') || 25000);
             document.getElementById('displayWalletBal').textContent = '₹' + bal.toLocaleString('en-IN');
-        }
 
-        // --- 2. Auto-Fill & Live Summary Logic ---
-        window.addEventListener('DOMContentLoaded', () => {
-            loadUserProfile(); 
+            // URL Params auto-fill
             const params = new URLSearchParams(window.location.search);
-            if(params.has('origin')) document.getElementById('origin').value = params.get('origin');
-            if(params.has('destination')) document.getElementById('destination').value = params.get('destination');
-            if(params.has('date')) document.getElementById('date').value = params.get('date');
-            if(params.has('weight')) document.getElementById('weight').value = params.get('weight');
-            
+            ['origin', 'destination', 'date', 'weight'].forEach(id => {
+                if(params.has(id)) document.getElementById(id).value = params.get(id);
+            });
             if(params.has('mode')) {
                 const targetCard = document.querySelector(`.transport-card[data-value="${params.get('mode')}"]`);
                 if(targetCard) selectTransport(targetCard);
@@ -648,40 +505,32 @@
             updateSummary();
         });
 
-        function updateSummary() {
-            const origin = document.getElementById('origin').value || 'Origin';
-            const dest = document.getElementById('destination').value || 'Destination';
-            const weight = parseFloat(document.getElementById('weight').value) || 0;
-            const mode = document.getElementById('transportMode').value;
-            const terms = document.getElementById('incoterm').value || 'Pending';
-            const insured = document.getElementById('insuranceToggle').checked;
-
-            document.getElementById('sum-origin').textContent = origin;
-            document.getElementById('sum-dest').textContent = dest;
-            document.getElementById('sum-mode').textContent = mode + " Freight";
-            document.getElementById('sum-weight').textContent = weight.toLocaleString();
-            document.getElementById('sum-terms').textContent = terms;
-            
-            document.getElementById('sum-insurance-row').style.display = insured ? 'flex' : 'none';
-
-            // Fake calculation algorithm
-            let multiplier = 2; // Ocean
-            if (mode === 'air') multiplier = 8;
-            if (mode === 'ground') multiplier = 4;
-            if (mode === 'rail') multiplier = 3;
-
-            let estCost = weight * multiplier;
-            if (insured) estCost += (estCost * 0.05); // 5% insurance fee
-
-            document.getElementById('sum-cost').textContent = weight > 0 ? '$' + Math.ceil(estCost).toLocaleString() : '$0';
-        }
-
-        // --- 3. UI Interactions ---
+        // --- Core Interactions ---
         function selectTransport(clickedElement) {
             document.querySelectorAll('.transport-card').forEach(card => card.classList.remove('active'));
             clickedElement.classList.add('active');
             document.getElementById('transportMode').value = clickedElement.getAttribute('data-value');
             updateSummary();
+        }
+
+        function updateSummary() {
+            const origin = document.getElementById('origin').value || 'Pending';
+            const dest = document.getElementById('destination').value || 'Pending';
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const mode = document.getElementById('transportMode').value;
+            const insured = document.getElementById('insuranceToggle').checked;
+
+            document.getElementById('sum-origin').textContent = origin;
+            document.getElementById('sum-dest').textContent = dest;
+            document.getElementById('sum-mode').textContent = mode.charAt(0).toUpperCase() + mode.slice(1) + " Freight";
+            document.getElementById('sum-weight').textContent = weight.toLocaleString() + " kg";
+            document.getElementById('sum-ins-row').style.display = insured ? 'flex' : 'none';
+
+            let multiplier = mode === 'air' ? 8 : (mode === 'ground' ? 4 : (mode === 'rail' ? 3 : 2));
+            let estCost = weight * multiplier;
+            if (insured) estCost += (estCost * 0.05);
+
+            document.getElementById('sum-cost').textContent = weight > 0 ? '$' + Math.ceil(estCost).toLocaleString() : '$0';
         }
 
         function selectPayMethod(method) {
@@ -690,9 +539,8 @@
             
             const cardBlock = document.getElementById('cardDetailsBlock');
             const cardInputs = cardBlock.querySelectorAll('input');
-
             if (method === 'card') {
-                cardBlock.style.display = 'flex';
+                cardBlock.style.display = 'block';
                 cardInputs.forEach(input => input.required = true);
             } else {
                 cardBlock.style.display = 'none';
@@ -700,59 +548,41 @@
             }
         }
 
-        // --- 4. Custom Step Validation ---
+        // --- Stepper Navigation ---
         function validateAndGo(currentStep, targetStep) {
             const currentSection = document.getElementById('step-' + currentStep);
             const inputs = currentSection.querySelectorAll('input[required], select[required]');
             let isValid = true;
 
             inputs.forEach(input => {
-                if (!input.checkValidity()) {
-                    input.reportValidity();
-                    isValid = false;
-                }
-                // Custom check for file uploads
+                if (!input.checkValidity()) { input.reportValidity(); isValid = false; }
                 if(input.type === 'file' && input.files.length === 0) {
-                     alert(`Please upload the required document: ${input.nextElementSibling.nextElementSibling.innerText}`);
+                     alert(`Please upload: ${input.nextElementSibling.nextElementSibling.innerText}`);
                      isValid = false;
                 }
             });
 
-            if (isValid) {
-                goToStep(targetStep);
-            }
+            if (isValid) goToStep(targetStep);
         }
 
         function goToStep(targetStep) {
-            document.querySelectorAll('.step-section').forEach(sec => sec.classList.remove('active'));
+            // Panels
+            document.querySelectorAll('.step-panel').forEach(sec => sec.classList.remove('active'));
             document.getElementById('step-' + targetStep).classList.add('active');
 
+            // Sidebar indicators
             const ind1 = document.getElementById('ind-step-1'), ind2 = document.getElementById('ind-step-2'), ind3 = document.getElementById('ind-step-3');
-            const progressLine = document.getElementById('stepProgressLine');
-
             [ind1, ind2, ind3].forEach(el => el.classList.remove('active', 'completed'));
 
-            if (targetStep === 1) { 
-                ind1.classList.add('active'); 
-                progressLine.style.width = '0%';
-            } 
-            else if (targetStep === 2) { 
-                ind1.classList.add('completed'); 
-                ind2.classList.add('active'); 
-                progressLine.style.width = '50%';
-            } 
-            else if (targetStep === 3) { 
-                ind1.classList.add('completed'); 
-                ind2.classList.add('completed'); 
-                ind3.classList.add('active'); 
-                progressLine.style.width = '100%';
-            }
+            if (targetStep === 1) { ind1.classList.add('active'); } 
+            else if (targetStep === 2) { ind1.classList.add('completed'); ind2.classList.add('active'); } 
+            else if (targetStep === 3) { ind1.classList.add('completed'); ind2.classList.add('completed'); ind3.classList.add('active'); }
             
-            document.querySelector('.booking-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.querySelector('.app-content').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- 5. Document Upload Animation ---
-        function handleFileUpload(inputElement, boxId, docName, originalIconClass) {
+        // --- Upload Simulation ---
+        function handleFileUpload(inputElement, boxId, docName) {
             const file = inputElement.files[0];
             if (!file) return;
 
@@ -763,37 +593,31 @@
 
             box.classList.add('scanning');
             icon.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
-            title.innerText = "Scanning...";
-            desc.innerText = file.name;
+            title.innerText = "Scanning..."; desc.innerText = file.name;
 
             setTimeout(() => {
-                box.classList.remove('scanning'); 
-                box.classList.add('verified'); 
+                box.classList.remove('scanning'); box.classList.add('verified'); 
                 icon.innerHTML = '<i class="fa-solid fa-check"></i>';
-                title.innerText = docName + " (Verified)";
-                desc.innerText = "Attached: " + file.name;
-            }, 1500);
+                title.innerText = docName; desc.innerText = "Verified";
+            }, 1200);
         }
 
-        // --- 6. Booking & Wallet Deduction Logic ---
+        // --- Booking Submission ---
         function processBooking(event) {
             event.preventDefault(); 
-            
             const btn = document.getElementById('finalSubmitBtn');
             const originalHTML = btn.innerHTML;
             const payMethod = document.querySelector('input[name="payMethod"]:checked').value;
             
             if (payMethod === 'wallet') {
                 const currentBal = parseFloat(localStorage.getItem('secureLogix_walletBalance') || 25000);
-                const depositCostINR = 4150; 
-                
-                if (currentBal < depositCostINR) {
-                    alert("Insufficient Digital Wallet balance. Please top up your wallet or use a Credit Card.");
+                if (currentBal < 4150) {
+                    alert("Insufficient Wallet balance. Please top up or use a Credit Card.");
                     return;
                 }
             }
             
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Processing...';
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
             btn.disabled = true; 
             
             setTimeout(() => {
@@ -801,47 +625,21 @@
                 
                 if (payMethod === 'wallet') {
                     const currentBal = parseFloat(localStorage.getItem('secureLogix_walletBalance') || 25000);
-                    const depositCostINR = 4150; 
-                    
-                    localStorage.setItem('secureLogix_walletBalance', currentBal - depositCostINR);
+                    localStorage.setItem('secureLogix_walletBalance', currentBal - 4150);
                     
                     let transactions = JSON.parse(localStorage.getItem('secureLogix_transactions') || "[]");
                     transactions.push({
-                        id: randomID,
-                        type: "out",
+                        id: randomID, type: "out", amount: 4150,
                         title: `Deposit: ${document.getElementById('origin').value} to ${document.getElementById('destination').value}`,
-                        date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-                        amount: depositCostINR
+                        date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
                     });
                     localStorage.setItem('secureLogix_transactions', JSON.stringify(transactions));
                 }
 
-                alert(`Payment Successful!\n\nYour official Shipping ID is: ${randomID}\n\nDocuments have been transmitted to customs. Your full tracking dashboard will be emailed to you shortly.`);
-                
-                // Reset form & UI
-                document.getElementById('secureBookingForm').reset();
-                btn.innerHTML = originalHTML;
-                btn.disabled = false;
-                
-                ['invoice', 'packing', 'id'].forEach(type => {
-                    const box = document.getElementById(`box-${type}`);
-                    box.classList.remove('verified');
-                    document.getElementById(`desc-${type}`).innerText = "Tap to upload";
-                });
-                document.getElementById('icon-invoice').innerHTML = '<i class="fa-solid fa-file-invoice-dollar"></i>';
-                document.getElementById('title-invoice').innerText = "Commercial Invoice";
-                document.getElementById('icon-packing').innerHTML = '<i class="fa-solid fa-clipboard-list"></i>';
-                document.getElementById('title-packing').innerText = "Packing List";
-                document.getElementById('icon-id').innerHTML = '<i class="fa-solid fa-id-card"></i>';
-                document.getElementById('title-id').innerText = "Importer ID";
-
-                loadUserProfile(); 
-                updateSummary();
-                goToStep(1);
-                
-            }, 2500);
+                alert(`Success!\n\nShipping ID: ${randomID}\n\nYour cargo space is secured. The full routing dashboard will be emailed shortly.`);
+                window.location.href = '../index.html'; // Return to dashboard
+            }, 2000);
         }
     </script>
 </body>
-
 </html>
